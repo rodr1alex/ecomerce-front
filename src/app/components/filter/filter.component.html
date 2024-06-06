@@ -1,0 +1,7 @@
+<div class="flex justify-between px-4 mb-4 w-full">
+    <div class="button w-2/5 text-center md:w-44" (click)="auxMostrarSeleccionado()">Filtrar por</div>
+    <select class="button w-2/5 text-center pr-2 md:w-44 md:ml-2"  name="orderBy" id="orderBy" [(ngModel)]="orderBySelected">
+        <option value="" disabled selected>Ordenar por</option>
+        <option *ngFor="let orderBy of orderByList" [value]="orderBy">{{orderBy}}</option>
+    </select>
+</div>

@@ -1,0 +1,160 @@
+<div class="flex h-20 bg-white relative">
+
+    <div class="w-1/2 flex justify-start items-center">
+        <a class="flex" href="">
+            <img class="w-10" src="../../../assets/img/main-logo.png" alt="">
+            <p class="movile-hidden">Empresa</p>
+        </a>
+    </div>
+
+    <div class="absolute top-20  w-full h-10">
+        <form class="mx-auto w-4/5 h-full flex justify-center items-center input" action="">
+            <input class="w-11/12 outline-none bg-transparent"  type="text">
+            <button class="w-1/12">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </form>
+    </div>
+    
+    <div id="menu" class="absolute left-[-1000px] top-20 transition-all bg-white w-full h-screen">
+        <p>menu</p>
+    </div>
+
+    <div class="w-1/2 flex justify-between items-center">
+        <div>
+            <i class="fa-regular fa-user text-2xl"></i>
+        </div>
+        <div>
+            <i class="fa-solid fa-cart-shopping text-2xl"></i>
+        </div>
+        <div>
+            <i class="fa-solid fa-bars text-2xl" (click)="menu()"></i>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div class="flex ">
+    <button class="nm-flat-gray-100 w-48 h-10 flex justify-center items-center rounded-full m-8">
+        <p>nm-flat-gray-100</p>
+    </button>
+    <div class="nm-flat-gray-100-lg w-48 h-10 flex justify-center items-center  rounded-full m-8">
+        <p>nm-flat-gray-100-lg</p>
+    </div>
+    <div class="nm-concave-gray-100 rounded-full m-8 flex w-32 h-10  justify-center items-center">
+        <p>Concave</p>
+    </div>
+    <div class="nm-convex-gray-100 w-32 h-10 flex justify-center items-center  rounded-full m-8">
+        <p>Convex</p>
+    </div>
+    <div class="nm-inset-gray-100 w-64 h-10 flex justify-center items-center  rounded-full m-8">
+        <p>Nombre</p>
+    </div>
+    
+</div>
+
+<div class="movile-hidden">
+    <form class="ml-10 w-96 h-96 flex flex-col justify-around items-center nm-flat-gray-100 rounded-xl">
+        <input type="text" placeholder="Usuario" class="nm-inset-gray-100 w-64 h-10  rounded-full">
+        <input type="text" placeholder="Contraseña" class="nm-inset-gray-100 w-64 h-10  rounded-full">
+        <button class="nm-flat-slate-100 w-32 h-10 rounded-full">Iniciar sesion</button>
+    </form>
+</div>
+
+<div class="flex flex-wrap md:hidden">
+    <button class="nm-flat-rose-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p>rose</p>
+    </button>
+    <button class="nm-flat-fuchsia-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p>fuchsia</p>
+    </button>
+    <button class="nm-flat-purple-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p>purple</p>
+    </button>
+    <button class="nm-flat-violet-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p>violet</p>
+    </button>
+    <button class="nm-flat-indigo-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p>indigo</p>
+    </button>
+    <button class="nm-flat-blue-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p class="text-xs">blue</p>
+    </button>
+    <button class="nm-flat-sky-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p class="text-xs">sky</p>
+    </button>
+    <button class="nm-flat-cyan-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p class="text-xs">cyan</p>
+    </button>
+    <button class="nm-flat-teal-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p class="text-xs">teal</p>
+    </button>
+    <button class="nm-flat-emerald-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p class="text-xs">emerald</p>
+    </button>
+    <button class="nm-flat-green-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p class="text-xs">green</p>
+    </button>
+    <button class="nm-flat-lime-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p class="text-xs">lime</p>
+    </button>
+    <button class="nm-flat-yellow-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p class="text-xs">yellow</p>
+    </button>
+    <button class="nm-flat-amber-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p class="text-xs">amber</p>
+    </button>
+    <button class="nm-flat-orange-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p class="text-xs">orange</p>
+    </button>
+    <button class="nm-flat-red-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p class="text-xs">red</p>
+    </button>
+    <button class="nm-flat-stone-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p class="text-xs">stone</p>
+    </button>
+    <button class="nm-flat-neutral-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p class="text-xs">neutral</p>
+    </button>
+    <button class="nm-flat-zinc-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p class="text-xs">zinc</p>
+    </button>
+    <button class="nm-flat-gray-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p class="text-xs">gray</p>
+    </button>
+    <button class="nm-flat-slate-100 w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p class="text-xs">slate</p>
+    </button>
+    <button class="nm-flat-white-xl w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p class="text-xs">white-xl</p>
+    </button>
+    <button class="nm-flat-black-xl w-10 h-10 flex justify-center items-center rounded-full m-8">
+        <p class="text-xs">blak-xl</p>
+    </button>
+</div> -->
