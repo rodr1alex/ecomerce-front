@@ -1,1 +1,106 @@
-<p>product-detail works!</p>
+<div class="w-11/12 mx-auto">
+    <div class="card md:flex mb-10 ">
+        <div class="carousel relative w-full md:w-1/2 md:mx-auto mb-8 md:mb-0" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+
+            <div class="carousel-inner relative overflow-hidden w-full ">
+              <div
+                *ngFor="let image of imageList; let i = index"
+                class="carousel-item absolute opacity-0 w-full transition-opacity duration-1000"
+                [class.opacity-100]="i === currentIndex">
+                <img [src]="image" class="w-full">
+              </div>
+            </div>
+          
+            <button
+              class="opacity-0 md:opacity-100 prev absolute top-1/2 left-0 transform -translate-y-1/2 px-4 py-2 bg-gray-700 text-white"
+              (click)="prev()">
+              &#10094;
+            </button>
+
+            <button
+              class="opacity-0 md:opacity-100 next absolute top-1/2 right-0 transform -translate-y-1/2 px-4 py-2 bg-gray-700 text-white"
+              (click)="next()">
+              &#10095;
+            </button>
+
+            <div class="flex flex-row justify-center mt-2 md:relative top-[-48px]">
+                <div *ngFor="let image of imageList; let i = index"
+                 class="w-3 h-3  rounded-full mx-2 hover:cursor-pointer mobile-hidden" [class.nm-inset-blue-100]="i === currentIndex" [class.nm-inset-gray-100]="i != currentIndex" (click)="selectedImageIndex(i)"></div>  
+            </div>
+
+            <div class="flex flex-row justify-center md:hidden">
+                <div *ngFor="let image of imageList; let i = index"
+                 class="w-3 h-3  rounded-full mx-2" [class.nm-flat-blue-100]="i === currentIndex" [class.nm-flat-gray-100]="i != currentIndex" (click)="selectedImageIndex(i)"></div>  
+            </div>
+
+        </div>
+
+        <div class="p-6 md:w-1/2">
+            <div class="mb-6">
+                <p><span class="font-bold">{{baseProduct.brand.name}} </span>{{baseProduct.description}}</p>
+                <p>${{baseProduct.base_price}}</p>
+            </div>
+
+            <div class="mb-6">
+                @if(selectedSize){
+                    <p class="mb-2">Tallas seleccionada: {{selectedSize}}</p>
+                }@else {
+                    <p class="mb-2">Tallas diponibles:</p>
+                }
+                <div>
+                    <button *ngFor="let size of sizeList" class="button mr-2 w-12 h-7" (click)="setSelectedSize(size)">{{size}}</button>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                @if(selectedColor){
+                    <p class="mb-2">Color seleccionado: {{selectedColor}}</p>
+                }@else {
+                    <p class="mb-2">Colores disponibles</p>
+                }  
+                <div>
+                    <button 
+                        *ngFor="let color of colorList" 
+                        class="text-sm font-bold p-1 px-4 rounded-full transition duration-100 transform active:nm-flat-gray-300 mr-2 w-12 h-7" [ngClass]="color.className"
+                        (click)="setSelectedColor(color.colorName)"
+                        >
+                    </button>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <p class="mr-4">Cantidad</p>
+                <div class="cart-cuantity flex w-32 justify-center items-center ">
+                    <button class="w-10 " (click)="decrease()">-</button>
+                    <p class="w-12 bg-white text-center">{{cantidad}}</p>
+                    <button class="w-10" (click)="increase()">+</button>
+                </div>  
+            </div>
+
+            <div class="mb-6 w-full flex justify-center md:justify-start">
+                <button class="button button--grey w-full md:w-1/2">agregar al carro</button>
+            </div>
+
+            <div class="mb-6">
+                <p>Caracteristicas: </p>
+                <p>{{baseProduct.chars}}</p>
+            </div>
+
+            <div class="mb-6">
+                <p>Especificaciones tecnicas: </p>
+                <p>{{baseProduct.specs}}</p>
+            </div>
+        </div>
+
+    </div>
+    <div class="mb-6 h-96">
+        <p class="mb-2">Productos relacionados</p>
+        <div class="slider-container">
+            @for (baseProduct of baseProductList; track $index) {
+                <a [routerLink]="['/product_detail', baseProduct.base_product_id]">
+                    <product-card class=" mx-2" [baseProduct]="baseProduct"></product-card>
+                </a>
+            }
+        </div>      
+    </div>
+</div>

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { BaseProduct } from '../../models/base-product.model';
 
 @Component({
   selector: 'product-card',
@@ -6,6 +7,12 @@ import { Component } from '@angular/core';
   imports: [],
   templateUrl: './product-card.component.html'
 })
-export class ProductCardComponent {
+export class ProductCardComponent implements OnInit{
+  @Input() baseProduct!: BaseProduct;
 
+  
+
+  ngOnInit(): void {
+    
+  }
 }

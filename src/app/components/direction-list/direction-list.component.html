@@ -1,0 +1,69 @@
+<div class="card w-11/12 min-h-96 p-4 mx-auto md:w-3/5  ">
+    @for (direction of direction_list; track $index){
+        <form class="cart-item p-2 flex flex-row my-4" action="">
+            <div class="w-2/3">
+                <input 
+                    type="text" 
+                    placeholder="Ciudad"
+                    name="city"
+                    [(ngModel)]="direction.city"
+                    class="input my-1 h-8 w-11/12" 
+                    #city="ngModel"
+                    required>
+                <input 
+                    type="text" 
+                    placeholder="Calle"
+                    name="street"
+                    [(ngModel)]="direction.street"
+                    class="input my-1 h-8 w-11/12" 
+                    #street="ngModel"
+                    required>
+                <input 
+                    type="text" 
+                    placeholder="Numero"
+                    name="number"
+                    [(ngModel)]="direction.number"
+                    class="input my-1 h-8 w-11/12" 
+                    #number="ngModel"
+                    required>
+            </div>
+            <div class="w-1/3 flex flex-col justify-center">
+                <button class="button my-2" (click)="updateDirection(direction)">Actualizar</button>
+                <button class="button my-2"  (click)="deleteDirection(direction.direction_id)">Borrar</button>
+            </div>
+        </form>
+    }
+    <form class="cart-item p-2 flex flex-row my-4" action="">
+        <div class="w-2/3">
+            <input 
+                type="text" 
+                placeholder="Ciudad"
+                name="city"
+                [(ngModel)]="directionNew.city"
+                class="input my-1 h-8 w-11/12" 
+                #city="ngModel"
+                required>
+            <input 
+                type="text" 
+                placeholder="Calle"
+                name="street"
+                [(ngModel)]="directionNew.street"
+                class="input my-1 h-8 w-11/12" 
+                #street="ngModel"
+                required>
+            <input 
+                type="text" 
+                placeholder="Numero"
+                name="number"
+                [(ngModel)]="directionNew.number"
+                class="input my-1 h-8 w-11/12" 
+                #number="ngModel"
+                required>
+        </div>
+        <div class="w-1/3 flex flex-col justify-center">
+            <button class="button my-2" (click)="createDirection(directionNew)">Agregar</button>
+        </div>
+    </form>
+    <button class="button w-full" [routerLink]="['/update_user', 1]">Cancelar</button>
+
+</div>

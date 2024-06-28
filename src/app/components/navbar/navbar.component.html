@@ -1,14 +1,14 @@
-<div class="flex h-20 bg-white relative">
+<div class="flex h-20 bg-white relative shadow md:h-16">
 
-    <div class="w-1/2 flex justify-start items-center">
+    <div class="w-1/2 flex justify-start items-center pl-6 md:w-1/12">
         <a class="flex" href="">
             <img class="w-10" src="../../../assets/img/main-logo.png" alt="">
-            <p class="movile-hidden">Empresa</p>
+            <p class="movile-hidden mr-2">Empresa</p>
         </a>
     </div>
 
-    <div class="absolute top-20  w-full h-10">
-        <form class="mx-auto w-4/5 h-full flex justify-center items-center input" action="">
+    <div class="absolute top-24  w-full h-full md:static md:flex md:items-center md:w-3/12">
+        <form class="mx-auto w-4/5 h-10 flex justify-center items-center input md:w-11/12" action="">
             <input class="w-11/12 outline-none bg-transparent"  type="text">
             <button class="w-1/12">
                 <i class="fa-solid fa-magnifying-glass"></i>
@@ -16,18 +16,75 @@
         </form>
     </div>
     
-    <div id="menu" class="absolute left-[-1000px] top-20 transition-all bg-white w-full h-screen">
-        <p>menu</p>
+    <div id="menu" class="z-10 absolute left-[-1000px] top-20 transition-all w-full h-screen md:static md:w-5/12 md:h-max navBarMenu">
+        <p class="text-center font-bold md:hidden my-2">CATEGORIAS</p>
+        <ul class="md:flex md:h-16 md:justify-center categoryContainer">
+            <li *ngFor="let category of categoryList; let i = index" class="category-item pl-4 shadow md:shadow-none py-2 md:h-16  md:hover:bg-gray-100 md:flex md:items-center md:px-4">
+                <p class="font-bold " (click)="showSubCategory(category.categoryName)">{{category.categoryName}}</p>
+                <ul id="{{category.categoryName}}" class="mobile-hidden subcategory-container md:flex md:w-full md:h-0 md:opacity-0 md:-z-10 md:justify-center md:items-center md:absolute md:top-16 md:left-0 nm-flat-white-lg">
+                    <li class="subcategory-item" *ngFor="let subCategory of category.subCategoryList">
+                        <a [routerLink]="['/product_list', 0]" (click)="menu()" class="md:font-bold mx-4 cursor-pointer md:hover:text-blue-300">
+                            {{subCategory}}
+                        </a>
+                    </li>  
+                </ul>
+            </li>
+        </ul>
     </div>
+    
+    <div class="w-1/2 flex justify-between items-center pr-6 md:w-3/12">
+        <div class="user relative md:w-1/2 md:flex md:items-center md:hover:bg-slate-200  md:h-16">
+            <!-- Usuario -->
+            @if(login.isAuth){
+                <a (click)="sessionHandler()"><i class="fa-regular fa-user text-2xl"></i></a>
+            }@else {
+                <a [routerLink]="['/login']"><i class="fa-regular fa-user text-2xl"></i></a>
+            }
+            <div class="card absolute flex flex-col justify-center items-center w-48 h-32 z-20 left-[-84px] top-12 md:hidden" id="sessionHandler">
+                <p>Bienvenido </p>
+                <button class="button my-2" (click)="handlerLogout()" (click)="sessionHandler()">Cerrar sesion</button>
+                <button class="button my-2" [routerLink]="['/update_user',1]" (click)="sessionHandler()">Actualizar datos</button>
+            </div>
 
-    <div class="w-1/2 flex justify-between items-center">
-        <div>
-            <i class="fa-regular fa-user text-2xl"></i>
+            @if(login.isAuth){
+                <div class="absolute top-6 md:top-10  left-4 h-4 w-4 nm-inset-green-50-xs rounded-full flex justify-center items-center">
+                    <i class="fa-solid fa-check icon-check"></i>
+                 </div> 
+             }@else {
+                <div class="absolute top-6 md:top-10  left-4 h-3 w-3 nm-inset-red-100 rounded-full flex justify-center items-center">
+                    <p class=" icon-check">x</p>
+                 </div>
+             }
+            <div class="mobile-hidden ml-2">
+                <p>{{(login.isAuth)? ('Bienvenido ' + login.user.username): 'No ha iniciado sesion'}}</p>
+            </div>
+            <div class="user-modal absolute top-16 left-0 h-0 w-full flex justify-center">
+                @if(login.isAuth){
+                    <div class="isLogged hidden card  flex-col justify-center items-center w-4/5 h-48">
+                        <button class="button my-4" (click)="handlerLogout()">Cerrar sesion</button>
+                        <button class="button my-4">Actualizar datos</button>
+                    </div>
+                }@else {
+                    <div class="login hidden">
+                        <login></login>
+                    </div>   
+                }
+            </div>
         </div>
-        <div>
-            <i class="fa-solid fa-cart-shopping text-2xl"></i>
+        <div class="cart relative md:w-1/2 md:flex md:items-center md:hover:bg-slate-200 md:h-16">
+            <!-- Carrito -->
+            <a [routerLink]="['/cart']"><i class="fa-solid fa-cart-shopping text-2xl"></i></a>
+            <div class="absolute top-6 md:top-10 left-5 h-4 w-4 nm-inset-blue-50-xs rounded-full flex justify-center items-center">
+                <p class="icon-check">{{cart.totalItems}}</p>
+             </div> 
+            <div class="mobile-hidden ml-2">
+                <p>Total: {{cart.total}}</p>
+            </div>
+            <div class="cart-modal absolute top-16 -right-4 h-0 w-96 hidden">
+                <cart></cart>
+            </div>
         </div>
-        <div>
+        <div class="md:hidden">
             <i class="fa-solid fa-bars text-2xl" (click)="menu()"></i>
         </div>
     </div>

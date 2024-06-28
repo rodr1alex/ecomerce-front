@@ -1,1 +1,5 @@
-<p>paginator works!</p>
+<div class="flex justify-center items-center">
+    <i class="fa-solid fa-chevron-left mr-2"></i>
+    <div *ngFor="let page of pages" class="w-6 h-6  rounded-full mx-2 nm-flat-gray-100 flex justify-center items-center">{{page}}</div>
+    <i class="fa-solid fa-chevron-right ml-2"></i>
+</div>

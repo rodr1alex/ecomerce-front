@@ -1,1 +1,27 @@
-<p>login works!</p>
+    <form class="card flex flex-col items-center justify-center h-96 w-4/5 mx-auto md:w-full" (ngSubmit)="onSubmit()" #userForm="ngForm">
+        <div class="flex flex-col items-center w-4/5 mb-12 md:w-10/12">
+            <input 
+            class="input w-full mb-6 h-8"
+            placeholder="Usuario" 
+            name="username" 
+            [(ngModel)]="user.username"  
+            #username="ngModel"
+            >
+
+            <input 
+            class="input w-full mb-6 h-8"
+            placeholder="Contraseña" 
+            name="password" 
+            [(ngModel)]="user.password"  
+            #password="ngModel"
+            >
+
+        </div>
+
+        <div class="flex flex-col items-center">
+            <button type="submit" class="button mb-2">Iniciar session</button>
+            <p class="text-center">¿No tienes cuenta? <a class="text-blue-400" [routerLink]="['/create_user']">Registrate aca</a></p>
+        </div>  
+    </form>
+
+    

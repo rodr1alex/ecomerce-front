@@ -26,13 +26,13 @@ html, body {
     @apply nm-inset-gray-100  rounded-full pl-3 outline-none;
 }
 .button{
-    @apply text-sm font-bold p-1 px-4 rounded-full nm-flat-gray-100 hover:bg-gray-200;
+    @apply text-sm font-bold p-1 px-4 rounded-full nm-flat-gray-100   transition duration-100 transform active:nm-flat-gray-300;
 }
 .cart-item{
     @apply nm-convex-gray-50 rounded-xl overflow-hidden text-xs hover:nm-convex-slate-200-lg;
 }
 .cart-cuantity{
-    @apply text-sm font-bold rounded-full nm-convex-gray-50 hover:nm-convex-slate-300-xl ;
+    @apply text-sm font-bold p-1 rounded-full nm-convex-gray-50 hover:nm-convex-slate-300-xl ;
 }
 
 .carousel {
@@ -67,11 +67,23 @@ html, body {
 }
 
 @media (min-width: 768px) {
-    
+    .button{
+        @apply hover:bg-gray-200;
+    }
+    .carousel {
+        height: 600px;
+    }
+    .product-list{
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-rows: auto;
+        justify-items: center;
+        gap: 30px;
+    }
 } 
 
 @media (max-width: 768px){
-    .movile-hidden{
+    .mobile-hidden{
         display: none;
     }
 }

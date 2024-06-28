@@ -1,0 +1,44 @@
+.icon-check{
+    font-size: 10px;
+}
+
+@media (min-width: 768px) {
+    .category-item:hover .subcategory-container{
+        height: 48px;
+        opacity: 100;
+        z-index: 10;
+    }
+    .subcategory-item{
+        display: none;
+    }
+    .category-item:hover .subcategory-item{
+        display: block;
+    }
+    .user:hover .user-modal{
+        height: 100px;
+        opacity: 100;
+        z-index: 10;
+    }
+    .user:hover .login{
+        display: block;
+    }
+    .user:hover .isLogged{
+        display: flex;
+    }
+    .cart:hover .cart-modal{
+        height: 100px;
+        opacity: 100;
+        z-index: 10;
+        display: flex;
+    }
+} 
+
+@media (max-width: 768px){
+    .navBarMenu{
+        background-color: #F3F4F6;
+    }
+    .categoryContainer{
+        @apply nm-flat-white-lg ;
+    }
+    
+}

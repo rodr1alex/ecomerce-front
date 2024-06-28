@@ -1,7 +1,7 @@
 <div class="card flex flex-col">
-    <img src="../../../assets/img/1.png" class="" alt="">
+    <img src="{{baseProduct.baseProductImageList[0].url}}" class="" alt="">
     <div class="p-4 flex flex-col">
-        <p class="my-2"><span class="font-bold">Adidas</span> Zapatilla senderismo, terrex AX3 goretex, corte medio</p>
-        <p class="mb-2">$139.990</p>
+        <p class="my-2"><span class="font-bold">{{baseProduct.brand.name}}</span> {{baseProduct.description}}</p>
+        <p class="mb-2">{{baseProduct.base_price}}</p>
     </div>
 </div>
