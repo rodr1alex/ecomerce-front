@@ -3,7 +3,7 @@ import { ProductCardComponent } from '../product-card/product-card.component';
 import { FilterComponent } from '../filter/filter.component';
 import { PaginatorComponent } from '../paginator/paginator.component';
 import { Store } from '@ngrx/store';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { BaseProductService } from '../../services/base-product.service';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { AuthService } from '../../services/auth.service';
@@ -11,11 +11,12 @@ import { BaseProduct } from '../../models/base-product.model';
 import { Category } from '../../models/category.model';
 import { BaseProductImage } from '../../models/base-product-image.model';
 import { update } from '../../store/base-product.action';
+import { Brand } from '../../models/brand.model';
 
 @Component({
   selector: 'product-list',
   standalone: true,
-  imports: [ProductCardComponent, FilterComponent, PaginatorComponent],
+  imports: [ProductCardComponent, FilterComponent, PaginatorComponent, RouterModule],
   templateUrl: './product-list.component.html'
 })
 export class ProductListComponent implements OnInit{
@@ -26,10 +27,12 @@ export class ProductListComponent implements OnInit{
   category1: Category = new Category;
   category2: Category = new Category;
   categoryList: Category[] = [];
+  brandList: Brand[]= [];
 
   constructor(
     private baseProductStore: Store<{baseProducts: any}>,
     private router: Router,
+    private route: ActivatedRoute,
     private baseProductService: BaseProductService,
     private sharingDataService: SharingDataService,
     private authService: AuthService) {
@@ -42,20 +45,32 @@ export class ProductListComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    this.category1.category_id = 6;
     this.category1.category_id = 4;
-    this.category2.category_id = 6;
     this.categoryList.push(this.category1);
     this.categoryList.push(this.category1);
-    this.baseProductService.filterByCategoryList(0, this.categoryList).subscribe({
-      next: pageable =>{
-        this.baseProductList = pageable.content as BaseProduct[];
-        this.paginator = pageable;
-        this.sharingDataService.pageProductEventEmitter.emit({baseProductList: this.baseProductList, paginator: this.paginator})
-      },
-      error: error =>{
-        throw new error;
+
+    this.baseProductService.getBrandList(this.categoryList).subscribe({
+      next: response =>{
+        this.brandList = response;
       }
     })
+
+    this.route.paramMap.subscribe(params => {
+      const page: number = +(params.get('page') || '0');
+      this.baseProductService.filterByCategoryList(page, this.categoryList).subscribe({
+        next: pageable =>{
+          this.baseProductList = pageable.content as BaseProduct[];
+          this.paginator = pageable;
+          this.sharingDataService.pageProductEventEmitter.emit({baseProductList: this.baseProductList, paginator: this.paginator})
+        },
+        error: error =>{
+          throw new error;
+        }
+      })
+    });
+
+    
   }
 
   

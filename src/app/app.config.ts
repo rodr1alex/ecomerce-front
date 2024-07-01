@@ -6,6 +6,7 @@ import { provideStore } from '@ngrx/store';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { tokenInterceptor } from './interceptors/token.interceptor';
 import { baseProductsReducer } from './store/base-product.reducer';
+import { cartsReducer } from './store/cart.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,7 +14,8 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([tokenInterceptor])),
     provideStore(
       {
-        baseProducts: baseProductsReducer
+        baseProducts: baseProductsReducer,
+        carts: cartsReducer
       }
     )]
 };

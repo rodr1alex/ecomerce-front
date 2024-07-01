@@ -47,7 +47,6 @@ export class HomeComponent implements OnInit{
   ngOnInit(): void {
     setInterval(()=>{
       this.next();
-      console.log('hola');
     }, 7000);
     this.baseProductService.findAllPageable(0).subscribe({
       next: pageable =>{

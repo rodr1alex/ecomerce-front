@@ -8,6 +8,9 @@ export class FinalProduct{
     final_description!: String;
     final_chars!: String;
     final_specs!: String;
+    brand!: String;
+    color!: String;
+    img!: String;
     colorVariantProduct!: ColorVariantProduct;
     size!: Size;
     //orderedProductList!: OrderedProduct[];

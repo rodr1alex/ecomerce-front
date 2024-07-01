@@ -1,5 +1,12 @@
-<div class="flex justify-center items-center">
-    <i class="fa-solid fa-chevron-left mr-2"></i>
-    <div *ngFor="let page of pages" class="w-6 h-6  rounded-full mx-2 nm-flat-gray-100 flex justify-center items-center">{{page}}</div>
-    <i class="fa-solid fa-chevron-right ml-2"></i>
-</div>
+@if (paginator.totalPages > 1){
+    <div class="flex justify-center items-center">
+        <a [routerLink]="[url, 0]"><i class="fa-solid fa-chevron-left mr-2"></i></a>
+        @for (page of pageList; track $index) {
+            <a [routerLink]="[url, (page-1)]">
+                <div class="w-6 h-6  rounded-full mx-2 nm-flat-gray-100 flex justify-center items-center">{{page}}</div>
+            </a>
+        }
+        <a [routerLink]="[url, paginator.totalPages - 1]"><i class="fa-solid fa-chevron-right ml-2"></i></a>
+    </div>
+}
+

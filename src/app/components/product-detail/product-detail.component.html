@@ -7,7 +7,7 @@
                 *ngFor="let image of imageList; let i = index"
                 class="carousel-item absolute opacity-0 w-full transition-opacity duration-1000"
                 [class.opacity-100]="i === currentIndex">
-                <img [src]="image" class="w-full">
+                <img [src]="image.url" class="w-full">
               </div>
             </div>
           
@@ -43,26 +43,26 @@
 
             <div class="mb-6">
                 @if(selectedSize){
-                    <p class="mb-2">Tallas seleccionada: {{selectedSize}}</p>
+                    <p class="mb-2">Tallas seleccionada: {{selectedSize.name}}</p>
                 }@else {
                     <p class="mb-2">Tallas diponibles:</p>
                 }
                 <div>
-                    <button *ngFor="let size of sizeList" class="button mr-2 w-12 h-7" (click)="setSelectedSize(size)">{{size}}</button>
+                    <button *ngFor="let size of sizeList" class="button mr-2 w-12 h-7" (click)="setSelectedSize(size)">{{size.name}}</button>
                 </div>
             </div>
 
             <div class="mb-6">
                 @if(selectedColor){
-                    <p class="mb-2">Color seleccionado: {{selectedColor}}</p>
+                    <p class="mb-2">Color seleccionado: {{selectedColor.name}}</p>
                 }@else {
                     <p class="mb-2">Colores disponibles</p>
                 }  
                 <div>
                     <button 
                         *ngFor="let color of colorList" 
-                        class="text-sm font-bold p-1 px-4 rounded-full transition duration-100 transform active:nm-flat-gray-300 mr-2 w-12 h-7" [ngClass]="color.className"
-                        (click)="setSelectedColor(color.colorName)"
+                        class="text-sm font-bold p-1 px-4 rounded-full transition duration-100 transform active:nm-flat-gray-300 mr-2 w-12 h-7" [ngClass]="color.tailwindclass"
+                        (click)="setSelectedColor(color)"
                         >
                     </button>
                 </div>
@@ -72,13 +72,13 @@
                 <p class="mr-4">Cantidad</p>
                 <div class="cart-cuantity flex w-32 justify-center items-center ">
                     <button class="w-10 " (click)="decrease()">-</button>
-                    <p class="w-12 bg-white text-center">{{cantidad}}</p>
+                    <p class="w-12 bg-white text-center">{{quantity}}</p>
                     <button class="w-10" (click)="increase()">+</button>
                 </div>  
             </div>
 
             <div class="mb-6 w-full flex justify-center md:justify-start">
-                <button class="button button--grey w-full md:w-1/2">agregar al carro</button>
+                <button class="button button--grey w-full md:w-1/2" (click)="addProductToCart()">agregar al carro</button>
             </div>
 
             <div class="mb-6">

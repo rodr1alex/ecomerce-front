@@ -16,12 +16,16 @@ export class BaseProductService {
     return this.http.get<any[]>(`${this.url}/featured_products/page/${page}`);
   }
 
-  filterByBrand(page: number, brand_id: number): Observable<any> {
-    return this.http.get<any[]>(`${this.url}/filter/brand/${brand_id}/page/${page}`);
+  filterByBrand(page: number, brand_id: number, categoryList: any): Observable<any> {
+    return this.http.post<any[]>(`${this.url}/filter/brand/${brand_id}/page/${page}`, categoryList);
   }
 
   filterByCategoryList(page: number, categoryList: any): Observable<any> {
     return this.http.post<any>(`${this.url}/filter/category_list/page/${page}`, categoryList);
   }
-
+  
+  getBrandList(categoryList: any): Observable<any> {
+    return this.http.post<any>(`${this.url}/filter/brand/get_list`, categoryList);
+  }
+  
 }

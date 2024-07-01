@@ -1,12 +1,14 @@
 <div class="px-6 mb-4 md:w-11/12 md:mx-auto">
     <div class="md:flex md:w-1/2 md:justify-between ">
         <p class="font-bold mb-2 text-center">{{categoryName}}</p>
-        <filter></filter>  
+        <filter [brandList]="brandList"></filter>  
     </div>
     <div class="product-list">
         @for (baseProduct of baseProductList; track $index) {
             <div class="mb-6 ">
-                <product-card [baseProduct]="baseProduct"></product-card>
+                <a [routerLink]="['/product_detail', baseProduct.base_product_id]">
+                    <product-card [baseProduct]="baseProduct"></product-card>
+                </a>
             </div>
         } 
     </div>

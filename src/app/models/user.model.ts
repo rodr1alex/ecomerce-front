@@ -1,3 +1,4 @@
+import { Cart } from "./cart.model";
 import { Direction } from "./direction.model";
 
 export class User {
@@ -8,4 +9,5 @@ export class User {
     username!: string;
     password!: string;
     directionList!: Direction[];
+    cartList!: Cart[];
 }

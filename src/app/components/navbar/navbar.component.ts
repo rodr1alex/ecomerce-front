@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { LoginComponent } from '../login/login.component';
 import { CartComponent } from '../cart/cart.component';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { Cart } from '../../models/cart.model';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'navbar',
@@ -13,13 +15,11 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent implements OnInit{
+  cart!: Cart;
   showMenu: boolean = true;
   showSessionHandler: boolean = false;
   username!: String;
-  cart: any = {
-    total: 1000,
-    totalItems: 10
-  }
+  
   categoryList: any = [
     {
       categoryName:'Hombre',
@@ -47,13 +47,18 @@ export class NavbarComponent implements OnInit{
   ]
   
   
-  constructor(private authService: AuthService, private router: Router){
-    this.username = this.authService.user.username;
-  }
+  constructor(  private authService: AuthService, 
+                private router: Router,
+                private cartStore: Store<{carts: any}>){
+                  this.cartStore.select('carts').subscribe(response =>{
+                    this.cart = response.cart;
+                  })               
+                }
 
   ngOnInit(): void {
     this.menu();
     this.sessionHandler();
+    
   }
 
   get login() {

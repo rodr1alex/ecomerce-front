@@ -1,7 +1,19 @@
-<div class="flex justify-between px-4 mb-4 w-full">
-    <div class="button w-2/5 text-center md:w-44" (click)="auxMostrarSeleccionado()">Filtrar por</div>
-    <select class="button w-2/5 text-center pr-2 md:w-44 md:ml-2"  name="orderBy" id="orderBy" [(ngModel)]="orderBySelected">
+<div class="flex justify-between px-4 mb-4 w-full min-h-8">
+    <div class="button w-2/5 text-center">
+       <p (click)="showHiddenFilter()">Filtrar por</p>
+       <select (change)="onChange($event)" class="button w-11/12 text-center pr-2 md:w-44 md:ml-2 hidden"  name="orderBy" id="orderBy" [(ngModel)]="brandSelected">
+            <option value="" disabled selected>Marca</option>
+            <option *ngFor="let brand of brandList" [value]="brand.brand_id">
+                {{brand.name}}
+            </option>
+        </select>
+    </div>
+    
+    <select class="button w-2/5 text-center pr-2 md:w-44 md:ml-2 h-8"  name="orderBy" id="orderBy" [(ngModel)]="orderBySelected">
         <option value="" disabled selected>Ordenar por</option>
         <option *ngFor="let orderBy of orderByList" [value]="orderBy">{{orderBy}}</option>
     </select>
 </div>
+
+
+
