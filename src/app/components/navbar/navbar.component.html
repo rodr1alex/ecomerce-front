@@ -1,6 +1,7 @@
 <div class="flex h-20 bg-white relative shadow md:h-16">
 
     <div class="w-1/2 flex justify-start items-center pl-6 md:w-1/12">
+        <!-- Logo -->
         <a class="flex" href="">
             <img class="w-10" src="../../../assets/img/main-logo.png" alt="">
             <p class="movile-hidden mr-2">Empresa</p>
@@ -8,6 +9,7 @@
     </div>
 
     <div class="absolute top-24  w-full h-full md:static md:flex md:items-center md:w-3/12">
+        <!-- Buscador -->
         <form class="mx-auto w-4/5 h-10 flex justify-center items-center input md:w-11/12" action="">
             <input class="w-11/12 outline-none bg-transparent"  type="text">
             <button class="w-1/12">
@@ -17,14 +19,16 @@
     </div>
     
     <div id="menu" class="z-10 absolute left-[-1000px] top-20 transition-all w-full h-screen md:static md:w-5/12 md:h-max navBarMenu">
+         <!-- Categorias -->
         <p class="text-center font-bold md:hidden my-2">CATEGORIAS</p>
         <ul class="md:flex md:h-16 md:justify-center categoryContainer">
             <li *ngFor="let category of categoryList; let i = index" class="category-item pl-4 shadow md:shadow-none py-2 md:h-16  md:hover:bg-gray-100 md:flex md:items-center md:px-4">
-                <p class="font-bold " (click)="showSubCategory(category.categoryName)">{{category.categoryName}}</p>
-                <ul id="{{category.categoryName}}" class="mobile-hidden subcategory-container md:flex md:w-full md:h-0 md:opacity-0 md:-z-10 md:justify-center md:items-center md:absolute md:top-16 md:left-0 nm-flat-white-lg">
+                <p class="font-bold " (click)="showSubCategory(category.categoryName.name)">{{category.categoryName.name}}</p>
+                <ul id="{{category.categoryName.name}}" class="mobile-hidden subcategory-container md:flex md:w-full md:h-0 md:opacity-0 md:-z-10 md:justify-center md:items-center md:absolute md:top-16 md:left-0 nm-flat-white-lg">
                     <li class="subcategory-item" *ngFor="let subCategory of category.subCategoryList">
-                        <a [routerLink]="['/product_list', 0]" (click)="menu()" class="md:font-bold mx-4 cursor-pointer md:hover:text-blue-300">
-                            {{subCategory}}
+                        <a (click)="menu()" (click)="filter(category.categoryName, subCategory)" class="md:font-bold mx-4 cursor-pointer md:hover:text-blue-300">
+                            <!-- [routerLink]="['/product_list', 0]" [state]="{categoryListToFilter}"  -->
+                            {{subCategory.name}}
                         </a>
                     </li>  
                 </ul>
@@ -75,7 +79,12 @@
             <!-- Carrito -->
             <a [routerLink]="['/cart']"><i class="fa-solid fa-cart-shopping text-2xl"></i></a>
             <div class="absolute top-6 md:top-10 left-5 h-4 w-4 nm-inset-blue-50-xs rounded-full flex justify-center items-center">
-                <p class="icon-check">{{cart.items}}</p>
+                @if(cart.items){
+                    <p class="icon-check">{{cart.items}}</p>
+                }@else {
+                    <p class="icon-check">0</p>
+                }
+                
              </div> 
             <div class="mobile-hidden ml-2">
                 <p>Total: {{cart.total}}</p>

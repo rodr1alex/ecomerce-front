@@ -31,7 +31,7 @@
         </div>
         <div class="flex flex-col w-full items-center mb-6">
             <button class="mb-2 hover:text-red-400" (click)="cleanCart()">Vaciar carro</button>
-            <button class="button w-11/12">Ir a pagar</button>
+            <button class="button w-11/12" [routerLink]="['/payment']">Ir a pagar</button>
         </div>
     </div>
 

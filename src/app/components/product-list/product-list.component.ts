@@ -24,9 +24,7 @@ export class ProductListComponent implements OnInit{
   baseProductList!: BaseProduct[];
   paginator!: any;
   baseProduct!: BaseProduct;
-  category1: Category = new Category;
-  category2: Category = new Category;
-  categoryList: Category[] = [];
+  categoryListToFilter: Category[] = [];
   brandList: Brand[]= [];
 
   constructor(
@@ -45,21 +43,29 @@ export class ProductListComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.category1.category_id = 6;
-    this.category1.category_id = 4;
-    this.categoryList.push(this.category1);
-    this.categoryList.push(this.category1);
 
-    this.baseProductService.getBrandList(this.categoryList).subscribe({
-      next: response =>{
-        this.brandList = response;
-      }
-    })
+    // this.categoryListToFilter = history.state.categoryListToFilter;
+    // console.log('Recibido categoryListToFilter: ', this.categoryListToFilter);
+    
 
     this.route.paramMap.subscribe(params => {
       const page: number = +(params.get('page') || '0');
-      this.baseProductService.filterByCategoryList(page, this.categoryList).subscribe({
+      const category_id: number = +(params.get('category') || '0');
+      const subcategory_id: number = +(params.get('subcategory') || '0');
+      console.log('Parametros:')
+      console.log('Page:', page)
+      console.log('Category:', category_id)
+      console.log('Subcategory:', subcategory_id);
+      this.categoryListToFilter = [];
+      this.categoryListToFilter = [new Category(category_id, ''), new Category(subcategory_id, '')];
+      this.baseProductService.getBrandList(this.categoryListToFilter).subscribe({
+        next: response =>{
+          this.brandList = response;
+        }
+      })
+      this.baseProductService.filterByCategoryList(page, this.categoryListToFilter).subscribe({
         next: pageable =>{
+          console.log('Filtrado por: ', this.categoryListToFilter);
           this.baseProductList = pageable.content as BaseProduct[];
           this.paginator = pageable;
           this.sharingDataService.pageProductEventEmitter.emit({baseProductList: this.baseProductList, paginator: this.paginator})
@@ -69,6 +75,8 @@ export class ProductListComponent implements OnInit{
         }
       })
     });
+
+    
 
     
   }

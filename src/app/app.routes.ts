@@ -7,6 +7,7 @@ import { UpdatePasswordComponent } from './components/update-password/update-pas
 import { DirectionListComponent } from './components/direction-list/direction-list.component';
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
 import { ProductListComponent } from './components/product-list/product-list.component';
+import { PaymentComponent } from './components/payment/payment.component';
 
 export const routes: Routes = [
     {
@@ -47,7 +48,11 @@ export const routes: Routes = [
         component: ProductDetailComponent,
     },
     {
-        path: 'product_list/:page',
+        path: 'product_list/:category/:subcategory/:page',
         component: ProductListComponent,
+    },
+    {
+        path: 'payment',
+        component: PaymentComponent,
     },
 ];

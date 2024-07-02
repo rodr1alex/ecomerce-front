@@ -26,10 +26,10 @@ export const cartsReducer = createReducer(
             orderedProduct: state.orderedProduct
         }
     )),
-    on(findProduct, (state, {ordered_product_id}) =>(
+    on(findProduct, (state, {final_product_id}) =>(
         {
             cart: state.cart,
-            orderedProduct: state.cart.orderedProductList.find(orderedProduct => orderedProduct.ordered_product_id === ordered_product_id) || new OrderedProduct()
+            orderedProduct: state.cart.orderedProductList.find(orderedProduct => orderedProduct.finalProduct.final_product_id === final_product_id) || new OrderedProduct()
         }
     )),
     on(updateCart, (state, {cartUpdated}) =>(

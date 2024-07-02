@@ -4,10 +4,10 @@
 
             <div class="carousel-inner relative overflow-hidden w-full ">
               <div
-                *ngFor="let image of imageList; let i = index"
+                *ngFor="let image of imageListURL; let i = index"
                 class="carousel-item absolute opacity-0 w-full transition-opacity duration-1000"
                 [class.opacity-100]="i === currentIndex">
-                <img [src]="image.url" class="w-full">
+                <img [src]="image" class="w-full">
               </div>
             </div>
           
@@ -24,12 +24,12 @@
             </button>
 
             <div class="flex flex-row justify-center mt-2 md:relative top-[-48px]">
-                <div *ngFor="let image of imageList; let i = index"
+                <div *ngFor="let image of imageListURL; let i = index"
                  class="w-3 h-3  rounded-full mx-2 hover:cursor-pointer mobile-hidden" [class.nm-inset-blue-100]="i === currentIndex" [class.nm-inset-gray-100]="i != currentIndex" (click)="selectedImageIndex(i)"></div>  
             </div>
 
             <div class="flex flex-row justify-center md:hidden">
-                <div *ngFor="let image of imageList; let i = index"
+                <div *ngFor="let image of imageListURL; let i = index"
                  class="w-3 h-3  rounded-full mx-2" [class.nm-flat-blue-100]="i === currentIndex" [class.nm-flat-gray-100]="i != currentIndex" (click)="selectedImageIndex(i)"></div>  
             </div>
 
@@ -41,32 +41,39 @@
                 <p>${{baseProduct.base_price}}</p>
             </div>
 
-            <div class="mb-6">
-                @if(selectedSize){
-                    <p class="mb-2">Tallas seleccionada: {{selectedSize.name}}</p>
-                }@else {
-                    <p class="mb-2">Tallas diponibles:</p>
-                }
-                <div>
-                    <button *ngFor="let size of sizeList" class="button mr-2 w-12 h-7" (click)="setSelectedSize(size)">{{size.name}}</button>
+            @if(colorList.length > 0){
+                <div class="mb-6">
+                    @if(selectedColor.color_id){
+                        <p class="mb-2">Color seleccionado: {{selectedColor.name}}</p>
+                    }@else {
+                        <p class="mb-2">Colores disponibles</p>
+                    }  
+                    <div>
+                        <button 
+                            *ngFor="let color of colorList" 
+                            class="text-sm font-bold p-1 px-4 rounded-full transition duration-100 transform active:nm-flat-gray-300 mr-2 w-12 h-7 {{color.tailwindclass}}"
+                            (click)="setSelectedColor(color)"
+                            >
+                        </button>
+                        
+                    </div>
                 </div>
-            </div>
+            }
+            
 
-            <div class="mb-6">
-                @if(selectedColor){
-                    <p class="mb-2">Color seleccionado: {{selectedColor.name}}</p>
-                }@else {
-                    <p class="mb-2">Colores disponibles</p>
-                }  
-                <div>
-                    <button 
-                        *ngFor="let color of colorList" 
-                        class="text-sm font-bold p-1 px-4 rounded-full transition duration-100 transform active:nm-flat-gray-300 mr-2 w-12 h-7" [ngClass]="color.tailwindclass"
-                        (click)="setSelectedColor(color)"
-                        >
-                    </button>
+            @if(sizeList.length > 0){
+                <div class="mb-6">
+                    @if(selectedSize.size_id){
+                        <p class="mb-2">Tallas seleccionada: {{selectedSize.name}}</p>
+                    }@else {
+                        <p class="mb-2">Tallas disponibles:</p>
+                    }
+                    <div>
+                        <button *ngFor="let size of sizeList" class="button mr-2 w-12 h-7" (click)="setSelectedSize(size)">{{size.name}}</button>
+                    </div>
                 </div>
-            </div>
+            }
+            
 
             <div class="mb-6">
                 <p class="mr-4">Cantidad</p>
@@ -78,7 +85,12 @@
             </div>
 
             <div class="mb-6 w-full flex justify-center md:justify-start">
-                <button class="button button--grey w-full md:w-1/2" (click)="addProductToCart()">agregar al carro</button>
+                @if(login.isAuth){
+                    <button class="button button--grey w-full md:w-1/2" (click)="verifySizeAndColor(addProductToCart())">agregar al carro</button>
+                }@else {
+                    <button class="button button--grey w-full md:w-1/2" [routerLink]="['/login']">Iniciar session para agregar a carrito</button>
+                }
+                
             </div>
 
             <div class="mb-6">

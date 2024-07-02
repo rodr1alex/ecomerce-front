@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Cart } from '../../models/cart.model';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { OrderedProduct } from '../../models/ordered-product.model';
 import { state } from '@angular/animations';
@@ -9,7 +9,7 @@ import { SharingDataService } from '../../services/sharing-data.service';
 @Component({
   selector: 'cart',
   standalone: true,
-  imports: [],
+  imports: [RouterModule],
   templateUrl: './cart.component.html'
 })
 export class CartComponent implements OnInit{
@@ -20,7 +20,7 @@ export class CartComponent implements OnInit{
 
   constructor(  private route: ActivatedRoute,
                 private router: Router,
-                private sharingDataServie: SharingDataService,
+                private sharingDataService: SharingDataService,
                 private cartStore: Store<{carts: any}>,){
                   this.cartStore.select('carts').subscribe(state =>{                   
                     if (state.cart && Array.isArray(state.cart.orderedProductList)) {
@@ -44,17 +44,17 @@ export class CartComponent implements OnInit{
 
   decrease(orderedProduct: OrderedProduct){
     if(orderedProduct.quantity > 0){
-      this.sharingDataServie.modifyProductQuantityCartEventEmitter.emit({diferential: -1, orderedProduct});
+      this.sharingDataService.modifyProductQuantityCartEventEmitter.emit({diferential: -1, orderedProduct});
     }
   }
   increase(orderedProduct: OrderedProduct){
-    this.sharingDataServie.modifyProductQuantityCartEventEmitter.emit({diferential: 1, orderedProduct});
+    this.sharingDataService.modifyProductQuantityCartEventEmitter.emit({diferential: 1, orderedProduct});
   }
   remove(orderedProduct: OrderedProduct){
-    this.sharingDataServie.removeProductCartEventEmitter.emit(orderedProduct);
+    this.sharingDataService.removeProductCartEventEmitter.emit(orderedProduct);
   }
   cleanCart(){
-    this.sharingDataServie.cleanCartEventEmitter.emit();
+    this.sharingDataService.cleanCartEventEmitter.emit();
   }
 
 }

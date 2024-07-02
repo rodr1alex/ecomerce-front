@@ -4,7 +4,7 @@ import { Cart } from "../models/cart.model";
 
 
 export const putCart = createAction('putCart', props<{cart: Cart}>());
-export const findProduct = createAction('findProduct', props<{ordered_product_id: number}>());
+export const findProduct = createAction('findProduct', props<{final_product_id: number}>());
 export const updateCart = createAction('updateCart', props<{cartUpdated: Cart}>())
 
 // export const addProduct = createAction('addProduct', props<{cartUpdated: Cart,orderedProductNew: OrderedProduct}>())

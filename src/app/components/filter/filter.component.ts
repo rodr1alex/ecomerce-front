@@ -32,8 +32,8 @@ export class FilterComponent  {
   orderBySelected: String = '';
   brandSelected: String = '';
   showFilter: boolean = false;
-  category1: Category = new Category;
-  category2: Category = new Category;
+  category1: Category = new Category(1,'asfd');
+  category2: Category = new Category(2,'afds');
   categoryList: Category[] = [];
 
   constructor(

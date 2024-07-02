@@ -19,6 +19,7 @@ import { Cart } from '../../models/cart.model';
 import { CartService } from '../../services/cart.service';
 import { putCart, updateCart } from '../../store/cart.action';
 import { OrderedProduct } from '../../models/ordered-product.model';
+import { SaleService } from '../../services/sale.service';
 
 @Component({
   selector: 'ecomerce-app',
@@ -35,6 +36,7 @@ export class EcomerceAppComponent implements OnInit{
     private cartStore: Store<{carts: any}>,
     private router: Router,
     private userService: UserService,
+    private saleService: SaleService,
     private sharingDataService: SharingDataService,
     private authService: AuthService,
     private directionService: DirectionService,
@@ -58,10 +60,23 @@ export class EcomerceAppComponent implements OnInit{
     this.modifyProductQuantityCart();
     this.removeProductToCart();
     this.cleanCart();
+    this.payCart();
     if(this.authService.authenticated()){
       console.log('ID: ', this.authService.user.user.id)
       this.cartVerify(this.authService.user.user.id);
     }
+  }
+
+  payCart(){
+    this.sharingDataService.payCartEventEmitter.subscribe(()=>{
+      this.saleService.createSale(this.cart.cart_id).subscribe({
+        next: response =>{
+          alert('Venta creada con exito:');
+          this.cartVerify(1);
+          this.router.navigate(['/home']);
+        }
+      });
+    })
   }
 
   addProductToCart(){
@@ -97,7 +112,7 @@ export class EcomerceAppComponent implements OnInit{
       this.cartStore.dispatch(updateCart({cartUpdated}));
       this.cartService.updateProductQuantity(this.cart.cart_id,orderedProductCopy).subscribe({
         next: response => {
-          console.log('Producto modificado con exito, carrito: ', response);
+          console.log('Producto modificado en DB con exito, carrito: ', response);
         }
       });
     })

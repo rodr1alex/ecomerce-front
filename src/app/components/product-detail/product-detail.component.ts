@@ -15,6 +15,8 @@ import { ColorVariantProduct } from '../../models/color-variant-product.model';
 import { of } from 'rxjs';
 import { FinalProduct } from '../../models/final-product.model';
 import { OrderedProduct } from '../../models/ordered-product.model';
+import { Cart } from '../../models/cart.model';
+import { findProduct } from '../../store/cart.action';
 
 @Component({
   selector: 'product-detail',
@@ -26,18 +28,21 @@ import { OrderedProduct } from '../../models/ordered-product.model';
 export class ProductDetailComponent {
   baseProduct!: BaseProduct;
   baseProductList!: BaseProduct[];
-  quantity: number = 0;
-  selectedSize!: Size;
-  selectedColor!: Color;
+  cart!: Cart;
+  orderedProduct!: OrderedProduct;
+  quantity: number = 1;
+  selectedSize: Size = new Size();
+  selectedColor: Color = new Color();
   sizeList: Size[] = [];
   colorList: Color[] = [];
-  imageList: BaseProductImage[] = []
+  imageListURL: string[] = []
   currentIndex = 0;
   touchStartX = 0;
   touchEndX = 0;
 
   constructor(
     private baseProductStore: Store<{baseProducts: any}>,
+    private cartStore: Store<{carts:any}>,
     private router: Router,
     private route: ActivatedRoute,
     private baseProductService: BaseProductService,
@@ -47,8 +52,16 @@ export class ProductDetailComponent {
         this.baseProduct = state.baseProduct;
         this.baseProductList = state.baseProductList;
         
+      });
+      this.cartStore.select('carts').subscribe(state =>{
+        this.cart = state.cart;
+        this.orderedProduct = state.orderedProduct;
       })
     
+  }
+
+  get login() {
+    return this.authService.user;
   }
 
   ngOnInit(): void {
@@ -56,30 +69,41 @@ export class ProductDetailComponent {
       const base_product_id = +(params.get('base_product_id') || '0');
       this.baseProductStore.dispatch(find({base_product_id}));
       this.getImageList();
-      this.getColorList();
-      this.getSizeList();
+      this.getColorList(this.baseProduct.colorVariantProductList);
+      this.getSizeList(this.baseProduct.colorVariantProductList);
     })
     
   }
 
   //TALLA Y COLOR NO ESTAN EN CONCORDANCIA, MEJORAR.
   getImageList(){
-    this.imageList = [];
-    this.baseProduct.baseProductImageList.map(baseProductImage => this.imageList.push(baseProductImage));
+    this.imageListURL = [];
+    this.imageListURL = this.getImageURLBaseProduct(this.baseProduct);
   }
-  getColorList(){
+  getColorList(colorVariantProductList: ColorVariantProduct[]){
     this.colorList = [];
-    this.baseProduct.colorVariantProductList.map(colorVariantProduct => this.colorList.push(colorVariantProduct.color));
+    colorVariantProductList.map(colorVariantProduct => this.colorList.push(colorVariantProduct.color));
+
   }
-  getSizeList(){
+  getSizeList(colorVariantProductList: ColorVariantProduct[]){
     this.sizeList = [];
-    this.baseProduct.colorVariantProductList.map(colorVariantProduct => colorVariantProduct.finalProductList.map(finalProduct => this.sizeList.push(finalProduct.size)))
+    colorVariantProductList.map(colorVariantProduct => colorVariantProduct.finalProductList.map(finalProduct => this.sizeList.push(finalProduct.size)));
+    const sizeListClean: Size[] = [];
+    const indexList: number[] = [];
+    this.sizeList.map(size => {
+      if(indexList.indexOf(size.size_id) === -1){
+        indexList.push(size.size_id);
+        sizeListClean.push(size);
+      }
+    })
+    sizeListClean.sort((a,b) => a.size_id - b.size_id);
+    this.sizeList = sizeListClean;
   }
   prev() {
-    this.currentIndex = (this.currentIndex === 0) ? this.imageList.length - 1 : this.currentIndex - 1;
+    this.currentIndex = (this.currentIndex === 0) ? this.imageListURL.length - 1 : this.currentIndex - 1;
   }
   next() {
-    this.currentIndex = (this.currentIndex === this.imageList.length - 1) ? 0 : this.currentIndex + 1;
+    this.currentIndex = (this.currentIndex === this.imageListURL.length - 1) ? 0 : this.currentIndex + 1;
   }
   onTouchStart(event: TouchEvent) {
     this.touchStartX = event.changedTouches[0].screenX;
@@ -105,12 +129,29 @@ export class ProductDetailComponent {
   }
   setSelectedSize(size: Size){
     this.selectedSize = size;
+
   }
   selectedImageIndex(i: number){
     this.currentIndex = i;
   }
   setSelectedColor(colorName: Color){
     this.selectedColor = colorName;
+    const colorVariantProductList: ColorVariantProduct[] = this.baseProduct.colorVariantProductList.filter(item =>item.color.color_id == this.selectedColor.color_id);
+    this.imageListURL = [];
+    //this.imageListURL = this.getImageURLColorVariantProduct(colorVariantProductList[0]);
+    this.imageListURL = [...this.getImageURLColorVariantProduct(colorVariantProductList[0]), ...this.getImageURLBaseProduct(this.baseProduct)];
+    this.currentIndex = 0;
+    this.getSizeList(colorVariantProductList);
+    let isContainded = false;
+    this.sizeList.map(item => {
+        if(item.size_id === this.selectedSize.size_id){
+          isContainded = true;
+        }
+    });
+    if(!isContainded){
+      this.selectedSize = new Size();
+      
+    }
   }
   getFinalProduct(): FinalProduct{
     const color_id = this.selectedColor.color_id;
@@ -119,11 +160,66 @@ export class ProductDetailComponent {
     return (this.baseProduct.colorVariantProductList.filter(colorVariantProduct => colorVariantProduct.color.color_id === color_id)[0].finalProductList.filter(finalProduct => finalProduct.size.size_id === size_id)[0]);
   }
 
+  
   addProductToCart(){
+    let productInCart = false;
     const orderedProduct = new OrderedProduct();
-    orderedProduct.quantity = this.quantity;
-    orderedProduct.finalProduct = this.getFinalProduct();
-    this.sharingDataService.addProductToCartEventEmitter.emit(orderedProduct);
+      orderedProduct.quantity = this.quantity;
+      orderedProduct.finalProduct = this.getFinalProduct();
+      this.cart.orderedProductList.map(orderedProductCART => {
+        if(orderedProductCART.finalProduct.final_product_id == orderedProduct.finalProduct.final_product_id){
+          console.log('Producto ya esta en carrito, final_product_id: ', orderedProductCART.finalProduct.final_product_id);
+          this.cartStore.dispatch(findProduct({final_product_id:orderedProductCART.finalProduct.final_product_id}))
+          this.sharingDataService.modifyProductQuantityCartEventEmitter.emit({diferential: this.quantity, orderedProduct: this.orderedProduct});
+          productInCart = true;
+        }
+      })
+    if(productInCart == false){
+        this.sharingDataService.addProductToCartEventEmitter.emit(orderedProduct);
+    }
+  }
+
+  verifySizeAndColor(callback: any){
+    if(this.sizeList.length > 0  && this.colorList.length > 0){
+      if(this.selectedSize.size_id && this.selectedColor.color_id){
+        callback();
+      }else if(this.selectedSize.size_id == undefined && this.selectedColor.color_id == undefined){
+        alert('Debe seleccionar talla y color');
+      }else if(this.selectedSize.size_id == undefined ){
+        alert('Debe seleccionar talla')
+      }else{
+        alert('Debe seleccionar color')
+      }
+    }else if(this.sizeList.length > 0  && this.colorList.length == 0){
+      if(this.selectedSize.size_id){
+        callback();
+      }else{
+        alert('Debe seleccionar talla')
+      }
+    }else if(this.sizeList.length == 0  && this.colorList.length > 0){
+      if(this.selectedColor.color_id){
+        callback();
+      }else{
+        alert('Debe seleccionar color')
+      }
+    }else{
+      callback();
+    }
+  }
+
+  getImageURLBaseProduct(baseProduct: BaseProduct): string[]{
+    let urlList: string[] = [];
+    for(let baseProductImage of baseProduct.baseProductImageList){
+      urlList.push(baseProductImage.url);
+    }
+    return urlList;
+  }
+  getImageURLColorVariantProduct(colorVariantProduct: ColorVariantProduct): string[]{
+    let urlList: string[] = [];
+    for(let colorVariantProductImage of colorVariantProduct.colorVariantProductImageList){
+      urlList.push(colorVariantProductImage.url);
+    }
+    return urlList;
   }
 
 }

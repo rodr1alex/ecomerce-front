@@ -6,6 +6,9 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { Cart } from '../../models/cart.model';
 import { Store } from '@ngrx/store';
+import { Category } from '../../models/category.model';
+import { CategoryList } from '../../models/category-list.model';
+import { updateCart } from '../../store/cart.action';
 
 @Component({
   selector: 'navbar',
@@ -19,30 +22,16 @@ export class NavbarComponent implements OnInit{
   showMenu: boolean = true;
   showSessionHandler: boolean = false;
   username!: String;
+  categoryListToFilter: Category[] = [];
   
-  categoryList: any = [
+  categoryList: CategoryList[] = [
     {
-      categoryName:'Hombre',
-      subCategoryList: ['Calzado','Ropa','Accesorios']
+      categoryName: new Category(6,'hombre'),
+      subCategoryList: [new Category(4,'Calzado'),new Category(8,'Ropa'),new Category(9,'Accesorios')]
     },
     {
-      categoryName:'Mujer',
-      subCategoryList: ['Calzado','Ropa','Accesorios']
-    },
-    {
-      categoryName:'Deportes',
-      subCategoryList: ['Running','Trekking','Trail']
-    },
-    {
-      categoryName:'Calzado',
-      subCategoryList: ['Running','Trekking','Trail']
-    },
-    {
-      categoryName:'Ropa',
-      subCategoryList: ['Poleras','Pantalones','Cortavientos']
-    }, {
-      categoryName:'Accesorios',
-      subCategoryList: ['Suplementos','Relojes','Otros']
+      categoryName: new Category(7,'Mujer'),
+      subCategoryList: [new Category(4,'Calzado'),new Category(8,'Ropa'),new Category(9,'Accesorios')]
     },
   ]
   
@@ -72,6 +61,17 @@ export class NavbarComponent implements OnInit{
   handlerLogout() {
     this.authService.logout();
     this.router.navigate(['/home'])
+
+    //TRATAR DE OPTIMIZAR,CREAR ACCIO PARA LIMPIAR CARRITO
+    let cartUpdated = {
+      ...this.cart,
+      orderedProductList: this.cart.orderedProductList.map(item => ({ ...item })) // Clonar deep copy de los objetos en orderedProductList
+    };
+    cartUpdated.items = 0;
+    cartUpdated.total = 0;
+    cartUpdated.orderedProductList = [];
+    this.cartStore.dispatch(updateCart({cartUpdated}));
+
   }
 
   menu(){
@@ -81,6 +81,9 @@ export class NavbarComponent implements OnInit{
                               (this.showMenu=true, 
                                 menu?.classList.add('left-[0px]'));
     
+  }
+  filter(category: Category, subCategory: Category){
+    this.router.navigate(['/product_list',category.category_id, subCategory.category_id, 0] );
   }
 
   showSubCategory(id: string){
