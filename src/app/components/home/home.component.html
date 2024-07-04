@@ -1,11 +1,11 @@
 <div class="md:mt-[-40px]">
-    <div class="carousel relative w-full mb-12" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+    <div class="carousel relative w-full mb-12 shadow" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
         <div class="carousel-inner relative overflow-hidden w-full">
           <div
-            *ngFor="let image of images; let i = index"
+            *ngFor="let bannerImage of bannerImageList; let i = index"
             class="carousel-item absolute opacity-0 w-full transition-opacity duration-1000"
             [class.opacity-100]="i === currentIndex">
-            <img [src]="image" class="w-full">
+            <img [src]="bannerImage.url" class="w-full img-detail">
           </div>
         </div>
     
@@ -22,12 +22,12 @@
         </button>
 
         <div class="flex flex-row justify-center mt-2 md:relative top-[-40px]">
-            <div *ngFor="let image of images; let i = index"
+            <div *ngFor="let bannerImage of bannerImageList; let i = index"
              class="w-3 h-3  rounded-full mx-2 hover:cursor-pointer mobile-hidden" [class.nm-inset-blue-100]="i === currentIndex" [class.nm-inset-gray-100]="i != currentIndex" (click)="hola(i)"></div>  
         </div>
 
         <div class="flex flex-row justify-center mt-2 md:hidden">
-            <div *ngFor="let image of images; let i = index"
+            <div *ngFor="let bannerImage of bannerImageList; let i = index"
              class="w-3 h-3  rounded-full mx-2 hover:cursor-pointer" [class.nm-flat-blue-100]="i === currentIndex" [class.nm-flat-gray-100]="i != currentIndex" (click)="hola(i)"></div>  
         </div>    
     </div>
@@ -35,7 +35,7 @@
         <p class="text-center mb-2 md:text-left md:font-bold">Productos destacados</p>
         <div class="product-list">
           @for (baseProduct of baseProductList; track $index) {
-            <div class="mb-6 " >
+            <div class="mb-6 w-full" >
               <a [routerLink]="['/product_detail', baseProduct.base_product_id]">
                 <product-card [baseProduct]="baseProduct"></product-card>
               </a>

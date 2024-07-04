@@ -1,6 +1,6 @@
 <div class="flex flex-col min-h-screen">
-    <navbar></navbar>
-    <div class="main mt-20 md:mt-10">
+    <navbar [contentHeight]="contentHeight" [contentWidth]="contentWidth"></navbar>
+    <div class="main mt-20 md:mt-10" id="dynamicHeightContainer" #dynamicHeightContainer>
         <router-outlet />
     </div>
     <footer></footer>

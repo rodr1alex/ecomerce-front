@@ -1,6 +1,6 @@
 
 export class Color{
     color_id!: number;
-    name!: String;
+    name!: string;
     tailwindclass!: String;
 }

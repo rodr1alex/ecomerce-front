@@ -22,7 +22,6 @@ export class DirectionListComponent implements OnInit{
     this.userService.findById(1).subscribe(
       {
         next: response => {
-          console.log(response.directionList);
           this.direction_list = response.directionList;
         },
         error: error =>{

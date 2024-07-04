@@ -9,6 +9,8 @@ import { AuthService } from '../../services/auth.service';
 import { DirectionService } from '../../services/direction.service';
 import { BaseProduct } from '../../models/base-product.model';
 import { BaseProductService } from '../../services/base-product.service';
+import { BannerImageService } from '../../services/banner-image.service';
+import { BannerImage } from '../../models/banner-image.model';
 
 @Component({
   selector: 'home',
@@ -19,11 +21,7 @@ import { BaseProductService } from '../../services/base-product.service';
 export class HomeComponent implements OnInit{
   baseProductList!: BaseProduct[];
   paginator!: any;
-  images: string[] = [
-    "../../../assets/img/1.png",
-    "../../../assets/img/2.png" ,
-    "../../../assets/img/3.png"
-  ]
+  bannerImageList: BannerImage[] = [];
 
   currentIndex = 0;
   touchStartX = 0;
@@ -35,6 +33,7 @@ export class HomeComponent implements OnInit{
     private router: Router,
     private baseProductService: BaseProductService,
     private sharingDataService: SharingDataService,
+    private bannerImageService: BannerImageService,
     private authService: AuthService) {
       this.baseProductStore.select('baseProducts').subscribe(state =>{
         this.baseProductList = state.baseProductList;
@@ -48,6 +47,11 @@ export class HomeComponent implements OnInit{
     setInterval(()=>{
       this.next();
     }, 7000);
+    this.bannerImageService.findAll().subscribe({
+      next: response =>{
+        this.bannerImageList = response;
+      }
+    })
     this.baseProductService.findAllPageable(0).subscribe({
       next: pageable =>{
         this.baseProductList = pageable.content as BaseProduct[];
@@ -62,11 +66,11 @@ export class HomeComponent implements OnInit{
 
 
   prev() {
-    this.currentIndex = (this.currentIndex === 0) ? this.images.length - 1 : this.currentIndex - 1;
+    this.currentIndex = (this.currentIndex === 0) ? this.bannerImageList.length - 1 : this.currentIndex - 1;
   }
 
   next() {
-    this.currentIndex = (this.currentIndex === this.images.length - 1) ? 0 : this.currentIndex + 1;
+    this.currentIndex = (this.currentIndex === this.bannerImageList.length - 1) ? 0 : this.currentIndex + 1;
   }
 
   onTouchStart(event: TouchEvent) {

@@ -26,7 +26,13 @@ html, body {
     @apply nm-inset-gray-100  rounded-full pl-3 outline-none;
 }
 .button{
-    @apply text-sm font-bold p-1 px-4 rounded-full nm-flat-gray-100   transition duration-100 transform active:nm-flat-gray-300;
+    @apply text-sm font-bold p-1 px-4 rounded-full nm-flat-gray-100   transition duration-100 transform active:nm-flat-gray-500 hover:nm-flat-gray-50;
+}
+.button-disabled{
+    @apply text-sm font-bold text-slate-300 p-1 px-4 rounded-full nm-flat-gray-100-xs transition duration-100 transform ;
+}
+.button-selected{
+    @apply text-sm font-bold p-1 px-4 rounded-full nm-flat-gray-300-lg transition duration-100 transform;
 }
 .cart-item{
     @apply nm-convex-gray-50 rounded-xl overflow-hidden text-xs hover:nm-convex-slate-200-lg;
@@ -36,7 +42,7 @@ html, body {
 }
 
 .carousel {
-    height: 400px;
+    height: 350px;
 }
   
 .carousel-inner {
@@ -49,6 +55,15 @@ html, body {
     position: absolute;
     width: 100%;
     height: 100%;
+}
+.img-detail{
+    max-width: 100%;
+    min-height: 350px;
+    object-fit: cover;
+}
+.img-portrait{
+    max-width: 100%;
+    object-fit: cover;
 }
   
 .prev, .next {
@@ -73,6 +88,10 @@ html, body {
     .carousel {
         height: 600px;
     }
+    .img-detail{
+        min-height: 600px;
+    }
+      
     .product-list{
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr;

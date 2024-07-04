@@ -18,7 +18,7 @@
         </form>
     </div>
     
-    <div id="menu" class="z-10 absolute left-[-1000px] top-20 transition-all w-full h-screen md:static md:w-5/12 md:h-max navBarMenu">
+    <div id="menuNode" #menuNode class="z-10 absolute left-[-1000px] top-20 transition-all w-full md:static md:w-5/12 md:h-max hiddenMenu">
          <!-- Categorias -->
         <p class="text-center font-bold md:hidden my-2">CATEGORIAS</p>
         <ul class="md:flex md:h-16 md:justify-center categoryContainer">
@@ -35,9 +35,14 @@
             </li>
         </ul>
     </div>
+
+    <div id="cartNode" #cartNode class="z-10 absolute left-[-1000px] top-20 transition-all p-2 w-full hiddenMenu py-2 md:hidden">
+        <!-- carrito -->
+        <cart></cart>
+    </div>
     
     <div class="w-1/2 flex justify-between items-center pr-6 md:w-3/12">
-        <div class="user relative md:w-1/2 md:flex md:items-center md:hover:bg-slate-200  md:h-16">
+        <div class="user relative md:w-1/2 md:flex md:items-center md:hover:bg-gray-100  md:h-16">
             <!-- Usuario -->
             @if(login.isAuth){
                 <a (click)="sessionHandler()"><i class="fa-regular fa-user text-2xl"></i></a>
@@ -62,11 +67,11 @@
             <div class="mobile-hidden ml-2">
                 <p>{{(login.isAuth)? ('Bienvenido ' + login.user.username): 'No ha iniciado sesion'}}</p>
             </div>
-            <div class="user-modal absolute top-16 left-0 h-0 w-full flex justify-center">
+            <div class="user-modal absolute top-16 h-0 flex justify-center">
                 @if(login.isAuth){
                     <div class="isLogged hidden card  flex-col justify-center items-center w-4/5 h-48">
                         <button class="button my-4" (click)="handlerLogout()">Cerrar sesion</button>
-                        <button class="button my-4">Actualizar datos</button>
+                        <button class="button my-4"[routerLink]="['/update_user',1]" >Actualizar datos</button>
                     </div>
                 }@else {
                     <div class="login hidden">
@@ -75,9 +80,9 @@
                 }
             </div>
         </div>
-        <div class="cart relative md:w-1/2 md:flex md:items-center md:hover:bg-slate-200 md:h-16">
+        <div class="cart relative  md:w-1/2 md:flex md:items-center md:hover:bg-gray-100 md:h-16">
             <!-- Carrito -->
-            <a [routerLink]="['/cart']"><i class="fa-solid fa-cart-shopping text-2xl"></i></a>
+            <a (click)="showHiddenCart()"><i class="fa-solid fa-cart-shopping text-2xl"></i></a>
             <div class="absolute top-6 md:top-10 left-5 h-4 w-4 nm-inset-blue-50-xs rounded-full flex justify-center items-center">
                 @if(cart.items){
                     <p class="icon-check">{{cart.items}}</p>
@@ -89,11 +94,12 @@
             <div class="mobile-hidden ml-2">
                 <p>Total: {{cart.total}}</p>
             </div>
-            <div class="cart-modal absolute top-16 -right-4 h-0 w-96 hidden">
+            <div class="cart-modal absolute top-16  h-0 hidden">
                 <cart></cart>
             </div>
         </div>
         <div class="md:hidden">
+            <!-- menu hamburgesa -->
             <i class="fa-solid fa-bars text-2xl" (click)="menu()"></i>
         </div>
     </div>

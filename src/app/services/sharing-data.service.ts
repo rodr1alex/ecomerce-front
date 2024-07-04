@@ -20,7 +20,8 @@ export class SharingDataService {
   private _removeProductCartEventEmitter: EventEmitter<OrderedProduct> = new EventEmitter();
   private _cleanCartEventEmitter: EventEmitter<void> = new EventEmitter(); 
   private _payCartEventEmitter: EventEmitter<void> = new EventEmitter(); 
-
+  private _closeCartEventEmitter: EventEmitter<void> = new EventEmitter(); 
+  
   constructor() { }
 
   get handlerLoginEventEmitter (){
@@ -59,4 +60,8 @@ export class SharingDataService {
   get payCartEventEmitter(){
     return this._payCartEventEmitter;
   }
+  get closeCartEventEmitter(){
+    return this._closeCartEventEmitter;
+  }
+  
 }

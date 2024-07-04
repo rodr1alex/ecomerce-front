@@ -2,6 +2,7 @@
     font-size: 10px;
 }
 
+
 @media (min-width: 768px) {
     .category-item:hover .subcategory-container{
         height: 48px;
@@ -29,12 +30,23 @@
         height: 100px;
         opacity: 100;
         z-index: 10;
-        display: flex;
+        display: block;
+    }
+    .cart-modal{
+        width: 500px;
+        right: 0px;
+    }
+    .user-modal{
+        width: 300px;
+        right: -60px;
+    }
+    .login{
+        width: 300px;
     }
 } 
 
 @media (max-width: 768px){
-    .navBarMenu{
+    .hiddenMenu{
         background-color: #F3F4F6;
     }
     .categoryContainer{

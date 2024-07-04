@@ -1,44 +1,49 @@
 <div class="w-11/12 mx-auto">
     <div class="card md:flex mb-10 ">
-        <div class="carousel relative w-full md:w-1/2 md:mx-auto mb-8 md:mb-0" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
-
+        
+        <div class="carousel relative w-full md:w-1/2 md:mx-auto mb-8 md:mb-0 shadow" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+            <!-- Imagenes -->
             <div class="carousel-inner relative overflow-hidden w-full ">
               <div
                 *ngFor="let image of imageListURL; let i = index"
                 class="carousel-item absolute opacity-0 w-full transition-opacity duration-1000"
+                id="viewPort" #viewPort
                 [class.opacity-100]="i === currentIndex">
-                <img [src]="image" class="w-full">
+                <img [src]="image" class="img-detail">
+                <!-- [class.h-full]="" -->
               </div>
             </div>
           
+           @if(imageListURL.length > 1){
             <button
-              class="opacity-0 md:opacity-100 prev absolute top-1/2 left-0 transform -translate-y-1/2 px-4 py-2 bg-gray-700 text-white"
-              (click)="prev()">
-              &#10094;
-            </button>
+            class="opacity-0 md:opacity-100 prev absolute top-1/2 left-0 transform -translate-y-1/2 px-4 py-2 bg-gray-700 text-white"
+            (click)="prev()">
+            &#10094;
+          </button>
 
-            <button
-              class="opacity-0 md:opacity-100 next absolute top-1/2 right-0 transform -translate-y-1/2 px-4 py-2 bg-gray-700 text-white"
-              (click)="next()">
-              &#10095;
-            </button>
+          <button
+            class="opacity-0 md:opacity-100 next absolute top-1/2 right-0 transform -translate-y-1/2 px-4 py-2 bg-gray-700 text-white"
+            (click)="next()">
+            &#10095;
+          </button>
 
-            <div class="flex flex-row justify-center mt-2 md:relative top-[-48px]">
-                <div *ngFor="let image of imageListURL; let i = index"
-                 class="w-3 h-3  rounded-full mx-2 hover:cursor-pointer mobile-hidden" [class.nm-inset-blue-100]="i === currentIndex" [class.nm-inset-gray-100]="i != currentIndex" (click)="selectedImageIndex(i)"></div>  
-            </div>
+          <div class="flex flex-row justify-center mt-2 md:relative top-[-48px]">
+              <div *ngFor="let image of imageListURL; let i = index"
+               class="w-3 h-3  rounded-full mx-2 hover:cursor-pointer mobile-hidden" [class.nm-inset-blue-100]="i === currentIndex" [class.nm-inset-gray-100]="i != currentIndex" (click)="selectedImageIndex(i)"></div>  
+          </div>
 
-            <div class="flex flex-row justify-center md:hidden">
-                <div *ngFor="let image of imageListURL; let i = index"
-                 class="w-3 h-3  rounded-full mx-2" [class.nm-flat-blue-100]="i === currentIndex" [class.nm-flat-gray-100]="i != currentIndex" (click)="selectedImageIndex(i)"></div>  
-            </div>
+          <div class="flex flex-row justify-center md:hidden">
+              <div *ngFor="let image of imageListURL; let i = index"
+               class="w-3 h-3  rounded-full mx-2" [class.nm-flat-blue-100]="i === currentIndex" [class.nm-flat-gray-100]="i != currentIndex" (click)="selectedImageIndex(i)"></div>  
+          </div>
+           }
 
         </div>
 
         <div class="p-6 md:w-1/2">
             <div class="mb-6">
                 <p><span class="font-bold">{{baseProduct.brand.name}} </span>{{baseProduct.description}}</p>
-                <p>${{baseProduct.base_price}}</p>
+                <p class="font-bold">{{formatCurrency(baseProduct.base_price) }}</p>
             </div>
 
             @if(colorList.length > 0){
@@ -51,16 +56,14 @@
                     <div>
                         <button 
                             *ngFor="let color of colorList" 
-                            class="text-sm font-bold p-1 px-4 rounded-full transition duration-100 transform active:nm-flat-gray-300 mr-2 w-12 h-7 {{color.tailwindclass}}"
+                            [ngClass]="color.tailwindclass"
+                            class="text-sm font-bold p-1 px-4 rounded-full transition duration-100 transform  active:nm-flat-gray-300 mr-2 w-12 h-7"
                             (click)="setSelectedColor(color)"
                             >
                         </button>
-                        
                     </div>
                 </div>
             }
-            
-
             @if(sizeList.length > 0){
                 <div class="mb-6">
                     @if(selectedSize.size_id){
@@ -69,28 +72,35 @@
                         <p class="mb-2">Tallas disponibles:</p>
                     }
                     <div>
-                        <button *ngFor="let size of sizeList" class="button mr-2 w-12 h-7" (click)="setSelectedSize(size)">{{size.name}}</button>
+                        <button 
+                        *ngFor="let size of sizeList" 
+                        id="{{size.size_id}}" 
+                        [disabled]="false" 
+                        class="button mr-2 w-12 h-7" 
+                        (click)="setSelectedSize(size)"
+                        >{{size.name}}</button>
                     </div>
                 </div>
             }
             
 
-            <div class="mb-6">
-                <p class="mr-4">Cantidad</p>
-                <div class="cart-cuantity flex w-32 justify-center items-center ">
-                    <button class="w-10 " (click)="decrease()">-</button>
-                    <p class="w-12 bg-white text-center">{{quantity}}</p>
-                    <button class="w-10" (click)="increase()">+</button>
-                </div>  
-            </div>
-
-            <div class="mb-6 w-full flex justify-center md:justify-start">
-                @if(login.isAuth){
-                    <button class="button button--grey w-full md:w-1/2" (click)="verifySizeAndColor(addProductToCart())">agregar al carro</button>
-                }@else {
-                    <button class="button button--grey w-full md:w-1/2" [routerLink]="['/login']">Iniciar session para agregar a carrito</button>
-                }
-                
+            <div class="md:flex md:justify-around">
+                <div class="mb-6 md:w-1/3">
+                    <p class="mr-4 md:hidden">Cantidad</p>
+                    <div class="cart-cuantity flex w-32 justify-center items-center ">
+                        <button class="w-10 " (click)="decrease()">-</button>
+                        <p class="w-12 bg-white text-center">{{quantity}}</p>
+                        <button class="w-10" (click)="increase()">+</button>
+                    </div>  
+                </div>
+    
+                <div class="mb-6 w-full flex justify-center md:justify-start md:w-1/3">
+                    @if(login.isAuth){
+                        <button class="button button--grey w-full" (click)="verifySizeAndColor()">agregar al carro</button>
+                    }@else {
+                        <button class="button button--grey w-full" [routerLink]="['/login']">Iniciar session para agregar a carrito</button>
+                    }   
+                </div>
             </div>
 
             <div class="mb-6">
@@ -109,9 +119,11 @@
         <p class="mb-2">Productos relacionados</p>
         <div class="slider-container">
             @for (baseProduct of baseProductList; track $index) {
-                <a [routerLink]="['/product_detail', baseProduct.base_product_id]">
-                    <product-card class=" mx-2" [baseProduct]="baseProduct"></product-card>
-                </a>
+                <div class=" mx-2" style="width: 2000px;">
+                    <a [routerLink]="['/product_detail', baseProduct.base_product_id]">
+                        <product-card  [baseProduct]="baseProduct"></product-card>
+                    </a>
+                </div> 
             }
         </div>      
     </div>

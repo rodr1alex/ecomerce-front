@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ProductCardComponent } from '../product-card/product-card.component';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
@@ -17,6 +17,7 @@ import { FinalProduct } from '../../models/final-product.model';
 import { OrderedProduct } from '../../models/ordered-product.model';
 import { Cart } from '../../models/cart.model';
 import { findProduct } from '../../store/cart.action';
+import { tick } from '@angular/core/testing';
 
 @Component({
   selector: 'product-detail',
@@ -25,7 +26,7 @@ import { findProduct } from '../../store/cart.action';
   templateUrl: './product-detail.component.html'
 })
 
-export class ProductDetailComponent {
+export class ProductDetailComponent implements OnInit{
   baseProduct!: BaseProduct;
   baseProductList!: BaseProduct[];
   cart!: Cart;
@@ -34,11 +35,14 @@ export class ProductDetailComponent {
   selectedSize: Size = new Size();
   selectedColor: Color = new Color();
   sizeList: Size[] = [];
+  sizeListEnabled: Size[] = [];
   colorList: Color[] = [];
   imageListURL: string[] = []
   currentIndex = 0;
   touchStartX = 0;
   touchEndX = 0;
+  
+  
 
   constructor(
     private baseProductStore: Store<{baseProducts: any}>,
@@ -59,7 +63,7 @@ export class ProductDetailComponent {
       })
     
   }
-
+ 
   get login() {
     return this.authService.user;
   }
@@ -70,12 +74,19 @@ export class ProductDetailComponent {
       this.baseProductStore.dispatch(find({base_product_id}));
       this.getImageList();
       this.getColorList(this.baseProduct.colorVariantProductList);
-      this.getSizeList(this.baseProduct.colorVariantProductList);
+      this.sizeList = this.getSizeList(this.baseProduct.colorVariantProductList);
+      this.sizeListEnabled = this.sizeList;
     })
     
   }
 
-  //TALLA Y COLOR NO ESTAN EN CONCORDANCIA, MEJORAR.
+  formatCurrency(value: number): string {
+    if(value == undefined){
+      value = 0;
+    }
+    return value.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
+  }
+
   getImageList(){
     this.imageListURL = [];
     this.imageListURL = this.getImageURLBaseProduct(this.baseProduct);
@@ -85,19 +96,19 @@ export class ProductDetailComponent {
     colorVariantProductList.map(colorVariantProduct => this.colorList.push(colorVariantProduct.color));
 
   }
-  getSizeList(colorVariantProductList: ColorVariantProduct[]){
-    this.sizeList = [];
-    colorVariantProductList.map(colorVariantProduct => colorVariantProduct.finalProductList.map(finalProduct => this.sizeList.push(finalProduct.size)));
+  getSizeList(colorVariantProductList: ColorVariantProduct[]): Size[]{
+    let sizeList: Size[] = [];
+    colorVariantProductList.map(colorVariantProduct => colorVariantProduct.finalProductList.map(finalProduct => sizeList.push(finalProduct.size)));
     const sizeListClean: Size[] = [];
     const indexList: number[] = [];
-    this.sizeList.map(size => {
+    sizeList.map(size => {
       if(indexList.indexOf(size.size_id) === -1){
         indexList.push(size.size_id);
         sizeListClean.push(size);
       }
     })
-    sizeListClean.sort((a,b) => a.size_id - b.size_id);
-    this.sizeList = sizeListClean;
+    sizeListClean.sort((a,b) => a.size_id - b.size_id); //microoptimizacion recomendada
+    return sizeListClean;
   }
   prev() {
     this.currentIndex = (this.currentIndex === 0) ? this.imageListURL.length - 1 : this.currentIndex - 1;
@@ -129,7 +140,18 @@ export class ProductDetailComponent {
   }
   setSelectedSize(size: Size){
     this.selectedSize = size;
-
+    this.sizeListEnabled.map(sizeItem => {
+      let node = document.getElementById(`${sizeItem.size_id}`);
+      if(sizeItem.size_id === this.selectedSize.size_id){
+        node?.removeAttribute('class');
+        node?.setAttribute('class','button-selected mr-2 w-12 h-7 ');
+      }else{
+        node?.removeAttribute('class');
+        node?.setAttribute('class','button mr-2 w-12 h-7 ');
+      }
+    })
+    
+    
   }
   selectedImageIndex(i: number){
     this.currentIndex = i;
@@ -138,12 +160,15 @@ export class ProductDetailComponent {
     this.selectedColor = colorName;
     const colorVariantProductList: ColorVariantProduct[] = this.baseProduct.colorVariantProductList.filter(item =>item.color.color_id == this.selectedColor.color_id);
     this.imageListURL = [];
-    //this.imageListURL = this.getImageURLColorVariantProduct(colorVariantProductList[0]);
     this.imageListURL = [...this.getImageURLColorVariantProduct(colorVariantProductList[0]), ...this.getImageURLBaseProduct(this.baseProduct)];
     this.currentIndex = 0;
-    this.getSizeList(colorVariantProductList);
+
+    this.sizeListEnabled = this.getSizeList(colorVariantProductList);
+    this.sizeList.map(size => this.disableSizeButton(size));
+    this.sizeListEnabled.map(size => this.enableSizeButton(size));
+
     let isContainded = false;
-    this.sizeList.map(item => {
+    this.sizeListEnabled.map(item => {
         if(item.size_id === this.selectedSize.size_id){
           isContainded = true;
         }
@@ -164,9 +189,9 @@ export class ProductDetailComponent {
   addProductToCart(){
     let productInCart = false;
     const orderedProduct = new OrderedProduct();
-      orderedProduct.quantity = this.quantity;
-      orderedProduct.finalProduct = this.getFinalProduct();
-      this.cart.orderedProductList.map(orderedProductCART => {
+    orderedProduct.quantity = this.quantity;
+    orderedProduct.finalProduct = this.getFinalProduct(); 
+    this.cart.orderedProductList.map(orderedProductCART => {
         if(orderedProductCART.finalProduct.final_product_id == orderedProduct.finalProduct.final_product_id){
           console.log('Producto ya esta en carrito, final_product_id: ', orderedProductCART.finalProduct.final_product_id);
           this.cartStore.dispatch(findProduct({final_product_id:orderedProductCART.finalProduct.final_product_id}))
@@ -177,12 +202,13 @@ export class ProductDetailComponent {
     if(productInCart == false){
         this.sharingDataService.addProductToCartEventEmitter.emit(orderedProduct);
     }
+  
   }
 
-  verifySizeAndColor(callback: any){
+  verifySizeAndColor(){
     if(this.sizeList.length > 0  && this.colorList.length > 0){
       if(this.selectedSize.size_id && this.selectedColor.color_id){
-        callback();
+        this.addProductToCart();
       }else if(this.selectedSize.size_id == undefined && this.selectedColor.color_id == undefined){
         alert('Debe seleccionar talla y color');
       }else if(this.selectedSize.size_id == undefined ){
@@ -192,18 +218,18 @@ export class ProductDetailComponent {
       }
     }else if(this.sizeList.length > 0  && this.colorList.length == 0){
       if(this.selectedSize.size_id){
-        callback();
+        this.addProductToCart();
       }else{
         alert('Debe seleccionar talla')
       }
     }else if(this.sizeList.length == 0  && this.colorList.length > 0){
       if(this.selectedColor.color_id){
-        callback();
+        this.addProductToCart();
       }else{
         alert('Debe seleccionar color')
       }
     }else{
-      callback();
+      this.addProductToCart();
     }
   }
 
@@ -220,6 +246,24 @@ export class ProductDetailComponent {
       urlList.push(colorVariantProductImage.url);
     }
     return urlList;
+  }
+
+  enableSizeButton(size: Size){
+    let node = document.getElementById(`${size.size_id}`);
+    //node?.setAttribute('disabled', 'false');
+    node?.removeAttribute('disabled');
+    node?.removeAttribute('class');
+    if(size.size_id === this.selectedSize.size_id){
+      node?.setAttribute('class','button-selected mr-2 w-12 h-7');
+    }else{
+      node?.setAttribute('class','button mr-2 w-12 h-7');
+    }
+  }
+  disableSizeButton(size: Size){
+    let node = document.getElementById(`${size.size_id}`);
+    node?.removeAttribute('class');
+    node?.setAttribute('disabled', 'true');
+    node?.setAttribute('class','button-disabled mr-2 w-12 h-7');
   }
 
 }

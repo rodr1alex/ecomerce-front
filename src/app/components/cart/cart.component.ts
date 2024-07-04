@@ -13,54 +13,66 @@ import { SharingDataService } from '../../services/sharing-data.service';
   templateUrl: './cart.component.html'
 })
 export class CartComponent implements OnInit{
-  cartIN!: Cart;
   cantidad: number = 0;
   cart!: Cart;
-
-
+  
   constructor(  private route: ActivatedRoute,
                 private router: Router,
                 private sharingDataService: SharingDataService,
                 private cartStore: Store<{carts: any}>,){
                   this.cartStore.select('carts').subscribe(state =>{                   
-                    if (state.cart && Array.isArray(state.cart.orderedProductList)) {
-                      this.cart = { 
-                        ...state.cart, 
-                        orderedProductList: [...state.cart.orderedProductList] 
-                      };
-                    } else {
-                      // Inicializar orderedProductList si no es un array
-                      this.cart = { 
-                        ...state.cart, 
-                        orderedProductList: [] 
-                      };
-                    }
+                    this.cart = state.cart;
                   })
                 }
 
   ngOnInit(): void {
-
+    
   }
+  
 
-  decrease(orderedProduct: OrderedProduct){
+  decrease(event: Event, orderedProduct: OrderedProduct){
+    event.stopPropagation();
     if(orderedProduct.quantity > 0){
       this.sharingDataService.modifyProductQuantityCartEventEmitter.emit({diferential: -1, orderedProduct});
     }
   }
-  increase(orderedProduct: OrderedProduct){
+  increase(event: Event,orderedProduct: OrderedProduct){
+    event.stopPropagation();
     this.sharingDataService.modifyProductQuantityCartEventEmitter.emit({diferential: 1, orderedProduct});
   }
-  remove(orderedProduct: OrderedProduct){
+  remove(event: Event,orderedProduct: OrderedProduct){
+    event.stopPropagation();
     this.sharingDataService.removeProductCartEventEmitter.emit(orderedProduct);
   }
   cleanCart(){
     this.sharingDataService.cleanCartEventEmitter.emit();
   }
+  close(){
+    this.sharingDataService.closeCartEventEmitter.emit();
+     
+  }
+  detailProduct(orderedProduct: OrderedProduct){
+    //MOMENDO DE OCIO: HACER QUE PRODUCTDETAIL ESTE EN CONCORDANCIA CON CARRITO (QUE RECIBA QUANTITY Y SE PUEDA MODICICAR DESDE PRODUCTO DEATIL EL QUANTITY DEL CARRITO)
+    this.sharingDataService.closeCartEventEmitter.emit();
+    this.router.navigate(['/product_detail/', orderedProduct.finalProduct.base_product_id]);
+  }
 
+  getShortDescription(text: string): string{
+    if(text == undefined){
+      return ''
+    }
+    //SE PODRIA OPTIMIZAR A QUE EN DESKTOP SEA 45 O MAS Y MOBILE 35
+    if(text.length > 35){
+      return text.substring(0, 35) + '...'
+    }
+    return text;
+  }
+
+  formatCurrency(value: number): string {
+    if(value == undefined){
+      value = 0;
+    }
+    return value.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
+  }
+  
 }
-
-
-// let cartUpdated = {
-//   ...this.cart,
-//   orderedProductList: [...this.cart.orderedProductList] // Clonar shallow copy del array orderedProductList
-// };

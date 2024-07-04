@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, OnInit, Renderer2, SimpleChanges, ViewChild, input } from '@angular/core';
 import { LoginComponent } from '../login/login.component';
 import { CartComponent } from '../cart/cart.component';
 import { Router, RouterModule } from '@angular/router';
@@ -9,6 +9,8 @@ import { Store } from '@ngrx/store';
 import { Category } from '../../models/category.model';
 import { CategoryList } from '../../models/category-list.model';
 import { updateCart } from '../../store/cart.action';
+import { flatMap } from 'rxjs';
+import { SharingDataService } from '../../services/sharing-data.service';
 
 @Component({
   selector: 'navbar',
@@ -17,9 +19,14 @@ import { updateCart } from '../../store/cart.action';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
-export class NavbarComponent implements OnInit{
+export class NavbarComponent implements OnInit, OnChanges{
+  @Input() contentHeight!: number;
+  @Input() contentWidth!: number;
+  @ViewChild('cartNode') cartNode!: ElementRef;
+  @ViewChild('menuNode') menuNode!: ElementRef;
   cart!: Cart;
   showMenu: boolean = true;
+  showCart: boolean = false;
   showSessionHandler: boolean = false;
   username!: String;
   categoryListToFilter: Category[] = [];
@@ -37,17 +44,35 @@ export class NavbarComponent implements OnInit{
   
   
   constructor(  private authService: AuthService, 
+                private sharingDataService: SharingDataService,
+                private renderer: Renderer2,
                 private router: Router,
                 private cartStore: Store<{carts: any}>){
                   this.cartStore.select('carts').subscribe(response =>{
                     this.cart = response.cart;
                   })               
                 }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['contentHeight']) {
+      const cartNode= this.cartNode.nativeElement;
+      const menuNode = this.menuNode.nativeElement;
+      this.renderer.setStyle(cartNode, 'min-height', `${this.contentHeight}px`);
+      if(this.contentWidth < 768){
+        console.log('Deberia agregar altura al menu de categorias')
+        this.renderer.setStyle(menuNode, 'height', `${this.contentHeight}px`);
+      }
+    }
+  }
 
   ngOnInit(): void {
     this.menu();
     this.sessionHandler();
-    
+    this.closeCart();
+  }
+  closeCart(){
+    this.sharingDataService.closeCartEventEmitter.subscribe(()=>{
+      this.showHiddenCart();
+    })
   }
 
   get login() {
@@ -75,11 +100,19 @@ export class NavbarComponent implements OnInit{
   }
 
   menu(){
-    let menu= document.getElementById('menu');
+    let menu= document.getElementById('menuNode');
     this.showMenu === true ?  (this.showMenu=false,
                                 menu?.classList.remove('left-[0px]')):
                               (this.showMenu=true, 
                                 menu?.classList.add('left-[0px]'));
+    
+  }
+  showHiddenCart(){
+    let cart= document.getElementById('cartNode');
+    this.showCart === true ?  (this.showCart=false,
+                                cart?.classList.remove('left-[0px]')):
+                              (this.showCart=true, 
+                                cart?.classList.add('left-[0px]'));
     
   }
   filter(category: Category, subCategory: Category){

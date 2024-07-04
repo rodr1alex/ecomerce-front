@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { ProductListComponent } from '../product-list/product-list.component';
 import { ProductDetailComponent } from '../product-detail/product-detail.component';
@@ -28,8 +28,11 @@ import { SaleService } from '../../services/sale.service';
     CartComponent, FooterComponent, LoginComponent, UserComponent, HomeComponent],
   templateUrl: './ecomerce-app.component.html'
 })
-export class EcomerceAppComponent implements OnInit{
+export class EcomerceAppComponent implements OnInit, AfterViewInit{
+  @ViewChild('dynamicHeightContainer') dynamicHeightContainer!: ElementRef;
   cart!: Cart;
+  contentHeight: number = 0;
+  contentWidth: number = 0;
 
   constructor(
     private baseProductStore: Store<{baseProducts: any}>,
@@ -45,6 +48,28 @@ export class EcomerceAppComponent implements OnInit{
         this.cart = {...state.cart};
       })
     
+  }
+  ngAfterViewInit(): void {
+    this.adjustHeight();
+  }
+
+  @HostListener('window:load')
+  onLoad(): void {
+    this.adjustHeight();
+  }
+  @HostListener('window:click')
+  onResize(): void {
+    this.adjustHeight();
+  }
+
+  private adjustHeight(): void {
+    if (this.dynamicHeightContainer) {
+      const container = this.dynamicHeightContainer.nativeElement;
+      const height = container.offsetHeight;
+      const width = container.offsetWidth;
+      this.contentHeight = height;
+      this.contentWidth = width;
+    }
   }
 
 
