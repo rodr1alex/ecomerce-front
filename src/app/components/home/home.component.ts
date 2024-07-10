@@ -44,6 +44,7 @@ export class HomeComponent implements OnInit{
 
   
   ngOnInit(): void {
+    this.sharingDataService.showSearchBarEventEmitter.emit();
     setInterval(()=>{
       this.next();
     }, 7000);

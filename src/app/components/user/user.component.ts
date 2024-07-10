@@ -9,7 +9,7 @@ import { SharingDataService } from '../../services/sharing-data.service';
   selector: 'user',
   standalone: true,
   imports: [FormsModule, RouterModule],
-  templateUrl: './user.component.html'
+  templateUrl: './user.component.html',
 })
 export class UserComponent implements OnInit{
   user: User = new User();
@@ -23,6 +23,7 @@ export class UserComponent implements OnInit{
   constructor(private usersService: UserService, private sharingDataService: SharingDataService, private route: ActivatedRoute){}
 
   ngOnInit(): void {
+    this.sharingDataService.hiddeSearchBarEventEmitter.emit();
     this.route.paramMap.subscribe(params => {
       const id: number = +(params.get('id')|| '0');
       if(id > 0){

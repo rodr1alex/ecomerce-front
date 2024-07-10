@@ -13,7 +13,7 @@ import { SharingDataService } from '../../services/sharing-data.service';
   templateUrl: './direction-list.component.html'
 })
 export class DirectionListComponent implements OnInit{
-  direction_list!: Direction[]
+  directionList!: Direction[]
   directionNew : Direction = new Direction();
 
   constructor(private userService: UserService, private sharingDataService: SharingDataService){}
@@ -22,7 +22,7 @@ export class DirectionListComponent implements OnInit{
     this.userService.findById(1).subscribe(
       {
         next: response => {
-          this.direction_list = response.directionList;
+          this.directionList = response.directionList;
         },
         error: error =>{
           throw error;

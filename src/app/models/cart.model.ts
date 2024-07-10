@@ -8,5 +8,5 @@ export class Cart{
     items!: number;
     user!: User;
     sale!: Sale;
-    orderedProductList!: OrderedProduct[];
+    orderedProductList: OrderedProduct[] = [];
 }

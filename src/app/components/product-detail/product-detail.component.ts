@@ -69,6 +69,7 @@ export class ProductDetailComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    this.sharingDataService.showSearchBarEventEmitter.emit();
     this.route.paramMap.subscribe(params => {
       const base_product_id = +(params.get('base_product_id') || '0');
       this.baseProductStore.dispatch(find({base_product_id}));
@@ -142,13 +143,7 @@ export class ProductDetailComponent implements OnInit{
     this.selectedSize = size;
     this.sizeListEnabled.map(sizeItem => {
       let node = document.getElementById(`${sizeItem.size_id}`);
-      if(sizeItem.size_id === this.selectedSize.size_id){
-        node?.removeAttribute('class');
-        node?.setAttribute('class','button-selected mr-2 w-12 h-7 ');
-      }else{
-        node?.removeAttribute('class');
-        node?.setAttribute('class','button mr-2 w-12 h-7 ');
-      }
+      sizeItem.size_id === this.selectedSize.size_id ? node?.classList.add('button--selected'): node?.classList.remove('button--selected');
     })
     
     
@@ -250,20 +245,16 @@ export class ProductDetailComponent implements OnInit{
 
   enableSizeButton(size: Size){
     let node = document.getElementById(`${size.size_id}`);
-    //node?.setAttribute('disabled', 'false');
     node?.removeAttribute('disabled');
-    node?.removeAttribute('class');
+    node?.classList.remove('button--disabled');
     if(size.size_id === this.selectedSize.size_id){
-      node?.setAttribute('class','button-selected mr-2 w-12 h-7');
-    }else{
-      node?.setAttribute('class','button mr-2 w-12 h-7');
-    }
+        node?.classList.add('button--selected');
+      }
   }
   disableSizeButton(size: Size){
     let node = document.getElementById(`${size.size_id}`);
-    node?.removeAttribute('class');
+    node?.classList.add('button--disabled');
     node?.setAttribute('disabled', 'true');
-    node?.setAttribute('class','button-disabled mr-2 w-12 h-7');
   }
 
 }

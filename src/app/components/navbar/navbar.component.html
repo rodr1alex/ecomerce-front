@@ -1,110 +1,123 @@
-<div class="flex h-20 bg-white relative shadow md:h-16">
+<div class=" relative  nm-flat-white-sm z-10">
+    <div class="flex h-36  md:h-16 md:mx-auto limit-content" id="navbarContent">
 
-    <div class="w-1/2 flex justify-start items-center pl-6 md:w-1/12">
-        <!-- Logo -->
-        <a class="flex" href="">
-            <img class="w-10" src="../../../assets/img/main-logo.png" alt="">
-            <p class="movile-hidden mr-2">Empresa</p>
-        </a>
-    </div>
-
-    <div class="absolute top-24  w-full h-full md:static md:flex md:items-center md:w-3/12">
-        <!-- Buscador -->
-        <form class="mx-auto w-4/5 h-10 flex justify-center items-center input md:w-11/12" action="">
-            <input class="w-11/12 outline-none bg-transparent"  type="text">
-            <button class="w-1/12">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-        </form>
-    </div>
+        <div class="w-1/2 flex justify-start h-20 items-center pl-6 md:w-1/12 md:h-auto" id="logoBar">
+            <!-- Logo -->
+            <a class="flex" href="" >
+                <img class="w-10" src="../../../assets/img/main-logo.png"  alt="">
+                <p class="movile-hidden mr-2">Empresa</p>
+            </a>
+        </div>
     
-    <div id="menuNode" #menuNode class="z-10 absolute left-[-1000px] top-20 transition-all w-full md:static md:w-5/12 md:h-max hiddenMenu">
-         <!-- Categorias -->
-        <p class="text-center font-bold md:hidden my-2">CATEGORIAS</p>
-        <ul class="md:flex md:h-16 md:justify-center categoryContainer">
-            <li *ngFor="let category of categoryList; let i = index" class="category-item pl-4 shadow md:shadow-none py-2 md:h-16  md:hover:bg-gray-100 md:flex md:items-center md:px-4">
-                <p class="font-bold " (click)="showSubCategory(category.categoryName.name)">{{category.categoryName.name}}</p>
-                <ul id="{{category.categoryName.name}}" class="mobile-hidden subcategory-container md:flex md:w-full md:h-0 md:opacity-0 md:-z-10 md:justify-center md:items-center md:absolute md:top-16 md:left-0 nm-flat-white-lg">
-                    <li class="subcategory-item" *ngFor="let subCategory of category.subCategoryList">
-                        <a (click)="menu()" (click)="filter(category.categoryName, subCategory)" class="md:font-bold mx-4 cursor-pointer md:hover:text-blue-300">
-                            <!-- [routerLink]="['/product_list', 0]" [state]="{categoryListToFilter}"  -->
-                            {{subCategory.name}}
-                        </a>
-                    </li>  
-                </ul>
-            </li>
-        </ul>
-    </div>
-
-    <div id="cartNode" #cartNode class="z-10 absolute left-[-1000px] top-20 transition-all p-2 w-full hiddenMenu py-2 md:hidden">
-        <!-- carrito -->
-        <cart></cart>
-    </div>
+        <div class="absolute top-24  w-full h-16 md:static md:flex md:items-center md:w-3/12 " id="searchBar">
+            <!-- Buscador -->
+            <form class="nm-inset-gray-100 rounded-full mx-auto w-4/5 h-10 flex justify-center items-center md:w-11/12" action="">
+                <input class="w-full pl-3 bg-transparent outline-none"  type="text">
+                <button class="w-1/12">
+                    <i class="opacity-40 fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+        </div>
+        
+        <div id="menuNode" #menuNode class="z-10 absolute left-[-1000px] top-20 transition-all w-full md:static md:w-5/12 md:h-max hiddenMenu">
+             <!-- Categorias -->
+            <p class="text-center font-bold md:hidden my-2">CATEGORIAS</p>
+            <ul class="md:flex md:h-16 md:justify-center categoryContainer">
+                <li *ngFor="let category of categoryList; let i = index" class="category-item pl-4 shadow md:shadow-none py-2 md:h-16  md:hover:bg-gray-100 md:flex md:items-center md:px-4">
+                    <p class="font-bold " (click)="showSubCategory(category.categoryName.name)">{{category.categoryName.name}}</p>
+                    <ul id="{{category.categoryName.name}}" class="mobile-hidden subcategory-container md:flex md:w-screen md:h-0 md:opacity-0 md:-z-10 md:justify-center md:items-center md:absolute md:top-16 md:left-0 nm-flat-white-lg">
+                        <li class="subcategory-item" *ngFor="let subCategory of category.subCategoryList">
+                            @if(showAdminPanel){
+                                <a  class="md:font-bold mx-4 cursor-pointer text-blue-700 md:hover:text-blue-300" (click)="adminPanelNavigate(category.categoryName, subCategory)">
+                                    {{subCategory.name}}
+                                </a>
+                            }@else {
+                                <a (click)="menu()" (click)="filter(category.categoryName, subCategory)" class="md:font-bold mx-4 cursor-pointer  md:hover:text-blue-300">
+                                    {{subCategory.name}}
+                                </a>
+                            }
+                        </li>  
+                    </ul>
+                </li>
+            </ul>
+        </div>
     
-    <div class="w-1/2 flex justify-between items-center pr-6 md:w-3/12">
-        <div class="user relative md:w-1/2 md:flex md:items-center md:hover:bg-gray-100  md:h-16">
-            <!-- Usuario -->
-            @if(login.isAuth){
-                <a (click)="sessionHandler()"><i class="fa-regular fa-user text-2xl"></i></a>
-            }@else {
-                <a [routerLink]="['/login']"><i class="fa-regular fa-user text-2xl"></i></a>
-            }
-            <div class="card absolute flex flex-col justify-center items-center w-48 h-32 z-20 left-[-84px] top-12 md:hidden" id="sessionHandler">
-                <p>Bienvenido {{username}} </p>
-                <button class="button my-2" (click)="handlerLogout()" (click)="sessionHandler()">Cerrar sesion</button>
-                <button class="button my-2" [routerLink]="['/update_user',1]" (click)="sessionHandler()">Actualizar datos</button>
-            </div>
-
-            @if(login.isAuth){
-                <div class="absolute top-6 md:top-10  left-4 h-4 w-4 nm-inset-green-50-xs rounded-full flex justify-center items-center">
-                    <i class="fa-solid fa-check icon-check"></i>
-                 </div> 
-             }@else {
-                <div class="absolute top-6 md:top-10  left-4 h-3 w-3 nm-inset-red-100 rounded-full flex justify-center items-center">
-                    <p class=" icon-check">x</p>
-                 </div>
-             }
-            <div class="mobile-hidden ml-2">
-                <p>{{(login.isAuth)? ('Bienvenido ' + login.user.username): 'No ha iniciado sesion'}}</p>
-            </div>
-            <div class="user-modal absolute top-16 h-0 flex justify-center">
+        <div id="cartNode" #cartNode class="z-10 absolute left-[-1000px] top-20 transition-all p-2 w-full hiddenMenu py-2 md:hidden">
+            <!-- carrito -->
+            <cart></cart>
+        </div>
+        
+        <div class="w-1/2 flex justify-between items-center h-20 pr-6 md:w-3/12 md:h-auto" id="userBar">
+            <div class="user relative md:w-1/2 md:flex md:items-center md:hover:bg-gray-100  md:h-16">
+                <!-- Usuario -->
                 @if(login.isAuth){
-                    <div class="isLogged hidden card  flex-col justify-center items-center w-4/5 h-48">
-                        <button class="button my-4" (click)="handlerLogout()">Cerrar sesion</button>
-                        <button class="button my-4"[routerLink]="['/update_user',1]" >Actualizar datos</button>
+                    <a (click)="sessionHandler()"><i class="fa-regular fa-user text-2xl"></i></a>
+                }@else {
+                    <a (click)="navigateLogin()"><i class="fa-regular fa-user text-2xl"></i></a>
+                }
+                <div class="card absolute flex flex-col justify-center items-center w-48 h-32 z-20 left-[-84px] top-12 md:hidden" id="sessionHandler">
+                    <p>Bienvenido {{username}} </p>
+                    <button class="button my-2" (click)="handlerLogout()" (click)="sessionHandler()">Cerrar sesion</button>
+                    <button class="button my-2" [routerLink]="['/update_user',1]" (click)="sessionHandler()">Actualizar datos</button>
+                </div>
+    
+                @if(login.isAuth){
+                    <div class="absolute top-6 md:top-10  left-4 h-4 w-4 nm-inset-green-50-xs rounded-full flex justify-center items-center">
+                        <i class="fa-solid fa-check icon-check"></i>
+                     </div> 
+                 }@else {
+                    <div class="absolute top-6 md:top-10  left-4 h-3 w-3 nm-inset-red-100 rounded-full flex justify-center items-center">
+                        <p class=" icon-check">x</p>
+                     </div>
+                 }
+                <div class="mobile-hidden ml-2">
+                    <p>{{(login.isAuth)? ('Bienvenido ' + login.user.username): 'No ha iniciado sesion'}}</p>
+                </div>
+                <div class="user-modal absolute top-16 h-0 flex justify-center">
+                    @if(login.isAuth){
+                        <div class="isLogged hidden card  flex-col justify-center items-center w-4/5 h-48">
+                            <button class="button my-4" (click)="handlerLogout()">Cerrar sesion</button>
+                            <button class="button my-4"[routerLink]="['/update_user',1]" >Actualizar datos</button>
+                            @if(admin){
+                                <button class="button my-4" (click)="adminPanel()">Panel de administracion</button>
+                            }
+                        </div>
+                    }@else {
+                        <div class="login hidden">
+                            <login></login>
+                        </div>   
+                    }
+                </div>
+            </div>
+            @if (!showAdminPanel) {
+                <div class="cart relative  md:w-1/2 md:flex md:items-center md:hover:bg-gray-100 md:h-16">
+                    <!-- Carrito -->
+                    <a (click)="showHiddenCart()"><i class="fa-solid fa-cart-shopping text-2xl"></i></a>
+                    <div class="absolute top-6 md:top-10 left-5 h-4 w-4 nm-inset-blue-50-xs rounded-full flex justify-center items-center">
+                        @if(cart.items){
+                            <p class="icon-check">{{cart.items}}</p>
+                        }@else {
+                            <p class="icon-check">0</p>
+                        }
+                        
+                     </div> 
+                    <div class="mobile-hidden ml-2">
+                        <p>Total: {{cart.total}}</p>
                     </div>
-                }@else {
-                    <div class="login hidden">
-                        <login></login>
-                    </div>   
-                }
+                    <div class="cart-modal absolute top-16  h-0 hidden">
+                        <cart></cart>
+                    </div>
+                </div>
+            }
+            
+            <div class="md:hidden">
+                <!-- menu hamburgesa -->
+                <i class="fa-solid fa-bars text-2xl" (click)="menu()"></i>
             </div>
-        </div>
-        <div class="cart relative  md:w-1/2 md:flex md:items-center md:hover:bg-gray-100 md:h-16">
-            <!-- Carrito -->
-            <a (click)="showHiddenCart()"><i class="fa-solid fa-cart-shopping text-2xl"></i></a>
-            <div class="absolute top-6 md:top-10 left-5 h-4 w-4 nm-inset-blue-50-xs rounded-full flex justify-center items-center">
-                @if(cart.items){
-                    <p class="icon-check">{{cart.items}}</p>
-                }@else {
-                    <p class="icon-check">0</p>
-                }
-                
-             </div> 
-            <div class="mobile-hidden ml-2">
-                <p>Total: {{cart.total}}</p>
-            </div>
-            <div class="cart-modal absolute top-16  h-0 hidden">
-                <cart></cart>
-            </div>
-        </div>
-        <div class="md:hidden">
-            <!-- menu hamburgesa -->
-            <i class="fa-solid fa-bars text-2xl" (click)="menu()"></i>
         </div>
     </div>
+    
 </div>
-
 
 
 

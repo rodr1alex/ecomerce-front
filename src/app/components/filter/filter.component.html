@@ -1,18 +1,27 @@
-<div class="flex justify-between px-4 mb-4 w-full min-h-8">
-    <div class="button w-2/5 text-center">
-       <p (click)="showHiddenFilter()">Filtrar por</p>
-       <select (change)="onChange($event)" class="button w-11/12 text-center pr-2 md:w-44 md:ml-2 hidden"  name="orderBy" id="orderBy" [(ngModel)]="brandSelected">
+<div class="flex justify-between px-4 mb-4 w-full md:w-96 min-h-8 relative">
+
+    <div 
+        class="text-sm font-bold p-1 px-4 rounded-full nm-flat-gray-100 transition duration-100 
+        transform hover:nm-flat-gray-50 w-2/5 text-center absolute left-0  md:w-2/5" 
+        id="filterNode"
+        (click)="clickInFilter = true">
+       <p class="" (click)="clickFilterMobile()">Filtrar por</p>
+       <select (change)="onChange($event)" class="button w-11/12 text-center pr-2 hidden mt-2"  name="orderBy" id="orderBy" [(ngModel)]="brandSelected">
             <option value="" disabled selected>Marca</option>
             <option *ngFor="let brand of brandList" [value]="brand.brand_id">
                 {{brand.name}}
             </option>
         </select>
+        
+        <!-- //SE PUEDEN AGREGAR MAS FILTROS, IMPLEMENTAR A FUTURO    -->
     </div>
     
-    <select class="button w-2/5 text-center pr-2 md:w-44 md:ml-2 h-8"  name="orderBy" id="orderBy" [(ngModel)]="orderBySelected">
+    <!-- BUSCAR LA FORMA DE MEJORAR LOS ESTILOS DE LAS OPCIONES CUANDO ES DESPLEGADO -->
+    <select class="button w-2/5 text-center pr-2  h-8 absolute right-0"  name="orderBy" id="orderBy" [(ngModel)]="orderBySelected">
         <option value="" disabled selected>Ordenar por</option>
         <option *ngFor="let orderBy of orderByList" [value]="orderBy">{{orderBy}}</option>
     </select>
+
 </div>
 
 

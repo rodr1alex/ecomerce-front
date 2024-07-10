@@ -1,4 +1,3 @@
-/* You can add global styles to this file, and also import other style files */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -20,37 +19,122 @@ html, body {
 }
 
 .card{
-    @apply rounded-xl  text-gray-700 nm-flat-white overflow-hidden;
+    @apply rounded-xl text-gray-700 nm-flat-white overflow-hidden;
 }
-.input{
-    @apply nm-inset-gray-100  rounded-full pl-3 outline-none;
+.card--gray{
+    @apply text-gray-800 nm-flat-slate-100
+}
+.card--selected{
+    @apply  nm-flat-slate-200;
 }
 .button{
-    @apply text-sm font-bold p-1 px-4 rounded-full nm-flat-gray-100   transition duration-100 transform active:nm-flat-gray-500 hover:nm-flat-gray-50;
+    @apply text-sm text-center font-bold p-1 rounded-full nm-flat-gray-100 transition duration-100 transform active:nm-flat-gray-500 md:hover:nm-flat-gray-200;
 }
-.button-disabled{
-    @apply text-sm font-bold text-slate-300 p-1 px-4 rounded-full nm-flat-gray-100-xs transition duration-100 transform ;
+.button--cancel{
+    @apply text-red-400;
 }
-.button-selected{
-    @apply text-sm font-bold p-1 px-4 rounded-full nm-flat-gray-300-lg transition duration-100 transform;
+.button--danger{
+    @apply text-red-400 md:hover:nm-flat-red-50;
+}
+.button--disabled{
+    @apply text-slate-300 nm-flat-gray-100-xs active:nm-flat-gray-100-xs md:hover:nm-flat-gray-100-xs;
+}
+.button--selected{
+    @apply nm-flat-gray-300-lg active:nm-flat-gray-300-lg md:hover:nm-flat-gray-300-lg;
 }
 .cart-item{
-    @apply nm-convex-gray-50 rounded-xl overflow-hidden text-xs hover:nm-convex-slate-200-lg;
+    @apply nm-convex-gray-50 rounded-xl overflow-hidden text-xs md:hover:nm-convex-slate-200-lg;
 }
 .cart-cuantity{
-    @apply text-sm font-bold p-1 rounded-full nm-convex-gray-50 hover:nm-convex-slate-300-xl ;
+    @apply text-sm  font-bold p-1 rounded-full nm-convex-gray-50 md:hover:nm-convex-gray-50-lg;
+}
+.limit-content{
+    max-width: 2000px;
+}
+.table{
+    @apply text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400;
+}
+.table-thead{
+    @apply text-xs text-gray-700 uppercase nm-flat-blue-200 dark:bg-gray-700 dark:text-gray-400;
+}
+.table-tr{
+    @apply bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600;
+}
+.table-th{
+    @apply px-6 py-3;
+}
+.table-td{
+    @apply px-6 py-4;
 }
 
+.input-group{
+    @apply nm-inset-gray-100  rounded-full outline-none;
+    position: relative;
+    /* width: 100%; */
+    height: 40px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 18px;
+}
+.input-group--soft{
+    @apply nm-inset-gray-50;
+}
+.input-group--text-area{
+    @apply rounded-xl;
+    /* width: 32%;
+    height: 140px; */
+}
+.input{
+    background: transparent;
+    outline: none;
+    width: 100%;
+    position: relative;
+    top: 5px;
+}
+.input--text-area{
+    height: 120px;
+}
+.placeholder{
+    position: absolute;
+    top: 10px;
+    left: 18px;
+    transition: 0.3s;
+    pointer-events: none;
+    font-weight: 450;
+    @apply text-slate-400;
+}
+.input-error{
+    position: absolute;
+    top: 10px;
+    right: 18px;
+    @apply text-red-400 font-semibold;
+}
+.input-error--soft{
+    position: absolute;
+    top: 10px;
+    right: 18px;
+    @apply text-blue-400 font-semibold;
+}
+.input:focus + .placeholder{
+    top: 0px;
+    font-size: 12px;
+    @apply text-slate-600 font-semibold;
+}
+.input:valid + .placeholder{
+    top: 0px;
+    font-size: 12px;
+    @apply text-slate-600 font-semibold;
+}
 .carousel {
     height: 350px;
-}
-  
+} 
 .carousel-inner {
     position: relative;
     width: 100%;
     height: 100%;
-}
-  
+} 
 .carousel-item {
     position: absolute;
     width: 100%;
@@ -64,15 +148,13 @@ html, body {
 .img-portrait{
     max-width: 100%;
     object-fit: cover;
-}
-  
+} 
 .prev, .next {
     cursor: pointer;
     font-size: 24px;
     font-weight: bold;
     user-select: none;
 }
-
 .slider-container{
     display: flex;
     overflow-x: scroll;
@@ -82,16 +164,12 @@ html, body {
 }
 
 @media (min-width: 768px) {
-    .button{
-        @apply hover:bg-gray-200;
-    }
     .carousel {
         height: 600px;
     }
     .img-detail{
         min-height: 600px;
-    }
-      
+    }     
     .product-list{
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr;

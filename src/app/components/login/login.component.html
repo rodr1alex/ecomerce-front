@@ -1,20 +1,28 @@
-    <form class="card flex flex-col items-center justify-center h-96 w-4/5 mx-auto md:w-96" (ngSubmit)="onSubmit()" #userForm="ngForm">
+    <form class="card mt-20 flex flex-col items-center justify-center h-96 w-4/5 mx-auto md:w-96 md:mt-0" (ngSubmit)="onSubmit()" #userForm="ngForm">
         <div class="flex flex-col items-center w-4/5 mb-12 md:w-10/12">
-            <input 
-            class="input w-full mb-6 h-8"
-            placeholder="Usuario" 
-            name="username" 
-            [(ngModel)]="user.username"  
-            #username="ngModel"
-            >
-
-            <input 
-            class="input w-full mb-6 h-8"
-            placeholder="Contraseña" 
-            name="password" 
-            [(ngModel)]="user.password"  
-            #password="ngModel"
-            >
+            <div class="input-group">
+                <input 
+                class="input" 
+                name="username" 
+                [(ngModel)]="user.username"  
+                #username="ngModel"
+                required
+                >
+                <label for="" class="placeholder">Usuario</label>
+            </div>
+            
+            <div class="input-group">
+                <input 
+                type="password"
+                class="input"
+                name="password" 
+                [(ngModel)]="user.password"  
+                #password="ngModel"
+                required
+                >
+                <label for="" class="placeholder">Contraseña</label>
+            </div>
+            
 
         </div>
 

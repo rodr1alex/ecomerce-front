@@ -31,7 +31,7 @@ export class PaginatorComponent implements OnInit{
       })
   }
   ngOnInit(): void {
-    
+    console.log('se cargo compoenente pagunator')
   }
 
   setPageList(){

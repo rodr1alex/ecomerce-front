@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { User } from '../../models/user.model';
 import { SharingDataService } from '../../services/sharing-data.service';
@@ -10,11 +10,15 @@ import { RouterModule } from '@angular/router';
   imports: [FormsModule, RouterModule],
   templateUrl: './login.component.html'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit{
   user: User;
 
   constructor(private sharingData: SharingDataService) {
     this.user = new User();
+  }
+  ngOnInit(): void {
+    //this.sharingData.hiddeSearchBarEventEmitter.emit();
+    console.log('se cargo componente login')
   }
 
   onSubmit() {

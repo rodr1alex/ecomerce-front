@@ -20,6 +20,7 @@ import { CartService } from '../../services/cart.service';
 import { putCart, updateCart } from '../../store/cart.action';
 import { OrderedProduct } from '../../models/ordered-product.model';
 import { SaleService } from '../../services/sale.service';
+import { Direction } from '../../models/direction.model';
 
 @Component({
   selector: 'ecomerce-app',
@@ -60,6 +61,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
   @HostListener('window:click')
   onResize(): void {
     this.adjustHeight();
+    this.sharingDataService.clickrEventEmitter.emit({width:this.contentWidth, height:this.contentHeight});
   }
 
   private adjustHeight(): void {
@@ -69,11 +71,13 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
       const width = container.offsetWidth;
       this.contentHeight = height;
       this.contentWidth = width;
+      console.log(`Ancho: ${this.contentWidth}, alto ${this.contentHeight}`)
     }
   }
 
 
   ngOnInit(): void {
+    this.adjustHeight();
     this.handlerLogin();
     this.pageProductsEvent();
     this.addUser();
@@ -93,8 +97,8 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
   }
 
   payCart(){
-    this.sharingDataService.payCartEventEmitter.subscribe(()=>{
-      this.saleService.createSale(this.cart.cart_id).subscribe({
+    this.sharingDataService.payCartEventEmitter.subscribe((direction: Direction)=>{
+      this.saleService.createSale(this.cart.cart_id, direction).subscribe({
         next: response =>{
           alert('Venta creada con exito:');
           this.cartVerify(1);
@@ -196,7 +200,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
           };
           this.authService.token = token;
           this.authService.user = login;
-          console.log("Inicio de sesion exitoso!", user);
+          console.log("Inicio de sesion exitoso!", login);
           //verificacion de carrito de compras
           this.cartVerify(id);
           this.router.navigate(['/home']);

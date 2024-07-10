@@ -31,7 +31,7 @@
              class="w-3 h-3  rounded-full mx-2 hover:cursor-pointer" [class.nm-flat-blue-100]="i === currentIndex" [class.nm-flat-gray-100]="i != currentIndex" (click)="hola(i)"></div>  
         </div>    
     </div>
-    <div class="px-6 md:w-11/12 md:mx-auto">
+    <div class="px-6 md:w-11/12 md:mx-auto limit-content">
         <p class="text-center mb-2 md:text-left md:font-bold">Productos destacados</p>
         <div class="product-list">
           @for (baseProduct of baseProductList; track $index) {

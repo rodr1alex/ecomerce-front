@@ -14,7 +14,7 @@ import { SharingDataService } from '../../services/sharing-data.service';
 })
 export class CartComponent implements OnInit{
   cantidad: number = 0;
-  cart!: Cart;
+  cart: Cart = new Cart();
   
   constructor(  private route: ActivatedRoute,
                 private router: Router,

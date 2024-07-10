@@ -2,7 +2,7 @@ import { Cart } from "./cart.model";
 import { Direction } from "./direction.model";
 
 export class User {
-    id!: number;
+    id: number = 0;
     name!: string;
     lastname!: string;
     email!: string;

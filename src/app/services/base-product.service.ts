@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Category } from '../models/category.model';
+import { BaseProduct } from '../models/base-product.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,14 @@ export class BaseProductService {
   private user_id : number = 1;
 
   constructor(private http: HttpClient) { }
+
+  create(baseProduct: BaseProduct):Observable<BaseProduct>{
+    return this.http.post<BaseProduct>(`${this.url}/create`, baseProduct); 
+  }
+
+  findById(base_product_id: number): Observable<any> {
+    return this.http.get<any[]>(`${this.url}/${base_product_id}`);
+  }
 
   findAllPageable(page: number): Observable<any> {
     return this.http.get<any[]>(`${this.url}/featured_products/page/${page}`);

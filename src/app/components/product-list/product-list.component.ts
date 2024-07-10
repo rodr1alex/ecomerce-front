@@ -20,7 +20,7 @@ import { Brand } from '../../models/brand.model';
   templateUrl: './product-list.component.html'
 })
 export class ProductListComponent implements OnInit{
-  categoryName: string = 'Zapatos de trekking'
+  categoryName: string = ''; //IMPLEMENTAR SI O SI COMO OBTENER EL LISTADO DE LAS CATEGORIAS, LO DEBE ENTREGAR EL NAVBAR
   baseProductList!: BaseProduct[];
   paginator!: any;
   baseProduct!: BaseProduct;
@@ -43,19 +43,10 @@ export class ProductListComponent implements OnInit{
   }
 
   ngOnInit(): void {
-
-    // this.categoryListToFilter = history.state.categoryListToFilter;
-    // console.log('Recibido categoryListToFilter: ', this.categoryListToFilter);
-    
-
     this.route.paramMap.subscribe(params => {
       const page: number = +(params.get('page') || '0');
       const category_id: number = +(params.get('category') || '0');
       const subcategory_id: number = +(params.get('subcategory') || '0');
-      console.log('Parametros:')
-      console.log('Page:', page)
-      console.log('Category:', category_id)
-      console.log('Subcategory:', subcategory_id);
       this.categoryListToFilter = [];
       this.categoryListToFilter = [new Category(category_id, ''), new Category(subcategory_id, '')];
       this.baseProductService.getBrandList(this.categoryListToFilter).subscribe({
@@ -65,7 +56,6 @@ export class ProductListComponent implements OnInit{
       })
       this.baseProductService.filterByCategoryList(page, this.categoryListToFilter).subscribe({
         next: pageable =>{
-          console.log('Filtrado por: ', this.categoryListToFilter);
           this.baseProductList = pageable.content as BaseProduct[];
           this.paginator = pageable;
           this.sharingDataService.pageProductEventEmitter.emit({baseProductList: this.baseProductList, paginator: this.paginator})
@@ -75,10 +65,6 @@ export class ProductListComponent implements OnInit{
         }
       })
     });
-
-    
-
-    
   }
 
   

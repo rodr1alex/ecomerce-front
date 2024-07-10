@@ -19,8 +19,12 @@ export class SharingDataService {
   private _modifyProductQuantityCartEventEmitter: EventEmitter<any> = new EventEmitter();
   private _removeProductCartEventEmitter: EventEmitter<OrderedProduct> = new EventEmitter();
   private _cleanCartEventEmitter: EventEmitter<void> = new EventEmitter(); 
-  private _payCartEventEmitter: EventEmitter<void> = new EventEmitter(); 
+  private _payCartEventEmitter: EventEmitter<Direction> = new EventEmitter(); 
   private _closeCartEventEmitter: EventEmitter<void> = new EventEmitter(); 
+  private _showSearchBarEventEmitter: EventEmitter<void> = new EventEmitter(); 
+  private _hiddeSearchBarEventEmitter: EventEmitter<void> = new EventEmitter(); 
+  private _clickrEventEmitter: EventEmitter<any> = new EventEmitter(); 
+
   
   constructor() { }
 
@@ -62,6 +66,15 @@ export class SharingDataService {
   }
   get closeCartEventEmitter(){
     return this._closeCartEventEmitter;
+  }
+  get showSearchBarEventEmitter(){
+    return this._showSearchBarEventEmitter;
+  }
+  get hiddeSearchBarEventEmitter(){
+    return this._hiddeSearchBarEventEmitter;
+  }
+  get clickrEventEmitter(){
+    return this._clickrEventEmitter;
   }
   
 }

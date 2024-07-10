@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -17,10 +17,13 @@ import { Brand } from '../../models/brand.model';
   templateUrl: './filter.component.html'
 })
 
-export class FilterComponent  {
+export class FilterComponent implements OnInit {
   @Input() brandList!: Brand[];
+  @Input() categoryList!: Category[];
   baseProductList!: BaseProduct[];
   paginator!: any;
+  clickInFilter: boolean = false;
+  clickInFilterHeader: boolean = false;
 
   orderByList: String[]= [
     'Nombre A-Z',
@@ -31,10 +34,6 @@ export class FilterComponent  {
   
   orderBySelected: String = '';
   brandSelected: String = '';
-  showFilter: boolean = false;
-  category1: Category = new Category(1,'asfd');
-  category2: Category = new Category(2,'afds');
-  categoryList: Category[] = [];
 
   constructor(
     private baseProductStore: Store<{baseProducts: any}>,
@@ -48,22 +47,14 @@ export class FilterComponent  {
         this.paginator = state.paginator;
       })
   }
+  ngOnInit(): void {
+    this.clickHanddler();
+  }
   onChange(event: Event){
     this.filter();
   }
 
-  showHiddenFilter(){
-    const node = document.getElementById('orderBy');
-    this.showFilter == false? 
-    (this.showFilter = true, node?.classList.remove('hidden')) : 
-    (this.showFilter = false, node?.classList.add('hidden'));
-  }
-
   filter(){
-    this.category1.category_id = 6;
-    this.category1.category_id = 4;
-    this.categoryList.push(this.category1);
-    this.categoryList.push(this.category1);
     this.baseProductService.filterByBrand(0,+this.brandSelected,this.categoryList).subscribe({
       next: pageable => {
         this.baseProductList = pageable.content as BaseProduct[];
@@ -71,6 +62,54 @@ export class FilterComponent  {
         this.sharingDataService.pageProductEventEmitter.emit({baseProductList: this.baseProductList, paginator: this.paginator})
       }
     })
+  }
+
+  clickHanddler(){
+    this.sharingDataService.clickrEventEmitter.subscribe(({width, height})=>{
+      console.log('Info: ', width, height);
+      if(width > 768){
+        if(this.clickInFilter){
+          this.showFilter();
+          this.clickInFilter = false
+        }else{
+          this.hiddeFilter();
+        }
+      }
+    })
+  }
+
+  clickFilterMobile(){
+    this.clickInFilterHeader?  (this.showFilter(), this.clickInFilterHeader = false):(this.hiddeFilter(), this.clickInFilterHeader = true);
+  }
+ 
+  showFilter(){
+    const filterNode = document.getElementById('filterNode');
+    const orderByNode = document.getElementById('orderBy');
+    orderByNode?.classList.remove('hidden')
+    filterNode?.classList.add('h-48')
+    filterNode?.classList.remove('rounded-full')
+    filterNode?.classList.add('rounded-xl')
+    filterNode?.classList.remove('w-2/5')
+    filterNode?.classList.add('w-full')
+    filterNode?.classList.add('z-10')
+  }
+  hiddeFilter(){
+    const filterNode = document.getElementById('filterNode');
+    const orderByNode = document.getElementById('orderBy');
+    orderByNode?.classList.add('hidden'),
+    filterNode?.classList.remove('h-48'),
+    filterNode?.classList.add('rounded-full'),
+    filterNode?.classList.remove('rounded-xl')
+    filterNode?.classList.add('w-2/5')
+    filterNode?.classList.remove('w-full')
+    filterNode?.classList.remove('z-10')
+  }
+
+  clickOrderBy(){
+    const orderByNode = document.getElementById('orderBy');
+    orderByNode?.classList.add('h-48')
+    orderByNode?.classList.remove('rounded-full')
+    orderByNode?.classList.add('rounded-xl')
   }
 
 }

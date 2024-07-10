@@ -30,6 +30,7 @@ export class NavbarComponent implements OnInit, OnChanges{
   showSessionHandler: boolean = false;
   username!: String;
   categoryListToFilter: Category[] = [];
+  showAdminPanel: boolean = false;
   
   categoryList: CategoryList[] = [
     {
@@ -52,23 +53,80 @@ export class NavbarComponent implements OnInit, OnChanges{
                     this.cart = response.cart;
                   })               
                 }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['contentHeight']) {
       const cartNode= this.cartNode.nativeElement;
       const menuNode = this.menuNode.nativeElement;
       this.renderer.setStyle(cartNode, 'min-height', `${this.contentHeight}px`);
       if(this.contentWidth < 768){
-        console.log('Deberia agregar altura al menu de categorias')
         this.renderer.setStyle(menuNode, 'height', `${this.contentHeight}px`);
       }
     }
   }
-
   ngOnInit(): void {
     this.menu();
     this.sessionHandler();
     this.closeCart();
+    this.sharingDataService.showSearchBarEventEmitter.subscribe(()=> this.showSearhBar())
+    this.sharingDataService.hiddeSearchBarEventEmitter.subscribe(()=>this.hiddenSearchBar())
   }
+
+  adminPanel(){
+    this.showAdminPanel = true;
+    this.categoryList = [];
+    this.categoryList = [
+      {
+        categoryName: new Category(0,'Administracion de productos'),
+        subCategoryList: [new Category(0,'Ver productos'),new Category(1,'Agregar productos')]
+      },
+      {
+        categoryName: new Category(1,'Administracion de usuarios'),
+        subCategoryList: [new Category(0,'Ver usuarios'),new Category(1,'Modificar usuarios'),new Category(2,'Crear administrador')]
+      },
+      {
+        categoryName: new Category(2,'Administracion de ventas'),
+        subCategoryList: [new Category(0,'Ver ventas'),new Category(1,'Modificar ventas')]
+      },
+    ]
+  }
+
+  adminPanelNavigate(category: Category, subCategory: Category){
+    if(category.category_id == 0 && subCategory.category_id == 1){
+      this.router.navigate([`/admin_panel/${category.category_id}/${subCategory.category_id}`, 0]);
+    }else{
+      this.router.navigate([`/admin_panel/${category.category_id}/${subCategory.category_id}`]);
+    }
+  }
+
+  
+  showSearhBar(){
+    let navbarContentNode = document.getElementById('navbarContent');
+    let searchBarNode = document.getElementById('searchBar');
+    let userBarMpde = document.getElementById('userBar');
+    let logoBarNode = document.getElementById('logoBar');
+    navbarContentNode?.classList.remove('h-20');
+    navbarContentNode?.classList.add('h-36');
+    logoBarNode?.classList.add('h-20');
+    userBarMpde?.classList.add('h-20');
+    searchBarNode?.classList.remove('hidden');
+  }
+  hiddenSearchBar(){
+    let navbarContentNode = document.getElementById('navbarContent');
+    let searchBarNode = document.getElementById('searchBar');
+    let userBarMpde = document.getElementById('userBar');
+    let logoBarNode = document.getElementById('logoBar');
+
+    navbarContentNode?.classList.remove('h-36');
+    navbarContentNode?.classList.add('h-20');
+    logoBarNode?.classList.remove('h-20');
+    userBarMpde?.classList.remove('h-20');
+    searchBarNode?.classList.add('hidden');
+
+  }
+
+  
+
   closeCart(){
     this.sharingDataService.closeCartEventEmitter.subscribe(()=>{
       this.showHiddenCart();
@@ -100,6 +158,9 @@ export class NavbarComponent implements OnInit, OnChanges{
   }
 
   menu(){
+    if(this.showCart == true){
+      this.showHiddenCart();
+    }
     let menu= document.getElementById('menuNode');
     this.showMenu === true ?  (this.showMenu=false,
                                 menu?.classList.remove('left-[0px]')):
@@ -108,6 +169,9 @@ export class NavbarComponent implements OnInit, OnChanges{
     
   }
   showHiddenCart(){
+    if(this.showMenu == true){
+      this.menu();
+    }
     let cart= document.getElementById('cartNode');
     this.showCart === true ?  (this.showCart=false,
                                 cart?.classList.remove('left-[0px]')):
@@ -127,5 +191,15 @@ export class NavbarComponent implements OnInit, OnChanges{
     let sessionHandler = document.getElementById('sessionHandler');
     this.showSessionHandler === false ?  (this.showSessionHandler = true, sessionHandler?.classList.add('hidden')):
                                         (this.showSessionHandler = false, sessionHandler?.classList.remove('hidden'))
+  }
+  navigateLogin(){
+    if(this.showCart == true){
+      this.showHiddenCart();
+    }
+    if(this.showMenu == true){
+      this.menu();
+    }
+    this.router.navigate(['/login']);
+    this.hiddenSearchBar();
   }
 }

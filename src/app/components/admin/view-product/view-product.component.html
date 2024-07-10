@@ -1,0 +1,46 @@
+<div class="w-11/12 mx-auto flex justify-between mb-10">
+    
+    <div class="card  w-2/12 h-96 px-4  py-6 flex flex-col justify-between">
+        <p class="text-center">Filtrar por</p>
+        <div class="button">Marca</div>
+        <div class="button">Categoria</div>
+        <div class="button">Color</div>
+        <div class="button">Talla</div>
+    </div>
+
+    <div class="card w-4/5 relative">
+        <table class="w-full table mb-8">
+            <thead class="table-thead">
+                <tr>
+                    <th scope="col" class="table-th">ID </th>
+                    <th scope="col" class="table-th">Marca </th>
+                    <th scope="col" class="table-th">Nombre </th>
+                    <th scope="col" class="table-th">Color </th>
+                    <th scope="col" class="table-th">Talla </th>
+                    <th scope="col" class="table-th">Stock</th>
+                    <th scope="col" class="table-th"></th>
+                </tr>  
+            </thead>
+            @for (baseProduct of baseProductList; track $index) {
+                @for (colorVariantProduct of baseProduct.colorVariantProductList; track $index) {
+                    @for (finalProduct of colorVariantProduct.finalProductList; track $index) {
+                        <tbody class="">
+                            <tr class="table-tr">
+                                <td class="table-td">{{finalProduct.final_product_id}}</td>
+                                <td class="table-td">{{finalProduct.brand}}</td>
+                                <td class="table-td">{{baseProduct.name}}</td>
+                                <td class="table-td">{{colorVariantProduct.color.name}}</td>
+                                <td class="table-td">{{finalProduct.size.name}}</td>
+                                <td class="table-td">{{finalProduct.stock}}</td>
+                                <td class="table-td"><a [routerLink]="['/admin_panel/0/1/',baseProduct.base_product_id]">Ver detalles</a></td>
+                            </tr>
+                        </tbody>
+                    }
+                }
+            }
+        </table>
+    </div>
+    
+
+</div>
+
