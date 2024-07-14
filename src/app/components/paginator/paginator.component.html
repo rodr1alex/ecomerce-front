@@ -1,12 +1,28 @@
 @if (paginator.totalPages > 1){
     <div class="flex justify-center items-center">
-        <a [routerLink]="[url, 0]"><i class="fa-solid fa-chevron-left mr-2"></i></a>
+        <button 
+            [routerLink]="[url, ((actualPage > 0) ?  actualPage - 1 : 0)]" 
+            (click)="setPage(actualPage - 1)"
+            [disabled]="(actualPage == 0)">
+            <i class="fa-solid fa-chevron-left mr-2" [ngClass]="{'text-slate-300': (actualPage == 0)}"></i>
+        </button>
         @for (page of pageList; track $index) {
-            <a [routerLink]="[url, (page-1)]">
-                <div class="w-6 h-6  rounded-full mx-2 nm-flat-gray-100 flex justify-center items-center">{{page}}</div>
-            </a>
+            <button 
+                [routerLink]="[url, (page-1)]" 
+                (click)="setPage(page - 1)" 
+                [disabled]="($index == actualPage)"
+                class="button w-6 h-6 mx-2 flex justify-center items-center"
+                [ngClass]="{'button--selected': ($index == actualPage)}"
+            >
+                    {{page}}
+            </button>
         }
-        <a [routerLink]="[url, paginator.totalPages - 1]"><i class="fa-solid fa-chevron-right ml-2"></i></a>
+        <button 
+            [routerLink]="[url, ((actualPage < paginator.totalPages - 1) ?  actualPage + 1 : actualPage)]" 
+            (click)="setPage(actualPage + 1)"
+            [disabled]="(actualPage == paginator.totalPages - 1)">
+            <i class="fa-solid fa-chevron-right ml-2" [ngClass]="{'text-slate-300': (actualPage == paginator.totalPages - 1)}"></i>
+        </button>
     </div>
 }
 

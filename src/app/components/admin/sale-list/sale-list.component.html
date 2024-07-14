@@ -1,0 +1,109 @@
+<div class="w-11/12 mx-auto flex justify-between mt-5 mb-10 ">
+    
+    <div class="card  h-96 flex flex-col justify-between py-2 px-3 " style="width: 18%;">
+        <!-- filtros -->
+        <p class="text-center">Filtrar por</p>
+        <div class="flex flex-col justify-around px-4 py-6 h-full">
+            <div class="flex relative">
+                <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;" [(ngModel)]="selectedUser">
+                    <option value="" disabled selected>Usuario</option>
+                    <option *ngFor="let user of userList" [value]="user.id">
+                        {{user.username}}
+                    </option>
+                </select>
+                @if(selectedUser != ''){
+                    <button class="ml-2 absolute -right-4 top-1" (click)="removeUserFilter()"><i class="fa-solid fa-trash"></i></button>
+                }
+            </div>
+            <div class="button flex justify-center items-center" style="height: 36px;" >
+                <p>Fecha</p>
+            </div>
+        </div>
+        
+        <form #userForm="ngForm" class="card card--gray flex flex-col items-center px-1 py-2 mb-2">
+            <p class="text-center mb-2">Filtrar por total de venta</p>
+            <div class="flex">
+                <div class="input-group input-group--soft input-group--small mr-1">
+                    <input  
+                        type="number"
+                        name="min" 
+                        [(ngModel)]="startTotal" 
+                        class="input input--small"
+                        #min="ngModel"
+                        required
+                    >
+                    <label for="" class="placeholder placeholder--small">Minimo</label>
+                    
+                </div> 
+                
+                <div class="input-group input-group--soft input-group--small ml-1">
+                    <input  
+                        type="number"
+                        name="max" 
+                        [(ngModel)]="endTotal" 
+                        class="input input--small"
+                        #max="ngModel"
+                        required
+                    >
+                    <label for="" class="placeholder placeholder--small">Maximo</label>
+                   
+                </div> 
+            </div>
+            @if(filtredByTotal){
+                <button class="button w-32">Quitar filtro</button>
+            }@else {
+                <button class="button w-32" (click)="filter()">Aplicar filtro</button>
+            } 
+        </form>
+    </div>
+
+
+    <div class="w-4/5 relative">
+        
+        <div class="flex w-full justify-between absolute -top-8" style="z-index: 2;">
+            <div class="rounded-xl  px-5 h-12 pt-2" style="background: #BFDBFE">
+                <paginator [paginator]="paginator" [url]="url"></paginator>
+            </div>
+            <div class="flex mr-1">
+                <p>Productos por pagina: </p>
+                <select (change)="onChange($event)"  class="button text-slate-600 w-16 ml-2" style="height: 24px;" [(ngModel)]="selectedPageSize">
+                    <option *ngFor="let pageSize of pageSizeList" [value]="pageSize">
+                        {{pageSize}}
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="card  relative">
+            <!-- tabla -->
+            <table class="w-full table mb-6 table-fixed">
+                <thead class="table-thead">
+                    <tr>
+                        <th scope="col" class="table-th w-10">ID </th>
+                        <th scope="col" class="table-th">Fecha </th>
+                        <th scope="col" class="table-th ">Total </th>
+                        <th scope="col" class="table-th">Items </th>
+                        <th scope="col" class="table-th">Usuario </th>
+                        <th scope="col" class="table-th"></th>
+                    </tr>  
+                </thead>
+                <tbody>
+                    @for (sale of saleList; track $index) {
+                        <tr class="table-tr">
+                            <td class="table-td">{{sale.sale_id == undefined? 'Undefined': sale.sale_id}}</td>
+                            <td class="table-td">{{sale.date == undefined? 'Undefined': sale.date}}</td>
+                            <td class="table-td">{{sale.total == undefined ? 'Undefined': sale.total}}</td>
+                            <td class="table-td">{{sale.items == undefined ? 'Undefined': sale.items}}</td>
+                            <td class="table-td">{{sale.username == undefined ? 'Undefined': sale.username}}</td>
+                            <td class="table-td"><a [routerLink]="['/admin_panel/2/1/',sale.sale_id]">Ver detalles</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        
+       
+    </div>
+    
+
+</div>

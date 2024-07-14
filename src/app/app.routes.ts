@@ -12,6 +12,9 @@ import { AddProductComponent } from './components/admin/add-product/add-product.
 import { ViewProductComponent } from './components/admin/view-product/view-product.component';
 import { ModidyProductComponent } from './components/admin/modidy-product/modidy-product.component';
 import { ProductComponent } from './components/admin/product/product.component';
+import { SaleListComponent } from './components/admin/sale-list/sale-list.component';
+import { SaleComponent } from './components/admin/sale/sale.component';
+import { UserListComponent } from './components/admin/user-list/user-list.component';
 
 export const routes: Routes = [
     {
@@ -44,7 +47,7 @@ export const routes: Routes = [
         component: UpdatePasswordComponent,
     },
     {
-        path: 'direction_list',
+        path: 'direction_list/:id',
         component: DirectionListComponent,
     },
     {
@@ -60,12 +63,25 @@ export const routes: Routes = [
         component: PaymentComponent,
     },
     {
-        path: 'admin_panel/0/0',
+        path: 'admin_panel/0/:page',
         component: ViewProductComponent,
     },
     {
         path: 'admin_panel/0/1/:base_product_id',
         component: ProductComponent,
     },
+    {
+        path: 'admin_panel/1/:page',
+        component:  SaleListComponent,
+    },
+    {
+        path: 'admin_panel/2/:page',
+        component: UserListComponent,
+    },
+    {
+        path: 'admin_panel/2/1/:sale_id',
+        component: SaleComponent,
+    },
+  
     
 ];

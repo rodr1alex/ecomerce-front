@@ -1,0 +1,70 @@
+<div class="w-11/12 mx-auto flex justify-between mb-10 mt-5">
+    
+    <div class="card  h-96 pt-2  pb-6" style="width: 18%;">
+        <!-- filtros -->
+        <p class="text-center">Filtrar por</p>
+         <div class="px-6  py-6 flex flex-col justify-between h-full">
+            <div class="flex relative">
+                <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;" [(ngModel)]="selectedRoleId">
+                    <option value="" disabled selected>Tipo de usuario</option>
+                    <option *ngFor="let role of roleList" [value]="role.id">
+                        {{role.roleName}}
+                    </option>
+                </select>
+                @if(selectedRoleId != ''){
+                    <button class="ml-2 absolute -right-4 top-1" (click)="removeTypeUserFilter()"><i class="fa-solid fa-trash"></i></button>
+                }
+            </div>
+           
+         </div>
+    </div>
+
+    <div class="w-4/5 relative">
+        <!-- paginador -->
+        <div class="flex w-full justify-between absolute -top-8" style="z-index: 2;">
+            <div class="rounded-xl  px-5 h-12 pt-2" style="background: #BFDBFE">
+                <paginator [paginator]="paginator" [url]="url"></paginator>
+            </div>
+            <div class="flex mr-1">
+                <p>Productos por pagina: </p>
+                <select (change)="onChange($event)"  class="button text-slate-600 w-16 ml-2" style="height: 24px;" [(ngModel)]="selectedPageSize">
+                    <option *ngFor="let pageSize of pageSizeList" [value]="pageSize">
+                        {{pageSize}}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="card  relative">
+            <!-- tabla -->
+            <table class="w-full table mb-6 table-fixed">
+                <thead class="table-thead">
+                    <tr>
+                        <th scope="col" class="table-th w-10">ID </th>
+                        <th scope="col" class="table-th">Nombre </th>
+                        <th scope="col" class="table-th">Apellido </th>
+                        <th scope="col" class="table-th">Username </th>
+                        <th scope="col" class="table-th">Correo </th>
+                        <th scope="col" class="table-th">Administrador</th>
+                        <th scope="col" class="table-th w-32"></th>
+                    </tr>  
+                </thead>
+                <tbody>
+                    @for (user of userList; track $index) {
+                        <tr class="table-tr">
+                            <td class="table-td">{{user.id == undefined? 'Undefined': user.id}}</td>
+                            <td class="table-td">{{user.name == undefined? 'Undefined': user.name}}</td>
+                            <td class="table-td">{{user.lastname == undefined ? 'Undefined': user.lastname}}</td>
+                            <td class="table-td">{{user.username == undefined ? 'Undefined': user.username}}</td>
+                            <td class="table-td">{{user.email == undefined ? 'Undefined': user.email}}</td>
+                            <td class="table-td">{{user.roles.length > 1 ? 'Admin': 'User'}}</td>
+                            <td class="table-td"><a [routerLink]="['/update_user',user.id]">Ver detalles</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        
+        </div>
+     
+    </div>
+    </div>
+    

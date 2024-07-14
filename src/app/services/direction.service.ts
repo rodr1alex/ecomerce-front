@@ -9,12 +9,12 @@ import { Observable } from 'rxjs';
 export class DirectionService {
 
   private url: string = 'http://localhost:8080/users/directions';
-  private user_id : number = 1;
+  //private user_id : number = 1;
 
   constructor(private http: HttpClient) { }
 
-  create(direction: Direction): Observable<Direction>{
-    return this.http.post<Direction>(`${this.url}/create/${this.user_id}`, direction);
+  create(direction: Direction, user_id :number): Observable<Direction>{
+    return this.http.post<Direction>(`${this.url}/create/${user_id}`, direction);
   }
   update(direction: Direction): Observable<Direction>{
     return this.http.put<Direction>(`${this.url}/update/${direction.direction_id}`, direction);

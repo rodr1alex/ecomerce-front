@@ -15,6 +15,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 export class UpdatePasswordComponent implements OnInit{
   userOld: User = new User;
   userNew: User = new User;
+  isAdmin!: boolean;
   passwordRepeat: String = '';
   
   constructor(private sharingDataService: SharingDataService, 
@@ -30,6 +31,8 @@ export class UpdatePasswordComponent implements OnInit{
       this.userNew.id = id;
     })
     this.userOld.username = this.authService.user.user.username;
+    this.isAdmin = this.authService.user.isAdmin;
+    console.log('Admin:', this.isAdmin)
   }
 
   onClear(userForm: NgForm): void {
@@ -39,9 +42,6 @@ export class UpdatePasswordComponent implements OnInit{
     userForm.resetForm();
   }
   updatePassword(){
-    console.log("userOld: ", this.userOld);
-    console.log("userNew: ", this.userNew);
-    //comprobar que contrasenia actual es correcta
     this.authService.loginUser(this.userOld).subscribe(
       {
         next: response => {
@@ -64,7 +64,6 @@ export class UpdatePasswordComponent implements OnInit{
         }
       }
     )
-    //conectarse con userService y actualizar contrasenia
   }
 
   

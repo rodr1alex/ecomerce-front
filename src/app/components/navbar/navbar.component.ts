@@ -31,6 +31,7 @@ export class NavbarComponent implements OnInit, OnChanges{
   username!: String;
   categoryListToFilter: Category[] = [];
   showAdminPanel: boolean = false;
+  clickInLogin: boolean = false;
   
   categoryList: CategoryList[] = [
     {
@@ -65,6 +66,7 @@ export class NavbarComponent implements OnInit, OnChanges{
     }
   }
   ngOnInit(): void {
+    this.clickHanddler();
     this.menu();
     this.sessionHandler();
     this.closeCart();
@@ -72,31 +74,60 @@ export class NavbarComponent implements OnInit, OnChanges{
     this.sharingDataService.hiddeSearchBarEventEmitter.subscribe(()=>this.hiddenSearchBar())
   }
 
+  clickHanddler(){
+    this.sharingDataService.clickrEventEmitter.subscribe(({width, height})=>{
+      console.log('Info: ', width, height);
+      if(width > 768){
+        if(this.clickInLogin){
+          //console.log('Click in login');
+          const node = document.getElementById('userLogin');
+          node?.classList.remove('hidden');
+          this.clickInLogin = false
+        }else{
+          //console.log('Click fuera del login')
+          const node = document.getElementById('userLogin');
+          node?.classList.add('hidden');
+        }
+      }
+    })
+  }
   adminPanel(){
-    this.showAdminPanel = true;
-    this.categoryList = [];
-    this.categoryList = [
-      {
-        categoryName: new Category(0,'Administracion de productos'),
-        subCategoryList: [new Category(0,'Ver productos'),new Category(1,'Agregar productos')]
-      },
-      {
-        categoryName: new Category(1,'Administracion de usuarios'),
-        subCategoryList: [new Category(0,'Ver usuarios'),new Category(1,'Modificar usuarios'),new Category(2,'Crear administrador')]
-      },
-      {
-        categoryName: new Category(2,'Administracion de ventas'),
-        subCategoryList: [new Category(0,'Ver ventas'),new Category(1,'Modificar ventas')]
-      },
-    ]
+    this.showAdminPanel == true? this.showAdminPanel = false: this.showAdminPanel = true;
+    
+    this.showAdminPanel == true ? 
+    (
+      this.categoryList = [
+        {
+          categoryName: new Category(0,'Administracion de productos'),
+          subCategoryList: []
+        },
+        {
+          categoryName: new Category(1,'Administracion de ventas'),
+          subCategoryList: []
+        },
+        {
+          categoryName: new Category(2,'Administracion de usuarios'),
+          subCategoryList: []
+        },
+      ]
+    ):
+    (
+      this.categoryList =  [
+        {
+          categoryName: new Category(6,'hombre'),
+          subCategoryList: [new Category(4,'Calzado'),new Category(8,'Ropa'),new Category(9,'Accesorios')]
+        },
+        {
+          categoryName: new Category(7,'Mujer'),
+          subCategoryList: [new Category(4,'Calzado'),new Category(8,'Ropa'),new Category(9,'Accesorios')]
+        },
+      ]
+    );
+    
   }
 
-  adminPanelNavigate(category: Category, subCategory: Category){
-    if(category.category_id == 0 && subCategory.category_id == 1){
-      this.router.navigate([`/admin_panel/${category.category_id}/${subCategory.category_id}`, 0]);
-    }else{
-      this.router.navigate([`/admin_panel/${category.category_id}/${subCategory.category_id}`]);
-    }
+  adminPanelNavigate(category: Category){
+    this.router.navigate([`/admin_panel/${category.category_id}`, 0]);
   }
 
   

@@ -39,6 +39,7 @@ export class ProductComponent implements OnInit{
   baseProductImage: BaseProductImage = new BaseProductImage();
   colorVariantProductImage: ColorVariantProductImage = new ColorVariantProductImage();
   colorVariantProductImageList: ColorVariantProductImage[] = [];
+  originalFinalProductListLength: number[] = [];
 
   constructor(
     private baseProductService: BaseProductService,
@@ -89,15 +90,13 @@ export class ProductComponent implements OnInit{
       const base_product_id = +(params.get('base_product_id') || '0');
       if(base_product_id == 0){
         let finalProduct = new FinalProduct();
+        finalProduct.final_product_id = 1;
         finalProduct.size = new Size();
         let colorVariantProduct = new ColorVariantProduct();
+        colorVariantProduct.color_variant_product_id = 1;
         colorVariantProduct.color = new Color();
         colorVariantProduct.finalProductList = [finalProduct];
         this.baseProduct.colorVariantProductList = [colorVariantProduct];
-        // let colorVariantProduct: ColorVariantProduct = new ColorVariantProduct();
-        // colorVariantProduct.finalProductList = [new FinalProduct()];
-        // colorVariantProduct.finalProductList[0].size = new Size();
-        // this.baseProduct.colorVariantProductList = [colorVariantProduct]
       }else{
         this.baseProductService.findById(base_product_id).subscribe({
           next: response =>{
@@ -107,6 +106,27 @@ export class ProductComponent implements OnInit{
               const optionNode = document.getElementById(`${category.name}`);
               optionNode?.setAttribute('disabled', 'true');
             }
+            for(let colorVariantProduct of this.baseProduct.colorVariantProductList){
+              //INTENTAR IMPLEMENTAR LA DESHABILITACION DE TALLAS OCUPADAS, FALLA EL IDENTIFICADOR Y OBTENCION DEL NODO
+              // let usedSizeList: string[] = []
+              // for(let finalProduct of colorVariantProduct.finalProductList){
+              //   usedSizeList.push(finalProduct.size.name);
+              // }
+              // console.log('Cada listado de tallas usadas:', usedSizeList);
+              // for(let finalProduct of colorVariantProduct.finalProductList){
+              //   const id = `${finalProduct.size.name}${colorVariantProduct.color_variant_product_id}`
+              //   console.log('identificador del nodo a desabilitar: ', id);
+              //   const node = document.getElementById(id);
+              //   console.log(node);
+              // }
+              this.originalFinalProductListLength.push(colorVariantProduct.finalProductList.length);
+              let finalProduct = new FinalProduct();
+              finalProduct.size = new Size();
+              //agrgar final_product_id incremental;
+              colorVariantProduct.finalProductList.push(finalProduct)
+              
+
+            }
           }
         })
       }
@@ -115,11 +135,13 @@ export class ProductComponent implements OnInit{
   }
 
  onChange(event: Event){
-  
+    this.addCategory();
   }
   addSize(colorVariantProduct: ColorVariantProduct){
     let i = this.baseProduct.colorVariantProductList.indexOf(colorVariantProduct);
+    const lastFinalProductID = this.baseProduct.colorVariantProductList[i].finalProductList[this.baseProduct.colorVariantProductList[i].finalProductList.length - 1].final_product_id;
     let finalProduct = new FinalProduct();
+    finalProduct.final_product_id = lastFinalProductID + 1;
     finalProduct.size = new Size();
     let size_id = this.baseProduct.colorVariantProductList[i].finalProductList[this.baseProduct.colorVariantProductList[i].finalProductList.length - 1].size.size_id;
     const sizeName: string = this.sizeList.find(item => item.size_id == size_id)?.name || ''; 
@@ -127,13 +149,23 @@ export class ProductComponent implements OnInit{
     this.baseProduct.colorVariantProductList[i].finalProductList.push(finalProduct);
 
   }
+  removeSize(colorVariantProduct: ColorVariantProduct, finalProduct: FinalProduct){
+    colorVariantProduct.finalProductList = colorVariantProduct.finalProductList.filter(item => item.final_product_id != finalProduct.final_product_id);
+
+  }
   addColorVariantProductForm(){
     let finalProduct = new FinalProduct();
+    finalProduct.final_product_id = 1;
     finalProduct.size = new Size();
     let colorVariantProduct = new ColorVariantProduct();
+    const lastColorVariantProductID = this.baseProduct.colorVariantProductList[this.baseProduct.colorVariantProductList.length -1].color_variant_product_id;
+    colorVariantProduct.color_variant_product_id = lastColorVariantProductID + 1;
     colorVariantProduct.color = new Color();
     colorVariantProduct.finalProductList = [finalProduct];
     this.baseProduct.colorVariantProductList.push(colorVariantProduct);
+  }
+  removeColorVariantProduct(colorVariantProduct: ColorVariantProduct){
+    this.baseProduct.colorVariantProductList = this.baseProduct.colorVariantProductList.filter(item => item.color_variant_product_id != colorVariantProduct.color_variant_product_id);
   }
   addImage(){
     if(this.baseProduct.baseProductImageList == undefined){
@@ -143,7 +175,6 @@ export class ProductComponent implements OnInit{
     baseProductImage.url = this.baseProductImage.url;
     this.baseProduct.baseProductImageList.push(baseProductImage);
     this.baseProductImage.url = '';
-    console.log('BaserProductImage: ', this.baseProductImage);
   }
   removeImage(baseProductImage: BaseProductImage){
     this.baseProduct.baseProductImageList = this.baseProduct.baseProductImageList.filter(item => item.url != baseProductImage.url);
@@ -173,6 +204,7 @@ export class ProductComponent implements OnInit{
   removeCategory(category: Category){
     const optionNode = document.getElementById(`${category.name}`);
     optionNode?.removeAttribute('disabled');
+    this.selectedCategory = '';
     this.baseProduct.categoryList = this.baseProduct.categoryList.filter(item => item.category_id != category.category_id);
   }
   createProduct(){

@@ -51,7 +51,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
     
   }
   ngAfterViewInit(): void {
-    this.adjustHeight();
+    //this.adjustHeight();
   }
 
   @HostListener('window:load')
@@ -71,7 +71,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
       const width = container.offsetWidth;
       this.contentHeight = height;
       this.contentWidth = width;
-      console.log(`Ancho: ${this.contentWidth}, alto ${this.contentHeight}`)
+      //console.log(`Ancho: ${this.contentWidth}, alto ${this.contentHeight}`)
     }
   }
 
@@ -98,7 +98,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
 
   payCart(){
     this.sharingDataService.payCartEventEmitter.subscribe((direction: Direction)=>{
-      this.saleService.createSale(this.cart.cart_id, direction).subscribe({
+      this.saleService.createSale(this.cart.cart_id, direction, this.authService.user.user.id).subscribe({
         next: response =>{
           alert('Venta creada con exito:');
           this.cartVerify(1);
@@ -120,7 +120,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
       this.cartStore.dispatch(updateCart({cartUpdated}));
       this.cartService.addProduct(cartUpdated.cart_id, orderedProduct).subscribe({
         next: response => {
-          console.log('Producto agregado con exito, carrito: ', response);
+          //console.log('Producto agregado con exito, carrito: ', response);
         }
       });
     })
@@ -132,16 +132,16 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
         ...this.cart,
         orderedProductList: this.cart.orderedProductList.map(item => ({ ...item })) // Clonar deep copy de los objetos en orderedProductList
       };
-      console.log('Antes de agregar/quitar: ', cartUpdated);
+      //console.log('Antes de agregar/quitar: ', cartUpdated);
       cartUpdated.items += diferential;
       cartUpdated.total += orderedProduct.finalProduct.final_price * diferential;
       cartUpdated.orderedProductList.map(item => item.ordered_product_id === orderedProduct.ordered_product_id ? item.quantity += diferential : item);
       const orderedProductCopy = cartUpdated.orderedProductList.find(item => item.ordered_product_id === orderedProduct.ordered_product_id) || new OrderedProduct();
-      console.log('Despues de agregar/quitar: ', cartUpdated);
+      //console.log('Despues de agregar/quitar: ', cartUpdated);
       this.cartStore.dispatch(updateCart({cartUpdated}));
       this.cartService.updateProductQuantity(this.cart.cart_id,orderedProductCopy).subscribe({
         next: response => {
-          console.log('Producto modificado en DB con exito, carrito: ', response);
+          //console.log('Producto modificado en DB con exito, carrito: ', response);
         }
       });
     })
@@ -159,7 +159,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
       this.cartStore.dispatch(updateCart({cartUpdated}));
       this.cartService.removeProduct(this.cart.cart_id, orderedProduct.finalProduct.final_product_id).subscribe({
         next: response => {
-          console.log('Producto eliminado con exito, carrito: ', response);
+          //console.log('Producto eliminado con exito, carrito: ', response);
         }
       });
     })
@@ -171,15 +171,15 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
         ...this.cart,
         orderedProductList: this.cart.orderedProductList.map(item => ({ ...item })) // Clonar deep copy de los objetos en orderedProductList
       };
-      console.log('Antes de agregar/quitar: ', cartUpdated);
+      //console.log('Antes de agregar/quitar: ', cartUpdated);
       cartUpdated.items = 0;
       cartUpdated.total = 0;
       cartUpdated.orderedProductList = [];
-      console.log('Despues de agregar/quitar: ', cartUpdated);
+      //console.log('Despues de agregar/quitar: ', cartUpdated);
       this.cartStore.dispatch(updateCart({cartUpdated}));
       this.cartService.cleanCart(this.cart.cart_id).subscribe({
         next: response => {
-          console.log('Carrito limpiado con exito, carrito: ', response);
+          //console.log('Carrito limpiado con exito, carrito: ', response);
         }
       });
     })
@@ -200,7 +200,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
           };
           this.authService.token = token;
           this.authService.user = login;
-          console.log("Inicio de sesion exitoso!", login);
+          //console.log("Inicio de sesion exitoso!", login);
           //verificacion de carrito de compras
           this.cartVerify(id);
           this.router.navigate(['/home']);
@@ -222,13 +222,13 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
         const cartList: Cart[] = user.cartList;
         const lastCart = cartList.pop() || new Cart();
         if(lastCart?.sale == null){
-          console.log('Ya existe un carrito!', lastCart)
+          //console.log('Ya existe un carrito!', lastCart)
           //this.cart = lastCart;
           this.cartStore.dispatch(putCart({cart: lastCart}));
         }else{
           this.cartService.create(id).subscribe({
             next: cart => {
-              console.log('Carrito creado con exito!', cart);
+              //console.log('Carrito creado con exito!', cart);
               this.cartStore.dispatch(putCart({cart}));
               //this.cart = cart;
             }
@@ -250,7 +250,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
       this.userService.create(user).subscribe(
         {
           next: (userCreated)=>{
-            console.log('Usuario creado con exito! ', userCreated);
+            //console.log('Usuario creado con exito! ', userCreated);
             userCreated.password = user.password;
             this.sharingDataService.handlerLoginEventEmitter.emit(userCreated);
           },
@@ -268,7 +268,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
       this.userService.update(user).subscribe(
         {
           next: (userUpdated)=>{
-            console.log('Usuario actualizado con exito! ', userUpdated);
+            //console.log('Usuario actualizado con exito! ', userUpdated);
             this.router.navigate(['/home'])
           },
           error: (err) => {
@@ -282,8 +282,8 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
   }
 
   createDirection(){
-    this.sharingDataService.createDirectionEventEmitter.subscribe((direction)=>{
-      this.directionService.create(direction).subscribe(
+    this.sharingDataService.createDirectionEventEmitter.subscribe(({direction, user_id})=>{
+      this.directionService.create(direction, user_id).subscribe(
         {
           next: response =>{
             alert("Direccion agregada con exito!")

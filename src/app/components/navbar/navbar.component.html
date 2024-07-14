@@ -1,7 +1,7 @@
 <div class=" relative  nm-flat-white-sm z-10">
-    <div class="flex h-36  md:h-16 md:mx-auto limit-content" id="navbarContent">
+    <div class="flex h-36  md:h-16 md:mx-auto limit-content justify-between" id="navbarContent">
 
-        <div class="w-1/2 flex justify-start h-20 items-center pl-6 md:w-1/12 md:h-auto" id="logoBar">
+        <div class="w-1/2 flex justify-start h-20 items-center pl-6 md:w-1/12 md:h-auto" id="logoBar" [ngClass]="{'md:w-3/12': (showAdminPanel)}">
             <!-- Logo -->
             <a class="flex" href="" >
                 <img class="w-10" src="../../../assets/img/main-logo.png"  alt="">
@@ -9,6 +9,7 @@
             </a>
         </div>
     
+       @if(!showAdminPanel){
         <div class="absolute top-24  w-full h-16 md:static md:flex md:items-center md:w-3/12 " id="searchBar">
             <!-- Buscador -->
             <form class="nm-inset-gray-100 rounded-full mx-auto w-4/5 h-10 flex justify-center items-center md:w-11/12" action="">
@@ -18,24 +19,25 @@
                 </button>
             </form>
         </div>
+       }
         
-        <div id="menuNode" #menuNode class="z-10 absolute left-[-1000px] top-20 transition-all w-full md:static md:w-5/12 md:h-max hiddenMenu">
+        <div id="menuNode" #menuNode class="z-10 absolute left-[-1000px] top-20 transition-all w-full md:static md:w-5/12 md:h-max hiddenMenu" [ngClass]="{'md:w-6/12': (showAdminPanel)}">
              <!-- Categorias -->
             <p class="text-center font-bold md:hidden my-2">CATEGORIAS</p>
             <ul class="md:flex md:h-16 md:justify-center categoryContainer">
                 <li *ngFor="let category of categoryList; let i = index" class="category-item pl-4 shadow md:shadow-none py-2 md:h-16  md:hover:bg-gray-100 md:flex md:items-center md:px-4">
-                    <p class="font-bold " (click)="showSubCategory(category.categoryName.name)">{{category.categoryName.name}}</p>
-                    <ul id="{{category.categoryName.name}}" class="mobile-hidden subcategory-container md:flex md:w-screen md:h-0 md:opacity-0 md:-z-10 md:justify-center md:items-center md:absolute md:top-16 md:left-0 nm-flat-white-lg">
+                    @if (showAdminPanel) {
+                        <p class="font-bold text-blue-600 hover:cursor-pointer" (click)="adminPanelNavigate(category.categoryName)">{{category.categoryName.name}}</p>
+                    }@else {
+                        <p class="font-bold " (click)="showSubCategory(category.categoryName.name)">{{category.categoryName.name}}</p>
+                    }
+                    <ul id="{{category.categoryName.name}}" 
+                        class="mobile-hidden md:flex md:w-screen md:h-0 md:opacity-0 md:-z-10 md:justify-center md:items-center md:absolute md:top-16 md:left-0 nm-flat-white-lg" 
+                        [ngClass]="{'subcategory-container': (!showAdminPanel)}">
                         <li class="subcategory-item" *ngFor="let subCategory of category.subCategoryList">
-                            @if(showAdminPanel){
-                                <a  class="md:font-bold mx-4 cursor-pointer text-blue-700 md:hover:text-blue-300" (click)="adminPanelNavigate(category.categoryName, subCategory)">
-                                    {{subCategory.name}}
-                                </a>
-                            }@else {
-                                <a (click)="menu()" (click)="filter(category.categoryName, subCategory)" class="md:font-bold mx-4 cursor-pointer  md:hover:text-blue-300">
-                                    {{subCategory.name}}
-                                </a>
-                            }
+                            <a (click)="menu()" (click)="filter(category.categoryName, subCategory)" class="md:font-bold mx-4 cursor-pointer  md:hover:text-blue-300">
+                                {{subCategory.name}}
+                            </a>
                         </li>  
                     </ul>
                 </li>
@@ -47,8 +49,8 @@
             <cart></cart>
         </div>
         
-        <div class="w-1/2 flex justify-between items-center h-20 pr-6 md:w-3/12 md:h-auto" id="userBar">
-            <div class="user relative md:w-1/2 md:flex md:items-center md:hover:bg-gray-100  md:h-16">
+        <div class="w-1/2 flex justify-between items-center h-20 pr-6 md:w-3/12 md:h-auto" id="userBar" >
+            <div class="user relative md:w-1/2 md:flex md:items-center md:hover:bg-gray-100  md:h-16" [ngClass]="{'md:w-full': (showAdminPanel)}">
                 <!-- Usuario -->
                 @if(login.isAuth){
                     <a (click)="sessionHandler()"><i class="fa-regular fa-user text-2xl"></i></a>
@@ -56,7 +58,7 @@
                     <a (click)="navigateLogin()"><i class="fa-regular fa-user text-2xl"></i></a>
                 }
                 <div class="card absolute flex flex-col justify-center items-center w-48 h-32 z-20 left-[-84px] top-12 md:hidden" id="sessionHandler">
-                    <p>Bienvenido {{username}} </p>
+                    <p>Bienvenido {{username}}</p>
                     <button class="button my-2" (click)="handlerLogout()" (click)="sessionHandler()">Cerrar sesion</button>
                     <button class="button my-2" [routerLink]="['/update_user',1]" (click)="sessionHandler()">Actualizar datos</button>
                 </div>
@@ -72,18 +74,26 @@
                  }
                 <div class="mobile-hidden ml-2">
                     <p>{{(login.isAuth)? ('Bienvenido ' + login.user.username): 'No ha iniciado sesion'}}</p>
+                    @if(showAdminPanel){<p>ADMINSTRADOR DE SISTEMA</p>}
                 </div>
-                <div class="user-modal absolute top-16 h-0 flex justify-center">
+                <div class="user-modal absolute top-16 h-0 flex justify-center" (click)="clickInLogin = true" [ngClass]="{'left-0': (showAdminPanel)}">
                     @if(login.isAuth){
                         <div class="isLogged hidden card  flex-col justify-center items-center w-4/5 h-48">
                             <button class="button my-4" (click)="handlerLogout()">Cerrar sesion</button>
                             <button class="button my-4"[routerLink]="['/update_user',1]" >Actualizar datos</button>
                             @if(admin){
-                                <button class="button my-4" (click)="adminPanel()">Panel de administracion</button>
+                                <button class="button my-4" (click)="adminPanel()">
+                                    @if(showAdminPanel){
+                                        <p>Ocultar</p>
+                                    }@else {
+                                        <p>Mostrar</p>
+                                    }
+                                    Panel de administracion
+                                </button>
                             }
                         </div>
                     }@else {
-                        <div class="login hidden">
+                        <div class="login hidden" id="userLogin">
                             <login></login>
                         </div>   
                     }

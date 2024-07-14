@@ -26,6 +26,7 @@ export class ProductListComponent implements OnInit{
   baseProduct!: BaseProduct;
   categoryListToFilter: Category[] = [];
   brandList: Brand[]= [];
+  url: string = '';
 
   constructor(
     private baseProductStore: Store<{baseProducts: any}>,
@@ -47,18 +48,20 @@ export class ProductListComponent implements OnInit{
       const page: number = +(params.get('page') || '0');
       const category_id: number = +(params.get('category') || '0');
       const subcategory_id: number = +(params.get('subcategory') || '0');
+      this.url = `/product_list/${category_id}/${subcategory_id}`;
       this.categoryListToFilter = [];
       this.categoryListToFilter = [new Category(category_id, ''), new Category(subcategory_id, '')];
       this.baseProductService.getBrandList(this.categoryListToFilter).subscribe({
         next: response =>{
           this.brandList = response;
         }
-      })
+      });
       this.baseProductService.filterByCategoryList(page, this.categoryListToFilter).subscribe({
         next: pageable =>{
           this.baseProductList = pageable.content as BaseProduct[];
           this.paginator = pageable;
           this.sharingDataService.pageProductEventEmitter.emit({baseProductList: this.baseProductList, paginator: this.paginator})
+          
         },
         error: error =>{
           throw new error;

@@ -14,5 +14,6 @@ export class FinalProduct{
     colorVariantProduct!: ColorVariantProduct;
     size!: Size;
     base_product_id!: number;
+    name!: string;
     //orderedProductList!: OrderedProduct[];
 }

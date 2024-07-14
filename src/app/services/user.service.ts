@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Role } from '../models/role.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,12 @@ export class UserService {
     return this.http.get<User[]>(this.url);
   }
 
-  findAllPageable(page: number): Observable<any> {
-    return this.http.get<any[]>(`${this.url}/page/${page}`);
+  findAllPageable(page_size: number, page: number): Observable<any> {
+    return this.http.get<any[]>(`${this.url}/page/${page_size}/${page}`);
+  }
+
+  filter(role: Role, page_size: number, page: number): Observable<any> {
+    return this.http.post<any[]>(`${this.url}/filter/${page_size}/${page}`, role);
   }
 
   findById(id: number): Observable<User> {

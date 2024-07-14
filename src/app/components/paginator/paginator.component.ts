@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { BaseProductService } from '../../services/base-product.service';
@@ -12,32 +12,27 @@ import { AuthService } from '../../services/auth.service';
   imports: [CommonModule, RouterModule],
   templateUrl: './paginator.component.html'
 })
-export class PaginatorComponent implements OnInit{
-  paginator!: any;
-  url: String = '/product_list'
+export class PaginatorComponent implements OnChanges{
+  @Input() paginator!: any;
+  @Input() url: String = '';
   pageList: number[]= [];
+  actualPage: number = 0;
 
-
-  constructor(
-    private baseProductStore: Store<{baseProducts: any}>,
-    private router: Router,
-    private route: ActivatedRoute,
-    private baseProductService: BaseProductService,
-    private sharingDataService: SharingDataService,
-    private authService: AuthService) {
-      this.baseProductStore.select('baseProducts').subscribe(state =>{
-        this.paginator = state.paginator;
-        this.setPageList();
-      })
+  
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['paginator']) {
+      this.setPageList();
+    }
   }
-  ngOnInit(): void {
-    console.log('se cargo compoenente pagunator')
-  }
-
+ 
   setPageList(){
     this.pageList = [];
     for(let i = 0; i < this.paginator.totalPages; i++){
       this.pageList.push(i+1);
     }
+  }
+
+  setPage(page: number){
+    this.actualPage = page;
   }
 }

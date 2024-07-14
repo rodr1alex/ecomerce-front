@@ -11,7 +11,7 @@ export class SharingDataService {
   private _handlerLoginEventEmitter: EventEmitter<User> = new EventEmitter();
   private _newUserEventEmitter: EventEmitter<User> = new EventEmitter();
   private _updateUserEventEmitter: EventEmitter<User> = new EventEmitter();
-  private _createDirectionEventEmitter: EventEmitter<Direction> = new EventEmitter(); 
+  private _createDirectionEventEmitter: EventEmitter<any> = new EventEmitter(); 
   private _updateDirectionEventEmitter: EventEmitter<Direction> = new EventEmitter();
   private _deleteDirectionEventEmitter: EventEmitter<number> = new EventEmitter();
   private _pageProductEventEmitter: EventEmitter<any> = new EventEmitter();

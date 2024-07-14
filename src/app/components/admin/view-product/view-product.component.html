@@ -1,46 +1,126 @@
-<div class="w-11/12 mx-auto flex justify-between mb-10">
+<div class="w-11/12 mx-auto flex justify-between mb-10 mt-5">
     
-    <div class="card  w-2/12 h-96 px-4  py-6 flex flex-col justify-between">
+    <div class="card  h-96 pt-2  pb-6" style="width: 18%;">
+        <!-- filtros -->
         <p class="text-center">Filtrar por</p>
-        <div class="button">Marca</div>
-        <div class="button">Categoria</div>
-        <div class="button">Color</div>
-        <div class="button">Talla</div>
+         <div class="px-6  py-6 flex flex-col justify-between h-full">
+            <div class="flex relative">
+                <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;" [(ngModel)]="selectedCategory">
+                    <option value="" disabled selected>Categoria</option>
+                    <option *ngFor="let category of categoryList" [value]="category.category_id">
+                        {{category.name}}
+                    </option>
+                </select>
+                @if(selectedCategory != ''){
+                    <button class="ml-2 absolute -right-4 top-1" (click)="removeCategoryFilter()"><i class="fa-solid fa-trash"></i></button>
+                }
+            </div>
+            <div class="flex relative">
+                <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;"  name="brand" id="brand" [(ngModel)]="selectedBrand">
+                    <option value="" disabled selected>Marca</option>
+                    <option *ngFor="let brand of brandList" [value]="brand.brand_id">
+                        {{brand.name}}
+                    </option>
+                </select>
+                @if(selectedBrand != ''){
+                    <button class="ml-2 absolute -right-4 top-1" (click)="removeBrandFilter()"><i class="fa-solid fa-trash"></i></button>
+                }
+            </div>
+            <div class="flex relative">
+                <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;"  name="brand" id="brand" [(ngModel)]="selectedColor">
+                    <option value="" disabled selected>Color</option>
+                    <option *ngFor="let color of colorList" [value]="color.color_id">
+                        {{color.name}}
+                    </option>
+                </select>
+                @if(selectedColor != ''){
+                    <button class="ml-2 absolute -right-4 top-1" (click)="removeColorFilter()"><i class="fa-solid fa-trash"></i></button>
+                }
+            </div>
+            <div class="flex relative">
+                <select (change)="onChange($event)"  class="button text-slate-600 w-full" style="height: 36px;"  name="brand" id="brand" [(ngModel)]="selectedSize">
+                    <option value="" disabled selected>Talla</option>
+                    <option *ngFor="let size of sizeList" [value]="size.size_id">
+                        {{size.name}}
+                    </option>
+                </select>
+                @if(selectedSize != ''){
+                    <button class="ml-2 absolute -right-4 top-1" (click)="removeSizeFilter()"><i class="fa-solid fa-trash"></i></button>
+                }
+            </div>
+            <button 
+                class="button" 
+                (click)="unfilter()"
+                [disabled]="(selectedSize == '' && selectedColor == '' && selectedBrand == '' && selectedCategory == '')"
+                [ngClass]="{'button--disabled': (selectedSize == '' && selectedColor == '' && selectedBrand == '' && selectedCategory == '')}"
+                >
+                Quitar filtros
+            </button>
+         </div>
     </div>
 
-    <div class="card w-4/5 relative">
-        <table class="w-full table mb-8">
-            <thead class="table-thead">
-                <tr>
-                    <th scope="col" class="table-th">ID </th>
-                    <th scope="col" class="table-th">Marca </th>
-                    <th scope="col" class="table-th">Nombre </th>
-                    <th scope="col" class="table-th">Color </th>
-                    <th scope="col" class="table-th">Talla </th>
-                    <th scope="col" class="table-th">Stock</th>
-                    <th scope="col" class="table-th"></th>
-                </tr>  
-            </thead>
-            @for (baseProduct of baseProductList; track $index) {
-                @for (colorVariantProduct of baseProduct.colorVariantProductList; track $index) {
-                    @for (finalProduct of colorVariantProduct.finalProductList; track $index) {
-                        <tbody class="">
-                            <tr class="table-tr">
-                                <td class="table-td">{{finalProduct.final_product_id}}</td>
-                                <td class="table-td">{{finalProduct.brand}}</td>
-                                <td class="table-td">{{baseProduct.name}}</td>
-                                <td class="table-td">{{colorVariantProduct.color.name}}</td>
-                                <td class="table-td">{{finalProduct.size.name}}</td>
-                                <td class="table-td">{{finalProduct.stock}}</td>
-                                <td class="table-td"><a [routerLink]="['/admin_panel/0/1/',baseProduct.base_product_id]">Ver detalles</a></td>
-                            </tr>
-                        </tbody>
+    <div class="w-4/5 relative">
+        <!-- paginador -->
+        <div class="flex w-full justify-between absolute -top-8" style="z-index: 2;">
+            <div class="rounded-xl  px-5 h-12 pt-2" style="background: #BFDBFE">
+                <paginator [paginator]="paginator" [url]="url"></paginator>
+            </div>
+            <div class="flex mr-1">
+                <p>Productos por pagina: </p>
+                <select (change)="onChange($event)"  class="button text-slate-600 w-16 ml-2" style="height: 24px;" [(ngModel)]="selectedPageSize">
+                    <option *ngFor="let pageSize of pageSizeList" [value]="pageSize">
+                        {{pageSize}}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="card  relative">
+            <!-- tabla -->
+            <table class="w-full table mb-6 table-fixed">
+                <thead class="table-thead">
+                    <tr>
+                        <th scope="col" class="table-th w-10">ID </th>
+                        <th scope="col" class="table-th">Marca </th>
+                        <th scope="col" class="table-th">Nombre </th>
+                        <th scope="col" class="table-th">Color </th>
+                        <th scope="col" class="table-th w-24">Talla </th>
+                        <th scope="col" class="table-th w-24">Stock</th>
+                        <th scope="col" class="table-th w-32"></th>
+                    </tr>  
+                </thead>
+                <tbody>
+                    @for (finalProduct of finalProductList; track $index) {
+                        <tr class="table-tr">
+                            <td class="table-td">{{finalProduct.final_product_id == undefined? 'Undefined': finalProduct.final_product_id}}</td>
+                            <td class="table-td">{{finalProduct.brand == undefined? 'Undefined': finalProduct.brand}}</td>
+                            <td class="table-td">{{finalProduct.name == undefined ? 'Undefined': finalProduct.name}}</td>
+                            <td class="table-td">{{finalProduct.color == undefined ? 'Undefined': finalProduct.color}}</td>
+                            <td class="table-td">{{finalProduct.size == undefined ? 'Undefined': finalProduct.size.name}}</td>
+                            <td class="table-td">{{finalProduct.stock == undefined ? 'Undefined': finalProduct.stock}}</td>
+                            <td class="table-td"><a [routerLink]="['/admin_panel/0/1/',finalProduct.base_product_id]">Ver detalles</a></td>
+                        </tr>
                     }
-                }
-            }
-        </table>
+                </tbody>
+            </table>
+            <!-- @if(+selectedPageSize > 10){
+                <div class="flex w-full justify-between absolute bottom-0" style="z-index: 2;">
+                    <div class="rounded-xl  px-5  py-2">
+                        <paginator [paginator]="paginator" [url]="url"></paginator>
+                    </div>
+                    <div class="flex mr-3">
+                        <p>Productos por pagina: </p>
+                        <select (change)="onChange($event)"  class="button text-slate-600 w-16 ml-2" style="height: 24px;" [(ngModel)]="selectedPageSize">
+                            <option *ngFor="let pageSize of pageSizeList" [value]="pageSize">
+                                {{pageSize}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            } -->
+        </div>
+     
+    </div>
     </div>
     
 
-</div>
 

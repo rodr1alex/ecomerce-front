@@ -1,5 +1,6 @@
 import { Cart } from "./cart.model";
 import { Direction } from "./direction.model";
+import { Role } from "./role.model";
 
 export class User {
     id: number = 0;
@@ -10,4 +11,5 @@ export class User {
     password!: string;
     directionList!: Direction[];
     cartList!: Cart[];
+    roles!: Role[];
 }
