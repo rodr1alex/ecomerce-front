@@ -9,7 +9,7 @@ import { OrderedProduct } from '../models/ordered-product.model';
 export class SharingDataService {
 
   private _handlerLoginEventEmitter: EventEmitter<User> = new EventEmitter();
-  private _newUserEventEmitter: EventEmitter<User> = new EventEmitter();
+  private _newUserEventEmitter: EventEmitter<any> = new EventEmitter();
   private _updateUserEventEmitter: EventEmitter<User> = new EventEmitter();
   private _createDirectionEventEmitter: EventEmitter<any> = new EventEmitter(); 
   private _updateDirectionEventEmitter: EventEmitter<Direction> = new EventEmitter();

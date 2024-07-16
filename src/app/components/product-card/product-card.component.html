@@ -2,7 +2,7 @@
     <img src="{{baseProduct.baseProductImageList[0].url}}" class="h-3/4 img-portrait" alt="product-card" #imgPortrait>
     <div class="px-4 flex flex-col h-1/4 mt-2">
         <p class="font-bold">{{baseProduct.brand.name}}</p>
-        <p class="my-1" style="line-height: 16px;">{{getShortDescription(baseProduct.description)}}</p>
+        <p class="my-1" style="line-height: 14px;">{{getShortDescription(baseProduct.name)}}</p>
         <p class="mb-2 font-bold">{{formatCurrency(baseProduct.base_price)}}</p>
     </div>
 </div>

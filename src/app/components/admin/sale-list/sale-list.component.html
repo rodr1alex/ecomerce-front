@@ -84,6 +84,7 @@
                         <th scope="col" class="table-th ">Total </th>
                         <th scope="col" class="table-th">Items </th>
                         <th scope="col" class="table-th">Usuario </th>
+                        <th scope="col" class="table-th">Estado </th>
                         <th scope="col" class="table-th"></th>
                     </tr>  
                 </thead>
@@ -95,6 +96,7 @@
                             <td class="table-td">{{sale.total == undefined ? 'Undefined': sale.total}}</td>
                             <td class="table-td">{{sale.items == undefined ? 'Undefined': sale.items}}</td>
                             <td class="table-td">{{sale.username == undefined ? 'Undefined': sale.username}}</td>
+                            <td class="table-td">{{sale.status == undefined ? 'Undefined': sale.status}}</td>
                             <td class="table-td"><a [routerLink]="['/admin_panel/2/1/',sale.sale_id]">Ver detalles</a></td>
                         </tr>
                     }

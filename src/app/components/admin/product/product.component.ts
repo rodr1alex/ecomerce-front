@@ -107,18 +107,7 @@ export class ProductComponent implements OnInit{
               optionNode?.setAttribute('disabled', 'true');
             }
             for(let colorVariantProduct of this.baseProduct.colorVariantProductList){
-              //INTENTAR IMPLEMENTAR LA DESHABILITACION DE TALLAS OCUPADAS, FALLA EL IDENTIFICADOR Y OBTENCION DEL NODO
-              // let usedSizeList: string[] = []
-              // for(let finalProduct of colorVariantProduct.finalProductList){
-              //   usedSizeList.push(finalProduct.size.name);
-              // }
-              // console.log('Cada listado de tallas usadas:', usedSizeList);
-              // for(let finalProduct of colorVariantProduct.finalProductList){
-              //   const id = `${finalProduct.size.name}${colorVariantProduct.color_variant_product_id}`
-              //   console.log('identificador del nodo a desabilitar: ', id);
-              //   const node = document.getElementById(id);
-              //   console.log(node);
-              // }
+        
               this.originalFinalProductListLength.push(colorVariantProduct.finalProductList.length);
               let finalProduct = new FinalProduct();
               finalProduct.size = new Size();
@@ -142,6 +131,8 @@ export class ProductComponent implements OnInit{
     const lastFinalProductID = this.baseProduct.colorVariantProductList[i].finalProductList[this.baseProduct.colorVariantProductList[i].finalProductList.length - 1].final_product_id;
     let finalProduct = new FinalProduct();
     finalProduct.final_product_id = lastFinalProductID + 1;
+    finalProduct.stock = this.baseProduct.colorVariantProductList[i].finalProductList[this.baseProduct.colorVariantProductList[i].finalProductList.length - 1].stock;
+    finalProduct.final_price = this.baseProduct.base_price;
     finalProduct.size = new Size();
     let size_id = this.baseProduct.colorVariantProductList[i].finalProductList[this.baseProduct.colorVariantProductList[i].finalProductList.length - 1].size.size_id;
     const sizeName: string = this.sizeList.find(item => item.size_id == size_id)?.name || ''; 
@@ -188,7 +179,6 @@ export class ProductComponent implements OnInit{
       colorVariantProductImage.url = this.colorVariantProductImage.url;
       this.baseProduct.colorVariantProductList[i].colorVariantProductImageList.push(colorVariantProductImage);
       this.colorVariantProductImage.url = '';
-      console.log('wea', this.baseProduct.colorVariantProductList[i].colorVariantProductImageList)
   }
   removeColorVariantProductImage(colorVariantProductImage: ColorVariantProductImage, colorVariantProduct: ColorVariantProduct){
     let i = this.baseProduct.colorVariantProductList.indexOf(colorVariantProduct);
@@ -254,20 +244,20 @@ export class ProductComponent implements OnInit{
     })
   }
 
-  addColorVariantProduct(){
-    this.createProduct();
-    const colorVariantProductCopy = new ColorVariantProduct();
-    colorVariantProductCopy.baseProduct = this.baseProduct;
-    colorVariantProductCopy.colorVariantProductImageList = this.baseProduct.colorVariantProductList[0].colorVariantProductImageList;
-    const color = new Color();
-    color.color_id = +this.selectedColor;
-    colorVariantProductCopy.color = color;
-    this.colorVariantProductService.create(colorVariantProductCopy).subscribe({
-      next: response =>{
-        console.log('Variacion de color agregada con exito');
-        this.baseProduct.colorVariantProductList = [response];
-      }
-    })
-  }
+  // addColorVariantProduct(){
+  //   this.createProduct();
+  //   const colorVariantProductCopy = new ColorVariantProduct();
+  //   colorVariantProductCopy.baseProduct = this.baseProduct;
+  //   colorVariantProductCopy.colorVariantProductImageList = this.baseProduct.colorVariantProductList[0].colorVariantProductImageList;
+  //   const color = new Color();
+  //   color.color_id = +this.selectedColor;
+  //   colorVariantProductCopy.color = color;
+  //   this.colorVariantProductService.create(colorVariantProductCopy).subscribe({
+  //     next: response =>{
+  //       console.log('Variacion de color agregada con exito');
+  //       this.baseProduct.colorVariantProductList = [response];
+  //     }
+  //   })
+  // }
 
 }

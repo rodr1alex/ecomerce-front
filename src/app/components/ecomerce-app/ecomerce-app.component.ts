@@ -110,10 +110,18 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
 
   addProductToCart(){
     this.sharingDataService.addProductToCartEventEmitter.subscribe((orderedProduct)=>{
-      let cartUpdated = {
-        ...this.cart,
-        orderedProductList: [...this.cart.orderedProductList] // Clonar shallow copy del array orderedProductList
-      };
+      let cartUpdated: any;
+      if(this.cart.orderedProductList !=null){
+        cartUpdated = {
+          ...this.cart,
+          orderedProductList: [...this.cart.orderedProductList] || [] // Clonar shallow copy del array orderedProductList
+        };
+      }else{
+        cartUpdated = {
+          ...this.cart,
+          orderedProductList: [] 
+        };
+      }
       cartUpdated.orderedProductList.push(orderedProduct)
       cartUpdated.items += orderedProduct.quantity;
       cartUpdated.total += (orderedProduct.quantity * orderedProduct.finalProduct.final_price);
@@ -191,8 +199,8 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
         next: response => {
           const token = response.token;
           const payload = this.authService.getPayload(token);
-          const id = 1;
-          const user = { username: payload.sub, id };
+          const id = payload.user_id;
+          const user = { username: payload.sub, id};
           const login = {
             user,
             isAuth: true,
@@ -200,10 +208,14 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
           };
           this.authService.token = token;
           this.authService.user = login;
-          //console.log("Inicio de sesion exitoso!", login);
+          console.log("Inicio de sesion exitoso!", login);
+         
           //verificacion de carrito de compras
           this.cartVerify(id);
           this.router.navigate(['/home']);
+          // this.router.navigate(['/home']).then(()=>{
+          //   window.location.reload();
+          // });
         },
         error: error => {
           if (error.status == 401) {
@@ -219,21 +231,34 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
   cartVerify(id: number){
     this.userService.findById(id).subscribe({
       next: user => {
-        const cartList: Cart[] = user.cartList;
-        const lastCart = cartList.pop() || new Cart();
-        if(lastCart?.sale == null){
-          //console.log('Ya existe un carrito!', lastCart)
-          //this.cart = lastCart;
-          this.cartStore.dispatch(putCart({cart: lastCart}));
+        if(user.cartList.length > 0){
+          console.log('Carrito list esta definido', user.cartList)
+          const cartList: Cart[] = user.cartList;
+          const lastCart = cartList.pop() || new Cart();
+          if(lastCart?.sale == null){
+            console.log('Ya existe un carrito!', lastCart)
+           
+            this.cartStore.dispatch(putCart({cart: lastCart}));
+          }else{
+            this.cartService.create(id).subscribe({
+              next: cart => {
+                console.log('Carrito creado con exito!', cart);
+                this.cartStore.dispatch(putCart({cart}));
+               
+              }
+            })
+          }
         }else{
+          console.log('Carrito list NO esta definido')
           this.cartService.create(id).subscribe({
             next: cart => {
-              //console.log('Carrito creado con exito!', cart);
+              console.log('Carrito creado con exito!', cart);
               this.cartStore.dispatch(putCart({cart}));
-              //this.cart = cart;
+             
             }
           })
         }
+        
       }
     })
   }
@@ -246,13 +271,26 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
   }
 
   addUser(){
-    this.sharingDataService.newUserEventEmitter.subscribe((user)=>{
+    this.sharingDataService.newUserEventEmitter.subscribe(({user, direction})=>{
       this.userService.create(user).subscribe(
         {
           next: (userCreated)=>{
             //console.log('Usuario creado con exito! ', userCreated);
             userCreated.password = user.password;
+            console.log('User created: ', userCreated);
             this.sharingDataService.handlerLoginEventEmitter.emit(userCreated);
+            setTimeout(()=>{
+              this.directionService.create(direction, userCreated.id).subscribe(
+                {
+                  next: response =>{
+                    console.log("Direccion agregada con exito!")
+                  },
+                  error: error =>{
+                    throw new error;
+                  }
+                }
+              )
+            }, 2000)
           },
           error: (err) => {
             if (err.status == 400) {

@@ -27,4 +27,8 @@ export class SaleService {
   filter(user_id: number,startTotal: number, endTotal: number, pageSize: number, page: number): Observable<any> {
     return this.http.get<any[]>(`${this.url}/filter/${user_id}/${startTotal}/${endTotal}/${pageSize}/${page}`);
   }
+
+  cancelSale(sale_id: number): Observable<any> {
+    return this.http.put<any>(`${this.url}/update/cancel_sale/${sale_id}`, sale_id);
+  }
 }

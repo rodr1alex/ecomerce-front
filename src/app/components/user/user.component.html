@@ -135,42 +135,45 @@
                         </div>
                     }
                 </div>
-                <p>Agregar direccion (Opcional)</p>
-                <div class="input-group">
-                    <input 
-                        type="text"
-                        name="city" 
-                        [(ngModel)]="addres.city" 
-                        class="input"
-                        #city="ngModel"
-                        minlength=5
-                        required
-                    >
-                    <label for="" class="placeholder">Ciudad</label>
-                </div>
-                <div class="input-group">
-                    <input 
-                        type="text"
-                        name="street" 
-                        [(ngModel)]="addres.street" 
-                        class="input"
-                        #street="ngModel"
-                        minlength=5
-                        required
-                    >
-                    <label for="" class="placeholder">Calle</label>
-                </div>
-                <div class="input-group">
-                    <input 
-                        type="text"
-                        name="number" 
-                        [(ngModel)]="addres.number" 
-                        class="input"
-                        #number="ngModel"
-                        required
-                    >
-                    <label for="" class="placeholder">Numero</label>
-                </div>
+                <button class="button mb-10" (click)="showDirectionForm()">Agregar direccion (Opcional)</button>
+                @if(showDirection){
+                    <div class="input-group">
+                        <input 
+                            type="text"
+                            name="city" 
+                            [(ngModel)]="addres.city" 
+                            class="input"
+                            #city="ngModel"
+                            minlength=5
+                            required
+                        >
+                        <label for="" class="placeholder">Ciudad</label>
+                    </div>
+                    <div class="input-group">
+                        <input 
+                            type="text"
+                            name="street" 
+                            [(ngModel)]="addres.street" 
+                            class="input"
+                            #street="ngModel"
+                            minlength=5
+                            required
+                        >
+                        <label for="" class="placeholder">Calle</label>
+                    </div>
+                    <div class="input-group">
+                        <input 
+                            type="text"
+                            name="number" 
+                            [(ngModel)]="addres.number" 
+                            class="input"
+                            #number="ngModel"
+                            required
+                        >
+                        <label for="" class="placeholder">Numero</label>
+                    </div>
+                }
+                
                }@else {
                 <a class="mb-2 text-blue-400" [routerLink]="['/update_password', user.id]">Actualizar contraseña </a>
                 <a class="mb-10 text-blue-400" [routerLink]="['/direction_list', user.id]">Actualizar direcciones </a>
@@ -179,7 +182,12 @@
             <div class="flex justify-around w-full mb-10">
                 @if (user.id == 0) {
                     <button class="button w-1/4 text-center" (click)="onClear(userForm)">Limpiar</button>
-                    <button class="button w-1/4 text-center" [disabled]="(userForm.invalid || (user.password != passwordRepeat))" (click)="createUser()">
+                    <button 
+                        class="button w-1/4 text-center" 
+                        [disabled]="(userForm.invalid || (user.password != passwordRepeat))" 
+                        (click)="createUser()"
+                        [ngClass]="{'button--disabled': (userForm.invalid)}"
+                    >
                         Crear
                     </button>
                     <button class="button button--cancel w-1/4 text-center" [routerLink]="['/home']">Cancelar</button>

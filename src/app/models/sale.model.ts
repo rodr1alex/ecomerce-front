@@ -9,4 +9,5 @@ export class Sale{
     total!: number;
     items!: number;
     cart_id!: number;
+    status!: string;
 }

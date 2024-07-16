@@ -4,15 +4,17 @@ import { User } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { SharingDataService } from '../../services/sharing-data.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'user',
   standalone: true,
-  imports: [FormsModule, RouterModule],
+  imports: [FormsModule, RouterModule, CommonModule],
   templateUrl: './user.component.html',
 })
 export class UserComponent implements OnInit{
   user: User = new User();
+  showDirection: boolean = false;
   passwordRepeat: String = '';
   addres: any = {
     city:"",
@@ -46,7 +48,8 @@ export class UserComponent implements OnInit{
   createUser(){
     console.log(this.user);
     console.log(this.addres);
-    this.sharingDataService.newUserEventEmitter.emit(this.user);
+    this.sharingDataService.newUserEventEmitter.emit({'user':this.user, 'direction': this.addres});
+
   }
 
   onClear(userForm: NgForm): void {
@@ -57,5 +60,8 @@ export class UserComponent implements OnInit{
   updateUser(){
     console.log('Datos actualizados: ', this.user);
     this.sharingDataService.updateUserEventEmitter.emit(this.user);
+  }
+  showDirectionForm(){
+    this.showDirection = true;
   }
 }

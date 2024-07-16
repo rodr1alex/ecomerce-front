@@ -1,15 +1,20 @@
     <div class="card p-4">
-        @if(cart.orderedProductList.length > 0){
-            <div class="mb-6">
-                <p>Su carrito</p>
-                <p>Total items {{cart.items}}</p>
-                <p>Total en esta compra: {{cart.total}}</p>
-            </div>
-        }@else {
-            <div class="mb-6">
-                <p class="text-center">Su carrito esta vacio</p>
-            </div>
+        @if(cart.orderedProductList != undefined){
+            @if(cart.orderedProductList.length > 0){
+                <div class="mb-6">
+                    <p>Su carrito</p>
+                    <p>Total items {{cart.items}}</p>
+                    <p>Total en esta compra: {{cart.total}}</p>
+                </div>
+            }@else {
+                <div class="mb-6">
+                    <p class="text-center">Su carrito esta vacio</p>
+                </div>
+            }
         }
+        
+
+        @if(cart.orderedProductList != undefined){
 
         
         <div class="mb-6">
@@ -37,8 +42,6 @@
                 </a>
                
             }
-            
-            
         </div>
         @if(cart.orderedProductList.length > 0){
             <div class="flex flex-col w-full items-center mb-6">
@@ -50,6 +53,7 @@
                 <button class="button button--disabled w-11/12" [disabled]="true" >Ir a pagar</button>
             </div>
         }
+    }
         
     </div>
 

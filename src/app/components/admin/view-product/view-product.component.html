@@ -1,63 +1,67 @@
 <div class="w-11/12 mx-auto flex justify-between mb-10 mt-5">
     
-    <div class="card  h-96 pt-2  pb-6" style="width: 18%;">
-        <!-- filtros -->
-        <p class="text-center">Filtrar por</p>
-         <div class="px-6  py-6 flex flex-col justify-between h-full">
-            <div class="flex relative">
-                <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;" [(ngModel)]="selectedCategory">
-                    <option value="" disabled selected>Categoria</option>
-                    <option *ngFor="let category of categoryList" [value]="category.category_id">
-                        {{category.name}}
-                    </option>
-                </select>
-                @if(selectedCategory != ''){
-                    <button class="ml-2 absolute -right-4 top-1" (click)="removeCategoryFilter()"><i class="fa-solid fa-trash"></i></button>
-                }
-            </div>
-            <div class="flex relative">
-                <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;"  name="brand" id="brand" [(ngModel)]="selectedBrand">
-                    <option value="" disabled selected>Marca</option>
-                    <option *ngFor="let brand of brandList" [value]="brand.brand_id">
-                        {{brand.name}}
-                    </option>
-                </select>
-                @if(selectedBrand != ''){
-                    <button class="ml-2 absolute -right-4 top-1" (click)="removeBrandFilter()"><i class="fa-solid fa-trash"></i></button>
-                }
-            </div>
-            <div class="flex relative">
-                <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;"  name="brand" id="brand" [(ngModel)]="selectedColor">
-                    <option value="" disabled selected>Color</option>
-                    <option *ngFor="let color of colorList" [value]="color.color_id">
-                        {{color.name}}
-                    </option>
-                </select>
-                @if(selectedColor != ''){
-                    <button class="ml-2 absolute -right-4 top-1" (click)="removeColorFilter()"><i class="fa-solid fa-trash"></i></button>
-                }
-            </div>
-            <div class="flex relative">
-                <select (change)="onChange($event)"  class="button text-slate-600 w-full" style="height: 36px;"  name="brand" id="brand" [(ngModel)]="selectedSize">
-                    <option value="" disabled selected>Talla</option>
-                    <option *ngFor="let size of sizeList" [value]="size.size_id">
-                        {{size.name}}
-                    </option>
-                </select>
-                @if(selectedSize != ''){
-                    <button class="ml-2 absolute -right-4 top-1" (click)="removeSizeFilter()"><i class="fa-solid fa-trash"></i></button>
-                }
-            </div>
-            <button 
-                class="button" 
-                (click)="unfilter()"
-                [disabled]="(selectedSize == '' && selectedColor == '' && selectedBrand == '' && selectedCategory == '')"
-                [ngClass]="{'button--disabled': (selectedSize == '' && selectedColor == '' && selectedBrand == '' && selectedCategory == '')}"
-                >
-                Quitar filtros
-            </button>
-         </div>
+    <div class="flex flex-col" style="width: 18%;">
+        <div class="card  h-96 pt-2  pb-6 mb-10" >
+            <!-- filtros -->
+            <p class="text-center">Filtrar por</p>
+             <div class="px-6  py-6 flex flex-col justify-between h-full">
+                <div class="flex relative">
+                    <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;" [(ngModel)]="selectedCategory">
+                        <option value="" disabled selected>Categoria</option>
+                        <option *ngFor="let category of categoryList" [value]="category.category_id">
+                            {{category.name}}
+                        </option>
+                    </select>
+                    @if(selectedCategory != ''){
+                        <button class="ml-2 absolute -right-4 top-1" (click)="removeCategoryFilter()"><i class="fa-solid fa-trash"></i></button>
+                    }
+                </div>
+                <div class="flex relative">
+                    <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;"  name="brand" id="brand" [(ngModel)]="selectedBrand">
+                        <option value="" disabled selected>Marca</option>
+                        <option *ngFor="let brand of brandList" [value]="brand.brand_id">
+                            {{brand.name}}
+                        </option>
+                    </select>
+                    @if(selectedBrand != ''){
+                        <button class="ml-2 absolute -right-4 top-1" (click)="removeBrandFilter()"><i class="fa-solid fa-trash"></i></button>
+                    }
+                </div>
+                <div class="flex relative">
+                    <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;"  name="brand" id="brand" [(ngModel)]="selectedColor">
+                        <option value="" disabled selected>Color</option>
+                        <option *ngFor="let color of colorList" [value]="color.color_id">
+                            {{color.name}}
+                        </option>
+                    </select>
+                    @if(selectedColor != ''){
+                        <button class="ml-2 absolute -right-4 top-1" (click)="removeColorFilter()"><i class="fa-solid fa-trash"></i></button>
+                    }
+                </div>
+                <div class="flex relative">
+                    <select (change)="onChange($event)"  class="button text-slate-600 w-full" style="height: 36px;"  name="brand" id="brand" [(ngModel)]="selectedSize">
+                        <option value="" disabled selected>Talla</option>
+                        <option *ngFor="let size of sizeList" [value]="size.size_id">
+                            {{size.name}}
+                        </option>
+                    </select>
+                    @if(selectedSize != ''){
+                        <button class="ml-2 absolute -right-4 top-1" (click)="removeSizeFilter()"><i class="fa-solid fa-trash"></i></button>
+                    }
+                </div>
+                <button 
+                    class="button" 
+                    (click)="unfilter()"
+                    [disabled]="(selectedSize == '' && selectedColor == '' && selectedBrand == '' && selectedCategory == '')"
+                    [ngClass]="{'button--disabled': (selectedSize == '' && selectedColor == '' && selectedBrand == '' && selectedCategory == '')}"
+                    >
+                    Quitar filtros
+                </button>
+             </div>
+        </div>
+        <button class="button h-10" [routerLink]="['/admin_panel/0/1/',0]">Agregar nuevo producto</button>
     </div>
+    
 
     <div class="w-4/5 relative">
         <!-- paginador -->

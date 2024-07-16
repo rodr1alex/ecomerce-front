@@ -45,7 +45,7 @@
         </div>
     
         <div id="cartNode" #cartNode class="z-10 absolute left-[-1000px] top-20 transition-all p-2 w-full hiddenMenu py-2 md:hidden">
-            <!-- carrito -->
+            <!-- carrito MOBILE-->
             <cart></cart>
         </div>
         
@@ -80,7 +80,7 @@
                     @if(login.isAuth){
                         <div class="isLogged hidden card  flex-col justify-center items-center w-4/5 h-48">
                             <button class="button my-4" (click)="handlerLogout()">Cerrar sesion</button>
-                            <button class="button my-4"[routerLink]="['/update_user',1]" >Actualizar datos</button>
+                            <button class="button my-4"[routerLink]="['/update_user',login.user.id]" >Actualizar datos</button>
                             @if(admin){
                                 <button class="button my-4" (click)="adminPanel()">
                                     @if(showAdminPanel){
@@ -101,7 +101,7 @@
             </div>
             @if (!showAdminPanel) {
                 <div class="cart relative  md:w-1/2 md:flex md:items-center md:hover:bg-gray-100 md:h-16">
-                    <!-- Carrito -->
+                    <!-- Carrito DESKTOP-->
                     <a (click)="showHiddenCart()"><i class="fa-solid fa-cart-shopping text-2xl"></i></a>
                     <div class="absolute top-6 md:top-10 left-5 h-4 w-4 nm-inset-blue-50-xs rounded-full flex justify-center items-center">
                         @if(cart.items){

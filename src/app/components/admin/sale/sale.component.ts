@@ -72,6 +72,14 @@ export class SaleComponent implements OnInit{
     return value.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
   }
 
+  cancelSale(){
+    this.saleService.cancelSale(this.sale.sale_id).subscribe({
+      next: response =>{
+        console.log('venta cancelado con exito!', response);
+      }
+    })
+    
+  }
 
 
 

@@ -18,18 +18,19 @@ import { OrderedProduct } from '../../models/ordered-product.model';
 import { Cart } from '../../models/cart.model';
 import { findProduct } from '../../store/cart.action';
 import { tick } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'product-detail',
   standalone: true,
-  imports: [ProductCardComponent, CommonModule, RouterModule],
+  imports: [ProductCardComponent, CommonModule, RouterModule, FormsModule],
   templateUrl: './product-detail.component.html'
 })
 
 export class ProductDetailComponent implements OnInit{
   baseProduct!: BaseProduct;
   baseProductList!: BaseProduct[];
-  cart!: Cart;
+  cart: Cart = new Cart();
   orderedProduct!: OrderedProduct;
   quantity: number = 1;
   selectedSize: Size = new Size();
@@ -79,6 +80,10 @@ export class ProductDetailComponent implements OnInit{
       this.sizeListEnabled = this.sizeList;
     })
     
+    setTimeout(()=>{
+      this.setColorButtons();
+    },100)
+   
   }
 
   formatCurrency(value: number): string {
@@ -88,6 +93,13 @@ export class ProductDetailComponent implements OnInit{
     return value.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
   }
 
+  setColorButtons(){
+    for(let color of this.colorList){
+      let node = document.getElementById(color.name + '');
+      console.log('Nodos obtenidos',node);
+      node?.classList.add(color.tailwindclass);
+    }
+  }
   getImageList(){
     this.imageListURL = [];
     this.imageListURL = this.getImageURLBaseProduct(this.baseProduct);
@@ -95,7 +107,6 @@ export class ProductDetailComponent implements OnInit{
   getColorList(colorVariantProductList: ColorVariantProduct[]){
     this.colorList = [];
     colorVariantProductList.map(colorVariantProduct => this.colorList.push(colorVariantProduct.color));
-
   }
   getSizeList(colorVariantProductList: ColorVariantProduct[]): Size[]{
     let sizeList: Size[] = [];
@@ -182,11 +193,13 @@ export class ProductDetailComponent implements OnInit{
 
   
   addProductToCart(){
+    console.log('este el componenete que esta weando')
     let productInCart = false;
     const orderedProduct = new OrderedProduct();
     orderedProduct.quantity = this.quantity;
     orderedProduct.finalProduct = this.getFinalProduct(); 
-    this.cart.orderedProductList.map(orderedProductCART => {
+    if(this.cart.orderedProductList != null){
+      this.cart.orderedProductList.map(orderedProductCART => {
         if(orderedProductCART.finalProduct.final_product_id == orderedProduct.finalProduct.final_product_id){
           console.log('Producto ya esta en carrito, final_product_id: ', orderedProductCART.finalProduct.final_product_id);
           this.cartStore.dispatch(findProduct({final_product_id:orderedProductCART.finalProduct.final_product_id}))
@@ -197,7 +210,9 @@ export class ProductDetailComponent implements OnInit{
     if(productInCart == false){
         this.sharingDataService.addProductToCartEventEmitter.emit(orderedProduct);
     }
-  
+    }else{
+      this.sharingDataService.addProductToCartEventEmitter.emit(orderedProduct);
+    }
   }
 
   verifySizeAndColor(){

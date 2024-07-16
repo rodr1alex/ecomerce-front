@@ -35,12 +35,20 @@ export class NavbarComponent implements OnInit, OnChanges{
   
   categoryList: CategoryList[] = [
     {
-      categoryName: new Category(6,'hombre'),
-      subCategoryList: [new Category(4,'Calzado'),new Category(8,'Ropa'),new Category(9,'Accesorios')]
+      categoryName: new Category(1,'Running'),
+      subCategoryList: [new Category(7,'Calzado'),new Category(6,'Ropa'),new Category(8,'Elementos de proteccion'), new Category(4,'Accesorios')]
     },
     {
-      categoryName: new Category(7,'Mujer'),
-      subCategoryList: [new Category(4,'Calzado'),new Category(8,'Ropa'),new Category(9,'Accesorios')]
+      categoryName: new Category(2,'Ciclismo'),
+      subCategoryList: [new Category(5,'Bicicletas'),new Category(6,'Ropa'),new Category(8,'Elementos de proteccion'), new Category(4,'Accesorios')]
+    },
+    {
+      categoryName: new Category(3,'Natacion'),
+      subCategoryList: [new Category(4,'Trajes de neopreno'),new Category(8,'Elementos de proteccion'), new Category(4,'Accesorios')]
+    },
+    {
+      categoryName: new Category(4,'Accesorios'),
+      subCategoryList: [new Category(1,'Running'), new Category(2,'Ciclismo'), new Category(3,'Natacion'), new Category(13,'Nutricion')]
     },
   ]
   
@@ -76,7 +84,6 @@ export class NavbarComponent implements OnInit, OnChanges{
 
   clickHanddler(){
     this.sharingDataService.clickrEventEmitter.subscribe(({width, height})=>{
-      console.log('Info: ', width, height);
       if(width > 768){
         if(this.clickInLogin){
           //console.log('Click in login');
@@ -114,12 +121,20 @@ export class NavbarComponent implements OnInit, OnChanges{
     (
       this.categoryList =  [
         {
-          categoryName: new Category(6,'hombre'),
-          subCategoryList: [new Category(4,'Calzado'),new Category(8,'Ropa'),new Category(9,'Accesorios')]
+          categoryName: new Category(1,'Running'),
+          subCategoryList: [new Category(7,'Calzado'),new Category(6,'Ropa'),new Category(8,'Elementos de proteccion'), new Category(4,'Accesorios')]
         },
         {
-          categoryName: new Category(7,'Mujer'),
-          subCategoryList: [new Category(4,'Calzado'),new Category(8,'Ropa'),new Category(9,'Accesorios')]
+          categoryName: new Category(2,'Ciclismo'),
+          subCategoryList: [new Category(5,'Bicicletas'),new Category(6,'Ropa'),new Category(8,'Elementos de proteccion'), new Category(4,'Accesorios')]
+        },
+        {
+          categoryName: new Category(3,'Natacion'),
+          subCategoryList: [new Category(4,'Trajes de neopreno'),new Category(8,'Elementos de proteccion'), new Category(4,'Accesorios')]
+        },
+        {
+          categoryName: new Category(4,'Accesorios'),
+          subCategoryList: [new Category(1,'Running'), new Category(2,'Ciclismo'), new Category(3,'Natacion'), new Category(13,'Nutricion')]
         },
       ]
     );
@@ -175,11 +190,15 @@ export class NavbarComponent implements OnInit, OnChanges{
   handlerLogout() {
     this.authService.logout();
     this.router.navigate(['/home'])
+    if(this.showAdminPanel){
+      this.adminPanel();
+    }
+    
 
     //TRATAR DE OPTIMIZAR,CREAR ACCIO PARA LIMPIAR CARRITO
     let cartUpdated = {
       ...this.cart,
-      orderedProductList: this.cart.orderedProductList.map(item => ({ ...item })) // Clonar deep copy de los objetos en orderedProductList
+      orderedProductList: this.cart.orderedProductList.map(item => ({ ...item })) 
     };
     cartUpdated.items = 0;
     cartUpdated.total = 0;

@@ -3,6 +3,7 @@
     <div class="flex w-full justify-between">
         <div class="w-1/2">
             <p>Total: <span class="font-bold">{{formatCurrency(sale.total)}}</span></p>
+            <p>Estado: <span class="font-bold">{{sale.status}}</span></p>
             <p>Numero de productos: <span class="font-bold">{{sale.items}}</span></p>
             <p>Usuario: <span class="font-bold">{{user.username}}</span></p>
             <p>ID usuario: <span class="font-bold">{{user.id}}</span></p>
@@ -12,13 +13,13 @@
         <div class="card card--blue mb-6 p-4">
             <p class="mb-4">Productos en esta venta:</p>
             @for (orderedProduct of cart.orderedProductList; track $index) {
-                    <div class="cart-item flex flex-row  mb-4 justify-between h-20">
+                    <div class="cart-item flex flex-row  mb-4 justify-between min-h-20">
                         <img src={{orderedProduct.finalProduct.img}} class="w-20" alt="">
                         <div class="pt-2 pl-2">
                             <p><span class="font-bold">{{orderedProduct.finalProduct.brand}} </span>{{orderedProduct.finalProduct.final_description}}</p>
                             <p>Color: <span class="font-bold">{{orderedProduct.finalProduct.color}}</span> Talla: <span class="font-bold">{{orderedProduct.finalProduct.size.name}}</span></p>
                             <p><span class="font-bold"> {{formatCurrency(orderedProduct.finalProduct.final_price)}}</span></p>
-                            <p>
+                            <p class="mb-2">
                                 ID producto: {{orderedProduct.finalProduct.final_product_id}} 
                                 <a class="text-blue-400 hover:cursor-pointer" [routerLink]="['/admin_panel/0/1',orderedProduct.finalProduct.base_product_id]">
                                     Ver detalles
@@ -41,8 +42,8 @@
         </div>
     </div>
     <div class="flex w-full justify-around">
-        <button class="button w-48">Anular venta</button>
-        <button class="button w-48">Actualizar venta</button>
-        <button class="button w-48">Cancelar</button>
+        <button class="button w-48" (click)="cancelSale()">Anular venta</button>
+        <button class="button button--disabled w-48" [disabled]="true">Actualizar venta</button>
+        <button class="button w-48" [routerLink]="['/admin_panel/1',0]">Cancelar</button>
     </div>
 </div>
