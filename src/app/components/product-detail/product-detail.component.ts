@@ -84,6 +84,13 @@ export class ProductDetailComponent implements OnInit{
       this.setColorButtons();
     },100)
    
+    if(this.colorList[0].color_id == 1){
+      this.selectedColor = this.colorList[0];
+    }
+
+    if(this.sizeList[0].size_id == 28){
+      this.selectedSize = this.sizeList[0];
+    }
   }
 
   formatCurrency(value: number): string {
@@ -96,8 +103,7 @@ export class ProductDetailComponent implements OnInit{
   setColorButtons(){
     for(let color of this.colorList){
       let node = document.getElementById(color.name + '');
-      console.log('Nodos obtenidos',node);
-      node?.classList.add(color.tailwindclass);
+      node?.setAttribute('style',`background-color: ${color.tailwindclass};`);
     }
   }
   getImageList(){

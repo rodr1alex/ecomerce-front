@@ -16,7 +16,7 @@ import { Role } from '../../../models/role.model';
 export class UserListComponent implements OnInit{
 userList: User[] = [];
 paginator!: any;
-url: string = '/admin_panel/1/0';
+url: string = '/admin_panel/2';
 pageSizeList: number[] = [5,10,20,50,100,200,500];
 selectedPageSize: string = '20';
 roleList: any []  =[{'id':'1','roleName':'User'}, {'id':'2','roleName':'Admin'}];

@@ -46,19 +46,20 @@
                 <p class="font-bold">{{formatCurrency(baseProduct.base_price) }}</p>
             </div>
 
-            @if(colorList.length > 0){
+            @if(colorList[0].color_id != 1){
                 <div class="mb-6">
                     @if(selectedColor.color_id){
                         <p class="mb-2">Color seleccionado: {{selectedColor.name}}</p>
                     }@else {
-                        <p class="mb-2">Colores disponibles</p>
+                        <p class="mb-2">Colores disponibles:</p>
                     }
                     <div>
 
                         @for (color of colorList; track $index) {
                             <button
                             id="{{color.name}}"
-                            class="text-sm font-bold p-1 px-4 rounded-full transition duration-100 transform  active:nm-flat-gray-300 mr-2 w-12 h-7 nm-flat-gray-900"
+                            class="text-sm font-bold p-1 px-4 rounded-full transition duration-100 transform  active:nm-flat-gray-300 mr-2 w-12 h-7
+                            nm-flat-white"
                             (click)="setSelectedColor(color)"
                             >
                         </button>
@@ -66,8 +67,13 @@
                         
                     </div>
                 </div>
+            }@else {
+                <div class="h-20 ">
+                    <!-- caja vacia para conservar proporciones -->
+                </div>
             }
-            @if(sizeList.length > 0){
+            @if(sizeList[0].size_id != 28){ 
+                <!-- 28 es el id del "sin talla" -->
                 <div class="mb-6">
                     @if(selectedSize.size_id){
                         <p class="mb-2">Tallas seleccionada: {{selectedSize.name}}</p>
@@ -84,6 +90,8 @@
                         >{{size.name}}</button>
                     </div>
                 </div>
+            }@else {
+                <p class="mb-10">Producto en talla y/o tamaño unico</p>
             }
 
 
@@ -99,7 +107,7 @@
 
                 <div class="mb-6 w-full flex justify-center md:justify-start md:w-1/3">
                     @if(login.isAuth){
-                        <button class="button button--grey w-full" (click)="verifySizeAndColor()">agregar al carro</button>
+                        <button class="button button--grey w-full" (click)="verifySizeAndColor()">Agregar al carro</button>
                     }@else {
                         <button class="button button--grey w-full" [routerLink]="['/login']">Iniciar session para agregar a carrito</button>
                     }

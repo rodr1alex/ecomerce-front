@@ -53,7 +53,16 @@ export class ProductListComponent implements OnInit{
       this.categoryListToFilter = [new Category(category_id, ''), new Category(subcategory_id, '')];
       this.baseProductService.getBrandList(this.categoryListToFilter).subscribe({
         next: response =>{
-          this.brandList = response;
+          const brandListResponse = response;
+          const brandListClean: Brand [] = [];
+          const indexList: number[] = [];
+          brandListResponse.map((brand: Brand) =>{
+            if(indexList.indexOf(brand.brand_id) === -1){
+              indexList.push(brand.brand_id);
+              brandListClean.push(brand);
+            }
+          }) 
+          this.brandList = brandListClean;
         }
       });
       this.baseProductService.filterByCategoryList(page, this.categoryListToFilter).subscribe({

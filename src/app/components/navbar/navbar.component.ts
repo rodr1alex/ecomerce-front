@@ -44,7 +44,7 @@ export class NavbarComponent implements OnInit, OnChanges{
     },
     {
       categoryName: new Category(3,'Natacion'),
-      subCategoryList: [new Category(4,'Trajes de neopreno'),new Category(8,'Elementos de proteccion'), new Category(4,'Accesorios')]
+      subCategoryList: [new Category(9,'Trajes de neopreno'),new Category(8,'Elementos de proteccion'), new Category(4,'Accesorios')]
     },
     {
       categoryName: new Category(4,'Accesorios'),
@@ -130,7 +130,7 @@ export class NavbarComponent implements OnInit, OnChanges{
         },
         {
           categoryName: new Category(3,'Natacion'),
-          subCategoryList: [new Category(4,'Trajes de neopreno'),new Category(8,'Elementos de proteccion'), new Category(4,'Accesorios')]
+          subCategoryList: [new Category(9,'Trajes de neopreno'),new Category(8,'Elementos de proteccion'), new Category(4,'Accesorios')]
         },
         {
           categoryName: new Category(4,'Accesorios'),

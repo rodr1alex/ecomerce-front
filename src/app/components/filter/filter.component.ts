@@ -49,9 +49,32 @@ export class FilterComponent implements OnInit {
   }
   ngOnInit(): void {
     this.clickHanddler();
+    this.cleanBrandList();
   }
   onChange(event: Event){
     this.filter();
+  }
+
+  cleanBrandList(){
+    // const sizeListClean: Size[] = [];
+    // const indexList: number[] = [];
+    // sizeList.map(size => {
+    //   if(indexList.indexOf(size.size_id) === -1){
+    //     indexList.push(size.size_id);
+    //     sizeListClean.push(size);
+    //   }
+    // })
+    console.log('que xua la brandlist',this.brandList)
+    const brandListClean: Brand [] = [];
+    const indexList: number[] = [];
+    this.brandList.map(brand =>{
+      if(indexList.indexOf(brand.brand_id) === -1){
+        indexList.push(brand.brand_id);
+        brandListClean.push(brand);
+      }
+    }) 
+    console.log('la wea ', brandListClean);
+    this.brandList = brandListClean;
   }
 
   filter(){
@@ -91,7 +114,7 @@ export class FilterComponent implements OnInit {
     filterNode?.classList.add('rounded-xl')
     filterNode?.classList.remove('w-2/5')
     filterNode?.classList.add('w-full')
-    filterNode?.classList.add('z-10')
+    filterNode?.classList.add('z-10');
   }
   hiddeFilter(){
     const filterNode = document.getElementById('filterNode');

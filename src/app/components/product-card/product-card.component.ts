@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { BaseProduct } from '../../models/base-product.model';
+import { SharingDataService } from '../../services/sharing-data.service';
 
 @Component({
   selector: 'product-card',
@@ -13,9 +14,10 @@ export class ProductCardComponent implements OnInit, AfterViewInit{
   @ViewChild('dynamicHeightContainer') dynamicHeightContainer!: ElementRef;
   @ViewChild('imgPortrait') imgPortrait!: ElementRef;
 
-  constructor(private renderer: Renderer2) { }
+  constructor(private renderer: Renderer2, private sharingDataService: SharingDataService) { }
 
   ngOnInit(): void {
+    this.adjustHeight();
   }
 
   ngAfterViewInit(): void {
@@ -37,6 +39,26 @@ export class ProductCardComponent implements OnInit, AfterViewInit{
       this.renderer.setStyle(imgPortrait, 'min-height', `${minHeight}px`);
     }
   }
+
+  clickHanddler(){
+    this.sharingDataService.clickrEventEmitter.subscribe(({width, height})=>{
+      console.log('Info: ', width, height);
+      const container = this.dynamicHeightContainer.nativeElement;
+      container.style.height = `${width * 1.3}px`;
+      const imgPortrait = this.imgPortrait.nativeElement;
+      const minHeight = width * 0.975;
+      this.renderer.setStyle(imgPortrait, 'min-height', `${minHeight}px`);
+      // if(width > 768){
+      //   if(this.clickInFilter){
+      //     this.showFilter();
+      //     this.clickInFilter = false
+      //   }else{
+      //     this.hiddeFilter();
+      //   }
+      // }
+    })
+  }
+
   formatCurrency(value: number): string {
     if(value == undefined){
       value = 0;

@@ -23,7 +23,7 @@ import { UserService } from '../../../services/user.service';
 export class SaleListComponent implements OnInit{
   saleList: Sale[] = [];
   paginator!: any;
-  url: string = '/admin_panel/2/0';
+  url: string = '/admin_panel/1';
   page!: number;
   pageSizeList: number[] = [5,10,20,50,100,200,500];
   selectedPageSize: string = '10';
@@ -65,9 +65,8 @@ export class SaleListComponent implements OnInit{
   }
 
   onChange(event: Event){
-    console.log('cambiooo')
     this.filter();
-    this.router.navigate(['/admin_panel/2/0/0'])
+    this.router.navigate(['/admin_panel/1', 0])
   }
 
   filter(){

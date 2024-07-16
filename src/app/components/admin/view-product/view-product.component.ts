@@ -36,10 +36,10 @@ export class ViewProductComponent implements OnInit{
   selectedColor: string = '';
   selectedSize: string = '';
   paginator!: any;
-  url: string = '/admin_panel/0/0';
+  url: string = '/admin_panel/0';
   page!: number;
   pageSizeList: number[] = [5,10,20,50,100,200,500];
-  selectedPageSize: string = '20';
+  selectedPageSize: string = '100';
 
   constructor(
       private baseProductService: BaseProductService,
@@ -54,9 +54,7 @@ export class ViewProductComponent implements OnInit{
 
   }
   ngOnInit(): void {
-    console.log('INICIO de compoenente')
     this.route.paramMap.subscribe(params => {
-      //const page: number = +(params.get('page') || '0');
       this.page = +(params.get('page') || '0');;
       this.filter();
     })
@@ -91,7 +89,7 @@ export class ViewProductComponent implements OnInit{
   }
   onChange(event: Event){
     this.filter();
-    this.router.navigate(['/admin_panel/0/0/0'])
+    this.router.navigate(['/admin_panel/0/0'])
   }
 
   filter(){

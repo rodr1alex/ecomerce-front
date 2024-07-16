@@ -3,7 +3,7 @@ import { BaseProduct } from '../../../models/base-product.model';
 import { FormsModule } from '@angular/forms';
 import { BaseProductService } from '../../../services/base-product.service';
 import { Brand } from '../../../models/brand.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BrandService } from '../../../services/brand.service';
 import { CommonModule } from '@angular/common';
 import { ColorVariantProduct } from '../../../models/color-variant-product.model';
@@ -44,6 +44,7 @@ export class ProductComponent implements OnInit{
   constructor(
     private baseProductService: BaseProductService,
     private route: ActivatedRoute,
+    private router: Router,
     private brandService: BrandService,
     private colorService: ColorService,
     private sizeService: SizeService,
@@ -224,16 +225,21 @@ export class ProductComponent implements OnInit{
             colorVariantProductCopy.color = color;
             this.colorVariantProductService.create(colorVariantProductCopy).subscribe({
               next: response =>{
-                for(let j = 0; j < this.baseProduct.colorVariantProductList[i].finalProductList.length; j++){
-                  console.log('Variacion de color agregada con exito, estoy en el indice i: ', i);
+                for(let j = 0; j < this.baseProduct.colorVariantProductList[i].finalProductList.length - 1; j++){
                   const finalProductCopy = new FinalProduct();
                   finalProductCopy.colorVariantProduct = response;
-                  finalProductCopy.size = this.baseProduct.colorVariantProductList[i].finalProductList[j].size;
+                  const size = new Size();
+                  size.size_id = this.baseProduct.colorVariantProductList[i].finalProductList[j].size.size_id;
+                  finalProductCopy.size = size;
                   finalProductCopy.final_price = this.baseProduct.colorVariantProductList[i].finalProductList[j].final_price;
                   finalProductCopy.stock = this.baseProduct.colorVariantProductList[i].finalProductList[j].stock;
                   this.finalProductService.create(finalProductCopy).subscribe({
                     next: response=>{
                       console.log('Producto final agregado con exito!, estoy en el indice j: ', j);
+                      if(i == this.baseProduct.colorVariantProductList.length - 1 && j == this.baseProduct.colorVariantProductList[i].finalProductList.length - 2){
+                        alert('Producto agregado con exito!');
+                        this.router.navigate(['/admin_panel/0',0])
+                      }
                     }
                   })
                 }

@@ -26,7 +26,7 @@
                 <paginator [paginator]="paginator" [url]="url"></paginator>
             </div>
             <div class="flex mr-1">
-                <p>Productos por pagina: </p>
+                <p>Usuarios por pagina: </p>
                 <select (change)="onChange($event)"  class="button text-slate-600 w-16 ml-2" style="height: 24px;" [(ngModel)]="selectedPageSize">
                     <option *ngFor="let pageSize of pageSizeList" [value]="pageSize">
                         {{pageSize}}
