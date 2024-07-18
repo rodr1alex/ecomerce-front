@@ -13,12 +13,10 @@ import { RouterModule } from '@angular/router';
 export class LoginComponent implements OnInit{
   user: User;
 
-  constructor(private sharingData: SharingDataService) {
+  constructor(private sharingDataService: SharingDataService) {
     this.user = new User();
   }
   ngOnInit(): void {
-    //this.sharingData.hiddeSearchBarEventEmitter.emit();
-    console.log('se cargo componente login')
   }
 
   onSubmit() {
@@ -26,7 +24,7 @@ export class LoginComponent implements OnInit{
       alert('Credenciales incorrectas!');
     } else {
       console.log("Credenciales:", this.user)
-      this.sharingData.handlerLoginEventEmitter.emit(this.user);
+      this.sharingDataService.handlerLoginEventEmitter.emit(this.user);
     }
   }
 

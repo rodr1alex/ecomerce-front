@@ -2,48 +2,64 @@
     <p class="mb-4 font-bold text-base">Informacion venta n: {{sale.sale_id}}</p>
     <div class="flex w-full justify-between">
         <div class="w-1/2">
-            <p>Total: <span class="font-bold">{{formatCurrency(sale.total)}}</span></p>
+            <p>Total: <span class="font-bold">{{formatCurrency(cart.total)}}</span></p>
             <p>Estado: <span class="font-bold">{{sale.status}}</span></p>
-            <p>Numero de productos: <span class="font-bold">{{sale.items}}</span></p>
+            <p>Numero de productos: <span class="font-bold">{{cart.items}}</span></p>
             <p>Usuario: <span class="font-bold">{{user.username}}</span></p>
             <p>ID usuario: <span class="font-bold">{{user.id}}</span></p>
             <p>Fecha: <span class="font-bold">{{sale.date}}</span></p>
             <p class="mb-4">Direccion: <span class="font-bold">{{sale.direction.city}}, {{sale.direction.street}}: {{sale.direction.number}}</span></p>
         </div>
-        <div class="card card--blue mb-6 p-4">
+        <div class="nm-inset-white rounded-xl mb-6 p-4 w-1/2">
             <p class="mb-4">Productos en esta venta:</p>
             @for (orderedProduct of cart.orderedProductList; track $index) {
-                    <div class="cart-item flex flex-row  mb-4 justify-between min-h-20">
-                        <img src={{orderedProduct.finalProduct.img}} class="w-20" alt="">
-                        <div class="pt-2 pl-2">
-                            <p><span class="font-bold">{{orderedProduct.finalProduct.brand}} </span>{{orderedProduct.finalProduct.final_description}}</p>
-                            <p>Color: <span class="font-bold">{{orderedProduct.finalProduct.color}}</span> Talla: <span class="font-bold">{{orderedProduct.finalProduct.size.name}}</span></p>
-                            <p><span class="font-bold"> {{formatCurrency(orderedProduct.finalProduct.final_price)}}</span></p>
-                            <p class="mb-2">
-                                ID producto: {{orderedProduct.finalProduct.final_product_id}} 
-                                <a class="text-blue-400 hover:cursor-pointer" [routerLink]="['/admin_panel/0/1',orderedProduct.finalProduct.base_product_id]">
-                                    Ver detalles
-                                </a>
-                            </p>
-                        </div>
-                        <div class="mr-2 flex flex-col items-center justify-center">
-                            <p class="mb-2 font-bold">{{formatCurrency(orderedProduct.quantity * orderedProduct.finalProduct.final_price)}}</p>
-                            <div class="flex">
-                                <div class="cart-cuantity py-1 px-0  flex w-32 justify-center items-center">
-                                    <button class="w-10 active:text-red-400" >-</button>
-                                    <p class="w-12 bg-white text-center rounded-md ">{{orderedProduct.quantity}}</p>
-                                    <button class="w-10 active:text-blue-400" >+</button>
-                                </div>  
+                    <div class="cart-item flex flex-row  mb-5 justify-between min-h-20">
+                        <div class="w-1/2 flex">
+                            <img src={{orderedProduct.finalProduct.img}} class="w-20" alt="">
+                            <div class="pt-2 pl-2">
+                                <p><span class="font-bold">{{orderedProduct.finalProduct.brand}}</span>{{orderedProduct.finalProduct.name}}</p>
+                                <p>Color: <span class="font-bold">{{orderedProduct.finalProduct.color}}</span> Talla: <span class="font-bold">{{orderedProduct.finalProduct.size.name}}</span></p>
+                                <p><span class="font-bold"> {{formatCurrency(orderedProduct.finalProduct.final_price)}}</span></p>
+                                <p class="mb-2">
+                                    ID producto: {{orderedProduct.finalProduct.final_product_id}} 
+                                    <a class="text-blue-400 hover:cursor-pointer" [routerLink]="['/admin_panel/0/1',orderedProduct.finalProduct.base_product_id]">
+                                        Ver detalles
+                                    </a>
+                                </p>
+                                <button><i class="fa-solid fa-trash"></i></button>
                             </div>
-                            <button><i class="fa-solid fa-trash"></i></button>
                         </div>
+                        <div class="flex w-1/2">
+                            <div class="w-1/3 flex flex-col justify-center">
+                                <p class="mb-2 font-bold">{{formatCurrency(orderedProduct.originalquantity * orderedProduct.finalProduct.final_price)}}</p>
+                                <p class="mb-2 font-bold">{{orderedProduct.originalquantity}}</p>
+                                <p>Original</p>
+                            </div>
+                            <div class="mr-2 flex flex-col items-center justify-center">
+                                <p class="mb-2 font-bold text-sm">{{formatCurrency(returnProductQuantityList[$index] * orderedProduct.finalProduct.final_price)}}</p>
+                                <div class="flex">
+                                    <div class="cart-cuantity py-1 px-0  flex w-32 justify-center items-center">
+                                        <button class="w-10 active:text-red-400" (click)="decrease($index)" >-</button>
+                                        <p class="w-12 bg-white text-center rounded-md ">{{returnProductQuantityList[$index]}}</p>
+                                        <button class="w-10 active:text-blue-400" (click)="increase($index)" >+</button>
+                                    </div>  
+                                </div>
+                                <p>Devueltos</p>
+                            </div>
+                            <div class="w-1/3 flex flex-col justify-center">
+                                <p class="mb-2 font-bold">{{formatCurrency((orderedProduct.originalquantity - returnProductQuantityList[$index]) * orderedProduct.finalProduct.final_price)}}</p>
+                                <p class="mb-2 font-bold">{{orderedProduct.originalquantity - returnProductQuantityList[$index]}}</p>
+                                <p>Modificado</p>
+                            </div>
+                        </div>
+                        
                     </div>
             } 
         </div>
     </div>
     <div class="flex w-full justify-around">
-        <button class="button w-48" (click)="cancelSale()">Anular venta</button>
-        <button class="button button--disabled w-48" [disabled]="true">Actualizar venta</button>
+        <button class="button w-48" (click)="cancelSale()" [disabled]="false">Anular venta</button>
+        <button class="button w-48" [disabled]="false" (click)="updateSale()">Actualizar venta</button>
         <button class="button w-48" [routerLink]="['/admin_panel/1',0]">Cancelar</button>
     </div>
 </div>

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Direction } from '../models/direction.model';
 import { Sale } from '../models/sale.model';
+import { OrderedProduct } from '../models/ordered-product.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,19 +17,21 @@ export class SaleService {
     return this.http.get<Sale>(`${this.url}/${sale_id}`);
   }
 
-  createSale(cart_id: number, direction: Direction, user_id: number): Observable<any>{
-    return this.http.post<any>(`${this.url}/create/${cart_id}/${user_id}`, direction);
-  }
-
   findAllPageable(pageSize: number, page: number): Observable<any> {
     return this.http.get<any[]>(`${this.url}/${pageSize}/${page}`);
+  }
+
+  createSale(cart_id: number, direction: Direction, user_id: number): Observable<any>{
+    return this.http.post<any>(`${this.url}/create/${cart_id}/${user_id}`, direction);
   }
 
   filter(user_id: number,startTotal: number, endTotal: number, pageSize: number, page: number): Observable<any> {
     return this.http.get<any[]>(`${this.url}/filter/${user_id}/${startTotal}/${endTotal}/${pageSize}/${page}`);
   }
 
-  cancelSale(sale_id: number): Observable<any> {
-    return this.http.put<any>(`${this.url}/update/cancel_sale/${sale_id}`, sale_id);
+  modifySale(sale_id: number, orderedProductList: OrderedProduct[]): Observable<any>{
+    return this.http.put<any>(`${this.url}/modify/${sale_id}`, orderedProductList);
   }
+
+ 
 }

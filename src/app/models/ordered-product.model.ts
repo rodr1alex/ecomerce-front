@@ -6,4 +6,5 @@ export class OrderedProduct{
     quantity!: number;
     cart!: Cart;
     finalProduct!: FinalProduct;
+    originalquantity: number = 0;
 }

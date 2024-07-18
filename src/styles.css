@@ -56,7 +56,7 @@ input[type="number"]::-webkit-outer-spin-button,
     @apply nm-flat-gray-300-lg active:nm-flat-gray-300-lg md:hover:nm-flat-gray-300-lg;
 }
 .cart-item{
-    @apply nm-convex-gray-50 rounded-xl overflow-hidden text-xs md:hover:nm-convex-slate-200-lg;
+    @apply nm-convex-gray-50-lg rounded-xl overflow-hidden text-xs md:hover:nm-convex-slate-200-lg;
 }
 .cart-cuantity{
     @apply text-sm  font-bold p-1 rounded-full nm-convex-gray-50 md:hover:nm-convex-gray-50-lg;

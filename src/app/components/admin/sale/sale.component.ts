@@ -14,6 +14,10 @@ import { UserService } from '../../../services/user.service';
 import { SaleService } from '../../../services/sale.service';
 import { CartService } from '../../../services/cart.service';
 import { CartComponent } from '../../cart/cart.component';
+import { OrderedProduct } from '../../../models/ordered-product.model';
+import { FinalProduct } from '../../../models/final-product.model';
+import { BaseProduct } from '../../../models/base-product.model';
+import { ColorVariantProduct } from '../../../models/color-variant-product.model';
 
 @Component({
   selector: 'app-sale',
@@ -24,8 +28,13 @@ import { CartComponent } from '../../cart/cart.component';
 export class SaleComponent implements OnInit{
   sale!: Sale;
   user!: User;
+  baseProduct!: BaseProduct;
+  colorVariantProduct!: ColorVariantProduct;
   cart: Cart = new Cart();
   mostrar: boolean = false;
+  returnProductQuantityList : number [] = [];
+
+
 
   constructor(
     private baseProductService: BaseProductService,
@@ -49,19 +58,21 @@ export class SaleComponent implements OnInit{
       this.saleService.findById(sale_id).subscribe({
         next: response =>{
           this.sale = response;
-          console.log("sale:", this.sale);
           this.userService.findById(this.sale.user_id).subscribe({
             next: response =>{
               this.user = response;
-              console.log('User:', this.user);
               this.cart = this.user.cartList.find(item => item.cart_id === this.sale.cart_id) || new Cart();
-              console.log('Carrito:',this.cart);
+              for(let orderedProduct of this.cart.orderedProductList){
+                this.returnProductQuantityList.push(orderedProduct.originalquantity - orderedProduct.quantity);
+              }
             }
           })
         }
       })
     })
 
+
+    
     
   }
   
@@ -73,14 +84,74 @@ export class SaleComponent implements OnInit{
   }
 
   cancelSale(){
-    this.saleService.cancelSale(this.sale.sale_id).subscribe({
+    let orderedProductListToSend: OrderedProduct[] = []
+    for(let i = 0; i < this.cart.orderedProductList.length ; i++){
+      let orderedProductReturn = new OrderedProduct();
+      let finalProductReturn = new FinalProduct();
+      finalProductReturn.final_product_id = this.cart.orderedProductList[i].finalProduct.final_product_id;
+      orderedProductReturn.quantity = 0;
+      orderedProductReturn.finalProduct = finalProductReturn;
+      orderedProductListToSend.push(orderedProductReturn);
+    }
+
+    this.saleService.modifySale(this.sale.sale_id, orderedProductListToSend).subscribe({
       next: response =>{
-        console.log('venta cancelado con exito!', response);
+        alert('Anulacion de venta exitosa')
+      }
+    })
+  }
+  updateSale(){
+    let orderedProductListToSend: OrderedProduct[] = []
+    for(let i = 0; i < this.cart.orderedProductList.length ; i++){
+      let orderedProductReturn = new OrderedProduct();
+      let finalProductReturn = new FinalProduct();
+      finalProductReturn.final_product_id = this.cart.orderedProductList[i].finalProduct.final_product_id;
+      orderedProductReturn.quantity = this.cart.orderedProductList[i].originalquantity - this.returnProductQuantityList[i];
+      orderedProductReturn.finalProduct = finalProductReturn;
+      orderedProductListToSend.push(orderedProductReturn);
+    }
+
+    this.saleService.modifySale(this.sale.sale_id, orderedProductListToSend).subscribe({
+      next: response =>{
+        alert('Modificacion exitosa')
       }
     })
     
+
+  }
+  returnOneProduct(index: number){
+    // let orderedProductReturn = new OrderedProduct();
+    // let finalProductReturn = new FinalProduct();
+    // finalProductReturn.final_product_id = this.cart.orderedProductList[index].finalProduct.final_product_id;
+    // orderedProductReturn.ordered_product_id = this.cart.orderedProductList[index].ordered_product_id;
+    // orderedProductReturn.quantity = this.cart.orderedProductList[index].quantity - this.returnProductQuantityList[index];
+    // orderedProductReturn.finalProduct = finalProductReturn;
+    // this.saleService.returnProduct(this.cart.sale.sale_id,orderedProductReturn).subscribe({
+    //   next: response =>{
+    //     console.log('Devuelto con exito! indice i:', index);
+    //   }
+    // })
+  }
+  decrease(index: number){
+    if(this.returnProductQuantityList[index] > 0){
+      this.returnProductQuantityList[index]--;
+    }
+    
   }
 
+  increase(index: number){
+    this.returnProductQuantityList[index]++;
+  }
+
+  getShortDescription(text: string): string{
+    if(text == undefined){
+      return ''
+    }
+    if(text.length > 25){
+      return text.substring(0, 25) + '...'
+    }
+    return text;
+  }
 
 
 }

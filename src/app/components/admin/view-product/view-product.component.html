@@ -106,21 +106,7 @@
                     }
                 </tbody>
             </table>
-            <!-- @if(+selectedPageSize > 10){
-                <div class="flex w-full justify-between absolute bottom-0" style="z-index: 2;">
-                    <div class="rounded-xl  px-5  py-2">
-                        <paginator [paginator]="paginator" [url]="url"></paginator>
-                    </div>
-                    <div class="flex mr-3">
-                        <p>Productos por pagina: </p>
-                        <select (change)="onChange($event)"  class="button text-slate-600 w-16 ml-2" style="height: 24px;" [(ngModel)]="selectedPageSize">
-                            <option *ngFor="let pageSize of pageSizeList" [value]="pageSize">
-                                {{pageSize}}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-            } -->
+            
         </div>
      
     </div>

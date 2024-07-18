@@ -40,25 +40,6 @@ export class ProductCardComponent implements OnInit, AfterViewInit{
     }
   }
 
-  clickHanddler(){
-    this.sharingDataService.clickrEventEmitter.subscribe(({width, height})=>{
-      console.log('Info: ', width, height);
-      const container = this.dynamicHeightContainer.nativeElement;
-      container.style.height = `${width * 1.3}px`;
-      const imgPortrait = this.imgPortrait.nativeElement;
-      const minHeight = width * 0.975;
-      this.renderer.setStyle(imgPortrait, 'min-height', `${minHeight}px`);
-      // if(width > 768){
-      //   if(this.clickInFilter){
-      //     this.showFilter();
-      //     this.clickInFilter = false
-      //   }else{
-      //     this.hiddeFilter();
-      //   }
-      // }
-    })
-  }
-
   formatCurrency(value: number): string {
     if(value == undefined){
       value = 0;

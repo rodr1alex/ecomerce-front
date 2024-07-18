@@ -19,9 +19,9 @@ import { SharingDataService } from '../../services/sharing-data.service';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
-export class NavbarComponent implements OnInit, OnChanges{
-  @Input() contentHeight!: number;
-  @Input() contentWidth!: number;
+export class NavbarComponent implements OnInit{
+  // @Input() contentHeight!: number;
+  // @Input() contentWidth!: number;
   @ViewChild('cartNode') cartNode!: ElementRef;
   @ViewChild('menuNode') menuNode!: ElementRef;
   cart!: Cart;
@@ -63,16 +63,16 @@ export class NavbarComponent implements OnInit, OnChanges{
                   })               
                 }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['contentHeight']) {
-      const cartNode= this.cartNode.nativeElement;
-      const menuNode = this.menuNode.nativeElement;
-      this.renderer.setStyle(cartNode, 'min-height', `${this.contentHeight}px`);
-      if(this.contentWidth < 768){
-        this.renderer.setStyle(menuNode, 'height', `${this.contentHeight}px`);
-      }
-    }
-  }
+  // ngOnChanges(changes: SimpleChanges): void {
+  //   if (changes['contentHeight']) {
+  //     const cartNode= this.cartNode.nativeElement;
+  //     const menuNode = this.menuNode.nativeElement;
+  //     this.renderer.setStyle(cartNode, 'min-height', `${this.contentHeight}px`);
+  //     if(this.contentWidth < 768){
+  //       this.renderer.setStyle(menuNode, 'height', `${this.contentHeight}px`);
+  //     }
+  //   }
+  // }
   ngOnInit(): void {
     this.clickHanddler();
     this.menu();
@@ -86,17 +86,25 @@ export class NavbarComponent implements OnInit, OnChanges{
     this.sharingDataService.clickrEventEmitter.subscribe(({width, height})=>{
       if(width > 768){
         if(this.clickInLogin){
-          //console.log('Click in login');
           const node = document.getElementById('userLogin');
           node?.classList.remove('hidden');
           this.clickInLogin = false
         }else{
-          //console.log('Click fuera del login')
           const node = document.getElementById('userLogin');
           node?.classList.add('hidden');
         }
+      }else{
+        //Altura dinamica de cart y menu
+        const heightToApply = height - (80 + 115);
+        const cartNode= this.cartNode.nativeElement;
+        const menuNode = this.menuNode.nativeElement;
+        this.renderer.setStyle(cartNode, 'min-height', `${heightToApply}px`);
+        this.renderer.setStyle(menuNode, 'height', `${heightToApply}px`);
       }
+
     })
+
+    
   }
   adminPanel(){
     this.showAdminPanel == true? this.showAdminPanel = false: this.showAdminPanel = true;
@@ -251,5 +259,11 @@ export class NavbarComponent implements OnInit, OnChanges{
     }
     this.router.navigate(['/login']);
     this.hiddenSearchBar();
+  }
+  formatCurrency(value: number): string {
+    if(value == undefined){
+      value = 0;
+    }
+    return value.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
   }
 }
