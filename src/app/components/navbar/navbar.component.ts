@@ -63,16 +63,7 @@ export class NavbarComponent implements OnInit{
                   })               
                 }
 
-  // ngOnChanges(changes: SimpleChanges): void {
-  //   if (changes['contentHeight']) {
-  //     const cartNode= this.cartNode.nativeElement;
-  //     const menuNode = this.menuNode.nativeElement;
-  //     this.renderer.setStyle(cartNode, 'min-height', `${this.contentHeight}px`);
-  //     if(this.contentWidth < 768){
-  //       this.renderer.setStyle(menuNode, 'height', `${this.contentHeight}px`);
-  //     }
-  //   }
-  // }
+ 
   ngOnInit(): void {
     this.clickHanddler();
     this.menu();

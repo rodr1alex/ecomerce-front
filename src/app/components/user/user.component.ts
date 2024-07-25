@@ -5,6 +5,7 @@ import { UserService } from '../../services/user.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'user',
@@ -21,8 +22,10 @@ export class UserComponent implements OnInit{
     street: "",
     number: ""
   }
+  isAdmin: boolean = false;
 
-  constructor(private usersService: UserService, private sharingDataService: SharingDataService, private route: ActivatedRoute){}
+
+  constructor(private usersService: UserService, private sharingDataService: SharingDataService, private route: ActivatedRoute, private authService: AuthService){}
 
   ngOnInit(): void {
     this.sharingDataService.hiddeSearchBarEventEmitter.emit();
@@ -43,6 +46,7 @@ export class UserComponent implements OnInit{
         })
       }
     })
+    this.isAdmin = this.authService.user.isAdmin;
   }
 
   createUser(){
@@ -63,5 +67,8 @@ export class UserComponent implements OnInit{
   }
   showDirectionForm(){
     this.showDirection = true;
+  }
+  mierda(){
+    console.log(this.authService.user.isAdmin)
   }
 }

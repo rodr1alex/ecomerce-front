@@ -190,11 +190,20 @@
                     >
                         Crear
                     </button>
-                    <button class="button button--cancel w-1/4 text-center" [routerLink]="['/home']">Cancelar</button>
+                    @if(!isAdmin){
+                        <button class="button button--cancel w-1/3 text-center" [routerLink]="['/home']">Cancelar</button>
+                    }@else {
+                        <button class="button button--cancel w-1/3 text-center" [routerLink]="['/admin_panel/2',0]">Cancelar</button>
+                    }
                 }@else {
                     <button class="button w-1/3 text-center" [disabled]="(userForm.invalid)" (click)="updateUser()">Actualizar</button>
-                    <button class="button button--cancel w-1/3 text-center" [routerLink]="['/home']">Cancelar</button>
+                    @if(!isAdmin){
+                        <button class="button button--cancel w-1/3 text-center" [routerLink]="['/home']">Cancelar</button>
+                    }@else {
+                        <button class="button button--cancel w-1/3 text-center" [routerLink]="['/admin_panel/2',0]">Cancelar</button>
+                    }
                 }
+                
                 
             </div>
         </form>

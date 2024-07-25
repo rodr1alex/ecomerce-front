@@ -7,4 +7,5 @@ export class Sale{
     user_id!: number;
     cart_id!: number;
     status!: string;
+    username!: string;
 }

@@ -31,7 +31,7 @@
                     }@else {
                         <p class="font-bold " (click)="showSubCategory(category.categoryName.name)">{{category.categoryName.name}}</p>
                     }
-                    <ul id="{{category.categoryName.name}}" 
+                    <ul  
                         class="mobile-hidden md:flex md:w-screen md:h-0 md:opacity-0 md:-z-10 md:justify-center md:items-center md:absolute md:top-16 md:left-0 nm-flat-white-lg" 
                         [ngClass]="{'subcategory-container': (!showAdminPanel)}">
                         <li class="subcategory-item" *ngFor="let subCategory of category.subCategoryList">

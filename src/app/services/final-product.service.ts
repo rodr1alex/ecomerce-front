@@ -24,4 +24,9 @@ export class FinalProductService {
   filter(brand_id: number, color_id: number, size_id: number, size: number, page: number, categoryList: Category[]): Observable<any> {
     return this.http.post<any[]>(`${this.url}/filter/${brand_id}/${color_id}/${size_id}/${size}/${page}`, categoryList);
   }
+
+  update(finalProduct : FinalProduct, final_product_id: number): Observable<FinalProduct> {
+    return this.http.put<FinalProduct>(`${this.url}/update/${final_product_id}`, finalProduct);
+  }
+
 }

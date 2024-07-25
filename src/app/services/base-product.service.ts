@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Category } from '../models/category.model';
 import { BaseProduct } from '../models/base-product.model';
+import { BaseProductImage } from '../models/base-product-image.model';
 
 @Injectable({
   providedIn: 'root'
@@ -36,5 +37,14 @@ export class BaseProductService {
   getBrandList(categoryList: any): Observable<any> {
     return this.http.post<any>(`${this.url}/filter/brand/get_list`, categoryList);
   }
-  
+
+  updateBaseProduct(baseProduct: BaseProduct, base_product_id: number): Observable<BaseProduct> {
+    return this.http.put<BaseProduct>(`${this.url}/update/${base_product_id}`, baseProduct);
+  }
+  addBaseProductImage(baseProductImage: BaseProductImage, base_product_id: number): Observable<BaseProduct> {
+    return this.http.put<BaseProduct>(`${this.url}/update/add_image/${base_product_id}`, baseProductImage);
+  }
+  removeBaseProductImage(baseProductImage: BaseProductImage, base_product_id: number): Observable<BaseProduct> {
+    return this.http.put<BaseProduct>(`${this.url}/update/remove_image/${base_product_id}`, baseProductImage);
+  }
 }

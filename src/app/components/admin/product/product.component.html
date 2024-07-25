@@ -1,19 +1,20 @@
 <div class="flex flex-col w-11/12 mx-auto mb-10 nm-flat-white-xl rounded-xl p-4">
 <!-- 
     <button class="button my-10 w-48 mx-auto" (click)="createProduct()">Crear!</button> -->
-    <form  #userForm="ngForm" class="card card--gray flex flex-col justify-around p-4 mb-10" style="height: 500px;">
-            <!-- @if(baseProduct.base_product_id != 0){
-                <p class="text-start mb-2">ID producto base: {{baseProduct.base_product_id}}</p>
+    <form  #userForm="ngForm" class="card card--blue flex flex-col justify-around p-4 mb-10" style="min-height: 500px;">
+            @if(baseProduct.base_product_id != 0){
+                <p class="text-center font-bold mb-4">ID producto base: {{baseProduct.base_product_id}}</p>
             }@else {
-                <p class="text-start mb-2">Agregar nuevo producto</p>
-            } -->
+                <p class="text-center font-bold mb-4">Agregar nuevo producto</p>
+            }
             <div class="" style="height: 300px;">   
                 <div class="w-full flex" >
-                    <div class="w-1/3 pr-1 py-1">
+                    <div class="w-2/3 pr-1 py-1">
                         <div class="input-group input-group--soft ">
                             <input  
                                 name="name" 
                                 [(ngModel)]="baseProduct.name" 
+                                (ngModelChange)="onChangeBaseProduct($event)"
                                 class="input"
                                 #name="ngModel"
                                 required
@@ -28,46 +29,32 @@
                                 }
                         </div> 
                     </div>
-                    <div class="w-1/3 p-1">
-                        <div class="input-group input-group--soft">
-                            <input  
-                                name="description" 
-                                [(ngModel)]="baseProduct.description" 
-                                class="input"
-                                #description="ngModel"
-                                required
-                            >
-                            <label for="" class="placeholder">Descripcion</label>
-                            @if (name.invalid && (name.dirty || name.touched)) {
-                                @if(name.errors!['required']){
-                                    <div class="input-error">
-                                        Requerido
-                                    </div>
-                                    }
-                                }
-                        </div> 
-                    </div>
+                    
                     
                     
                     <div class="flex justify-between w-1/3 pl-1 py-1">
-                        <div class="input-group input-group--soft w-6/12">
-                            <input  
-                                name="price" 
-                                [(ngModel)]="baseProduct.base_price" 
-                                class="input"
-                                #price="ngModel"
-                                required
-                            >
-                            <label for="" class="placeholder">Precio base</label>
-                            @if (name.invalid && (name.dirty || name.touched)) {
-                                @if(name.errors!['required']){
-                                    <div class="input-error">
-                                        Requerido
-                                    </div>
+                        <div class="w-7/12">
+                            <div class="input-group input-group--soft ">
+                                <input  
+                                    name="price" 
+                                    type="number"
+                                    [(ngModel)]="baseProduct.base_price" 
+                                    (ngModelChange)="onChangeBaseProduct($event)"
+                                    class="input"
+                                    #price="ngModel"
+                                    required
+                                >
+                                <label for="" class="placeholder">Precio base</label>
+                                @if (name.invalid && (name.dirty || name.touched)) {
+                                    @if(name.errors!['required']){
+                                        <div class="input-error">
+                                            Requerido
+                                        </div>
+                                        }
                                     }
-                                }
-                        </div> 
-                        <select class="button text-slate-600 w-4/12" style="height: 36px;"  name="brand" id="brand" [(ngModel)]="selectedBrand">
+                            </div> 
+                        </div>
+                        <select class="button text-slate-600 w-4/12" style="height: 36px;"  name="brand" id="brand" [(ngModel)]="selectedBrand" (ngModelChange)="onChangeBaseProduct($event)">
                             <option value="" disabled selected>Marca</option>
                             <option *ngFor="let brand of brandList" [value]="brand.brand_id">
                                 {{brand.name}}
@@ -86,7 +73,7 @@
                                 }
                                
                             </div>
-                            <select (change)="onChange($event)" class="button text-slate-600 h-8"   name="category" id="category" [(ngModel)]="selectedCategory">
+                            <select (change)="onChange($event)" class="button text-slate-600 h-8"   name="category" id="category" [(ngModel)]="selectedCategory" (ngModelChange)="onChangeBaseProduct($event)">
                                 <option value="" disabled selected>Categoria</option>
                                 <option *ngFor="let category of categoryList" [value]="category.category_id" id="{{category.name}}">
                                     {{category.name}}
@@ -100,6 +87,7 @@
                             <textarea 
                                 name="chars" 
                                 [(ngModel)]="baseProduct.chars"
+                                (ngModelChange)="onChangeBaseProduct($event)"
                                 class="input input--text-area" 
                                 #chars="ngModel"
                                 required
@@ -119,6 +107,7 @@
                             <textarea  
                                 name="specs" 
                                 [(ngModel)]="baseProduct.specs" 
+                                (ngModelChange)="onChangeBaseProduct($event)"
                                 class="input input--text-area"
                                 #specs="ngModel"
                                 required
@@ -151,49 +140,57 @@
                     <div class="input-group  w-9/12">
                         <input  
                             name="url" 
-                            [(ngModel)]="baseProductImage.url" 
+                            [(ngModel)]="baseProductImage.url"
                             class="input"
                             #url="ngModel"
-                            required
+                            
                         >
-                        <label for="" class="placeholder">Url</label>
+                        <label for="" class="placeholder" style="color: rgb(148 163 184)">Url</label>
                     </div> 
-                    <button class="button w-1/5 " style="height: 36px;" (click)="addImage()">Agregar imagen</button>
+                    <div class="w-1/5 flex justify-end">
+                        <button class="button w-11/12" style="height: 36px;" (click)="addImage()">Agregar imagen</button>
+                    </div> 
                </div>
             </div> 
+            @if(baseProduct.base_product_id != 0){
+                <div class="flex justify-center mt-5">
+                    <button class="button button--disabled mx-10" (click)="restartBaseProduct()" [disabled]="true" id="resetBaseProduct">Resetear cambios</button>
+                    <button class="button button--disabled mx-10" (click)="updateBaseProduct()" [disabled]="true" id="updateBaseProduct">Actualizar producto base</button>
+                </div>
+            }
     </form>
 
     <div class="w-2/3" >
         <!-- <p class="text-start ml-2 mb-2">Variaciones de producto</p> -->
         @for (colorVariantProduct of baseProduct.colorVariantProductList; track $index) {
-            <form class="card card--gray mb-8 p-4" action="" style="min-height: 400px;">
-                 
-                    @if(baseProduct.base_product_id == 0){
-                        <div class="flex justify-between mb-3">
+            <form class="card card--blue mb-4 p-4" action="" style="min-height: 400px;">
+                    <div class="flex justify-between mb-3">
+                        @if($index >= colorVariantProductListOriginal.length){
                             <div class="flex ">
                                 <p>Seleccione color: </p>
-                                <select class="button text-slate-600 ml-2"   name="color" id="color" [(ngModel)]="colorVariantProduct.color.color_id">
+                                <select (change)="onColorChange($event)" class="button text-slate-600 ml-2" name="color" id="color" [(ngModel)]="colorVariantProduct.color.color_id">
                                     <!-- <option value="" disabled selected>Color</option> -->
                                     <option *ngFor="let color of colorList" [value]="color.color_id">
                                         {{color.name}}
                                     </option>
                                 </select>
                             </div>
-                            <div>
-                                @if($index > 0){
-                                <button (click)="removeColorVariantProduct(colorVariantProduct)" class="button">
-                                    Eliminar variacion de color
-                                </button>
-                                }
-                            </div>
-                        </div>
-                        
-                    }@else {
-                        <p class="">Color: {{colorVariantProduct.color.name}}</p>
-                    }
-                  
+                            @if($index != 0){
+                                <div>
+                                    <button (click)="removeColorVariantProduct(colorVariantProduct)" class="button">
+                                        Eliminar variacion de color
+                                    </button>
+                                </div>
+                            }
+                        }@else {
+                            <div class="flex ">
+                                <p>Color: {{baseProduct.colorVariantProductList[$index].color.name}}</p>
+                            </div>                       
+                        }                        
+                    </div>
+        
                      <!-- Galeria de imagenes -->
-                    <div class="nm-inset-white-lg rounded-xl px-4 mb-4 relative flex flex-col justify-between" style="height: 200px;">
+                    <div class="nm-inset-white-lg rounded-xl px-4 mb-4 relative flex flex-col justify-between" style="min-height: 200px;">
                         <p class="text-slate-400 absolute top-2" [class.hidden]="colorVariantProduct.colorVariantProductImageList != undefined">Galeria de imagenes</p>
                         <div class="flex flex-wrap justify-start h-2/3 pt-4">
                             @for (colorVariantProductImage of colorVariantProduct.colorVariantProductImageList; track $index) {
@@ -203,21 +200,28 @@
                                 </div>
                             }
                         </div>
-                        <div class="flex w-full justify-between">
+                        <div class="flex w-full justify-between mt-2">
                             <div class="input-group input-group--soft w-10/12">
                                 <input  
                                     name="url" 
                                     [(ngModel)]="colorVariantProductImage.url" 
                                     class="input"
                                     #url="ngModel"
-                                    required
+                                    
                                 >
-                                <label for="" class="placeholder">Url</label>
+                                <label for="" class="placeholder" style="color: rgb(148 163 184)">Url</label>
                             </div>
                             <div class="w-1/6 flex justify-end">
-                                <button (click)="addColorVariantProductImage(colorVariantProduct)" class="button " style="height: 36px;">Agregar imagen</button>
+                                <button (click)="addColorVariantProductImage(colorVariantProduct)" class="button w-11/12" style="height: 36px;">Agregar</button>
                             </div>
-                       </div>
+                        </div>
+                        @if (baseProduct.base_product_id != 0 && $index < colorVariantProductListOriginal.length) {
+                            <div class="mb-2 flex justify-center">
+                                <button class="button button--disabled mx-5" [disabled]="true" (click)="restartColorVariantProduct($index)" [id]="'resetColorVariantProductImages' + $index">Resetear cambios de imagenes</button>
+                                <button class="button button--disabled mx-5" [disabled]="true" (click)="updateColorVariantProduct($index)" [id]="'updateColorVariantProductImages' + $index">Actualizar imagenes</button>
+                            </div>
+                        }
+                        
                     </div>
 
                     <!-- tabla -->
@@ -225,11 +229,8 @@
                         <table class="table w-full table-fixed">
                             <thead class="table-thead">
                                 <tr>
-                                    <th class="table-th--small w-16">Talla </th>
+                                    <th class="table-th--small w-32">Talla </th>
                                     <th class="table-th--small w-32">Precio final </th>
-                                    <!-- <th class="table-th--small">Descripcion </th>
-                                    <th class="table-th--small">Caracteristicas </th>
-                                    <th class="table-th--small">Especificaciones </th> -->
                                     <th class="table-th--small">Stock</th>
                                 </tr>
                             </thead>
@@ -260,49 +261,19 @@
                                                 [attr.id]="'finalPrice' + $index"
                                                 >  
                                         </td>
-                                        <!-- <td class="table-td--small">
-                                            <input  
-                                                type="text"
-                                                [name]="'finalDescription' + $index"
-                                                [(ngModel)]="finalProduct.final_description" 
-                                                class="nm-inset-white rounded-xl h-8 p-2 w-24"
-                                                [attr.id]="'finalDescription' + $index"
-                                            >   
-                                        </td>
-                                        <td class="table-td--small">
-                                            <input  
-                                                type="text"
-                                                [name]="'finalChars' + $index"
-                                                [(ngModel)]="finalProduct.final_chars" 
-                                                class="nm-inset-white rounded-xl h-8 p-2 w-24"
-                                                [attr.id]="'finalChars' + $index"
-                                                >  
-                                        </td>
-                                        <td class="table-td--small">
-                                            <input  
-                                                type="text"
-                                                [name]="'finalSpecs' + $index"
-                                                [(ngModel)]="finalProduct.final_specs" 
-                                                class="nm-inset-white rounded-xl h-8 p-2 w-24"
-                                                [attr.id]="'finalSpecs' + $index"
-                                                >  
-                                        </td> -->
-
-
-
-
-
                                         <td class="table-td--small">
                                             <div class="flex items-start">
                                                 <input  
                                                 type="number"
                                                 [name]="'stock' + $index" 
                                                 [(ngModel)]="finalProduct.stock" 
+                                                (ngModelChange)="onChangeInventory(colorVariantProduct)"
                                                 class="nm-inset-white rounded-xl h-8 p-2 w-8/12 mr-2"
                                                 [attr.id]="'stock' + $index"
                                                 required
                                                 >  
-                                                @if($index >= originalFinalProductListLength[baseProduct.colorVariantProductList.indexOf(colorVariantProduct)] || baseProduct.base_product_id == 0){
+                                                @if($index >= originalFinalProductListLength[baseProduct.colorVariantProductList.indexOf(colorVariantProduct)] || baseProduct.base_product_id == 0
+                                                || baseProduct.colorVariantProductList.indexOf(colorVariantProduct) >= colorVariantProductListOriginal.length){
                                                     @if ($index == colorVariantProduct.finalProductList.length - 1) {
                                                         <button id="addSizeButton" 
                                                         (click)="addSize(colorVariantProduct)" 
@@ -325,94 +296,51 @@
                                                 
                                            </div>
                                         </td>
-
-
-
-
                                     </tr>
                             }
                             </tbody>
                         </table>
+                        @if(baseProduct.base_product_id != 0 && $index < colorVariantProductListOriginal.length){
+                            <div class="flex justify-center mt-4 mb-2">
+                                <button class="button button--disabled mx-10" [disabled]="true" (click)="restartFinalProduct($index)" [id]="'resetInventory' + $index">Resetearcambios de inventario</button>
+                                <button class="button button--disabled mx-10" [disabled]="true" (click)="updateInventory($index)" [id]="'updateInventory' + $index">Actualizar inventario</button>
+                            </div>
+                        }
+                       
                     </div>
+                    @if (baseProduct.base_product_id != 0 && $index >= colorVariantProductListOriginal.length) {
+                        <div class="flex justify-center mt-4">
+                            <button 
+                                class="button" 
+                                (click)="addColorVariantProduct($index)"
+                                [disabled]="(finalProductListInvalid)"
+                                [ngClass]="{'button--disabled': finalProductListInvalid}">Agregar a la base de datos</button>
+                        </div>       
+                    }
             </form>
         }
        <button (click)="addColorVariantProductForm()" class="button">Nueva variacion de color</button>
     </div>
-    <button class="button my-5 w-48 mx-auto" (click)="createProduct()">Agregar producto</button>
+    
+        <div class="flex justify-center mt-16 mb-5">
+            @if(baseProduct.base_product_id == 0){
+                <button class="button mx-10 h-8 w-48" (click)="cleanForm()">Limpiar Formulario</button>
+                <button 
+                    class="button  h-8 w-48 mx-10" 
+                    (click)="createProduct()" 
+                    [disabled]="(userForm.invalid || baseProduct.baseProductImageList.length == 0 || selectedBrand == '' || baseProduct.categoryList.length == 0 || finalProductListInvalid)" 
+                    id="addProductButton"
+                    [ngClass]="{'button--disabled': (userForm.invalid || baseProduct.baseProductImageList.length == 0 || selectedBrand == '' || baseProduct.categoryList.length == 0 || finalProductListInvalid)}"
+                >
+                    Agregar producto
+                </button>
+                <button class="button mx-10 h-8 w-48" [routerLink]="['/admin_panel/0',0]">Cancelar</button>
+            }@else {
+                <button class="button mx-10 h-8 w-48" [routerLink]="['/admin_panel/0',0]">Cancelar</button>
+            }
+        </div>
+        
+    
+    
 </div> 
 
-
-
-
-
-<!-- <tr class="table-tr">
-    <td class="table-td--small">
-        <div class="flex">
-            <select class="button text-slate-600 w-full"   name="size" id="size" [(ngModel)]="colorVariantProduct.finalProductList[colorVariantProduct.finalProductList.length - 1].size.size_id">
-                <option value="" disabled selected>Seleccionar</option>
-                <option *ngFor="let size of sizeList" [value]="size.size_id">
-                    {{size.name}}
-                </option>
-            </select>
-        </div>
-    </td>
-    <td class="table-td--small">
-        <input  
-                type="number"
-                name="finalPrice" 
-                [(ngModel)]="colorVariantProduct.finalProductList[colorVariantProduct.finalProductList.length - 1].final_price" 
-                class="nm-inset-white rounded-xl h-8 p-2 w-24"
-                #finalPrice="ngModel"
-                required
-            >  
-    </td>
-    <td class="table-td--small">
-        <input  
-                placeholder="Usar description original"
-                type="text"
-                name="finalDescription" 
-                [(ngModel)]="colorVariantProduct.finalProductList[colorVariantProduct.finalProductList.length - 1].final_description" 
-                class="nm-inset-white rounded-xl h-8 p-2 w-24"
-                #finalDescription="ngModel"
-                
-            > 
-        
-    </td>
-    <td class="table-td--small">
-        <input  
-                placeholder="Usar description original"
-                type="text"
-                name="finalChars" 
-                [(ngModel)]="colorVariantProduct.finalProductList[colorVariantProduct.finalProductList.length - 1].final_chars" 
-                class="nm-inset-white rounded-xl h-8 p-2 w-24"
-                #finalChars="ngModel"
-                
-            > 
-    </td>
-    <td class="table-td--small">
-        <input  
-                placeholder="Usar description original"
-                type="text"
-                name="finalSpecs" 
-                [(ngModel)]="colorVariantProduct.finalProductList[colorVariantProduct.finalProductList.length - 1].final_specs" 
-                class="nm-inset-white rounded-xl h-8 p-2 w-24"
-                #finalSpecs="ngModel"
-                
-            > 
-    </td>
-    <td class="table-td--small">
-       <div class="flex items-start">
-            <input  
-            type="number"
-            name="stock" 
-            [(ngModel)]="colorVariantProduct.finalProductList[colorVariantProduct.finalProductList.length - 1].stock" 
-            class="nm-inset-white rounded-xl h-8 p-2 w-8/12 mr-2"
-            #stock="ngModel"
-            required
-            >  
-            <button id="addSizeButton" (click)="addSize(colorVariantProduct)" [disabled]="false" class="button w-6 h-6 flex justify-center items-center">
-                <i class="fa-solid fa-plus"></i>
-            </button>
-       </div>
-    </td>
-</tr> -->

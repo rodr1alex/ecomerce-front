@@ -41,7 +41,7 @@ input[type="number"]::-webkit-outer-spin-button,
     @apply  nm-flat-slate-200;
 }
 .button{
-    @apply text-sm text-center font-bold p-1 rounded-full nm-flat-gray-100 transition duration-100 transform active:nm-flat-gray-500 md:hover:nm-flat-gray-200;
+    @apply text-sm text-center font-bold p-1 px-2 rounded-full nm-flat-gray-100 transition duration-100 transform active:nm-flat-gray-500 md:hover:nm-flat-gray-200;
 }
 .button--cancel{
     @apply text-red-400;

@@ -25,8 +25,8 @@ export class SaleService {
     return this.http.post<any>(`${this.url}/create/${cart_id}/${user_id}`, direction);
   }
 
-  filter(user_id: number,startTotal: number, endTotal: number, pageSize: number, page: number): Observable<any> {
-    return this.http.get<any[]>(`${this.url}/filter/${user_id}/${startTotal}/${endTotal}/${pageSize}/${page}`);
+  filter(user_id: number,startTotal: number, endTotal: number, pageSize: number, page: number, status: string): Observable<any> {
+    return this.http.get<any[]>(`${this.url}/filter/${user_id}/${startTotal}/${endTotal}/${pageSize}/${page}/${status}`);
   }
 
   modifySale(sale_id: number, orderedProductList: OrderedProduct[]): Observable<any>{

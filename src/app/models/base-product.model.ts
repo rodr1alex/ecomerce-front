@@ -7,7 +7,6 @@ export class BaseProduct{
     base_product_id: number = 0;
     name!: string;
     base_price!: number;
-    description!: string;
     chars!: string;
     specs!: string;
     brand!: Brand;

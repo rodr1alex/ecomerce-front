@@ -18,11 +18,13 @@ import { OrderedProduct } from '../../../models/ordered-product.model';
 import { FinalProduct } from '../../../models/final-product.model';
 import { BaseProduct } from '../../../models/base-product.model';
 import { ColorVariantProduct } from '../../../models/color-variant-product.model';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-sale',
   standalone: true,
-  imports: [CartComponent, RouterModule],
+  imports: [CartComponent, RouterModule,FormsModule, CommonModule],
   templateUrl: './sale.component.html'
 })
 export class SaleComponent implements OnInit{
@@ -33,6 +35,8 @@ export class SaleComponent implements OnInit{
   cart: Cart = new Cart();
   mostrar: boolean = false;
   returnProductQuantityList : number [] = [];
+  originalReturnProductQuantityList : number [] = [];
+  disableUpdateButton: boolean = true;
 
 
 
@@ -64,7 +68,9 @@ export class SaleComponent implements OnInit{
               this.cart = this.user.cartList.find(item => item.cart_id === this.sale.cart_id) || new Cart();
               for(let orderedProduct of this.cart.orderedProductList){
                 this.returnProductQuantityList.push(orderedProduct.originalquantity - orderedProduct.quantity);
+                this.originalReturnProductQuantityList.push(orderedProduct.originalquantity - orderedProduct.quantity);
               }
+              
             }
           })
         }
@@ -72,8 +78,6 @@ export class SaleComponent implements OnInit{
     })
 
 
-    
-    
   }
   
   formatCurrency(value: number): string {
@@ -119,28 +123,26 @@ export class SaleComponent implements OnInit{
     
 
   }
-  returnOneProduct(index: number){
-    // let orderedProductReturn = new OrderedProduct();
-    // let finalProductReturn = new FinalProduct();
-    // finalProductReturn.final_product_id = this.cart.orderedProductList[index].finalProduct.final_product_id;
-    // orderedProductReturn.ordered_product_id = this.cart.orderedProductList[index].ordered_product_id;
-    // orderedProductReturn.quantity = this.cart.orderedProductList[index].quantity - this.returnProductQuantityList[index];
-    // orderedProductReturn.finalProduct = finalProductReturn;
-    // this.saleService.returnProduct(this.cart.sale.sale_id,orderedProductReturn).subscribe({
-    //   next: response =>{
-    //     console.log('Devuelto con exito! indice i:', index);
-    //   }
-    // })
-  }
+  
   decrease(index: number){
-    if(this.returnProductQuantityList[index] > 0){
+    if(this.returnProductQuantityList[index] > this.originalReturnProductQuantityList[index]){
       this.returnProductQuantityList[index]--;
-    }
-    
+    }   
+    let aux = true;
+    for(let i = 0 ; i < this.returnProductQuantityList.length; i ++){
+      if(this.returnProductQuantityList[i] > this.originalReturnProductQuantityList[i]){
+        aux = false;
+      }
+    } 
+    this.disableUpdateButton = aux;
   }
 
   increase(index: number){
-    this.returnProductQuantityList[index]++;
+    if(this.returnProductQuantityList[index] < this.cart.orderedProductList[index].originalquantity){
+      this.returnProductQuantityList[index]++;
+      this.disableUpdateButton = false;
+    }
+    
   }
 
   getShortDescription(text: string): string{

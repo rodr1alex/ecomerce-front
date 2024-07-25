@@ -16,6 +16,14 @@ export class CartService {
     return this.http.post<Cart>(`${this.url}/create/${user_id}`, user_id);
   }
 
+  findById(cart_id: number): Observable<Cart>{
+    return this.http.get<Cart>(`${this.url}/${cart_id}`);
+  }
+
+  findAll(): Observable<Cart[]>{
+    return this.http.get<Cart[]>(`${this.url}`);
+  }
+
   addProduct(cart_id: number,orderedProduct: OrderedProduct ): Observable<Cart>{
     return this.http.put<Cart>(`${this.url}/update/add_product/${cart_id}`, orderedProduct);
   }
