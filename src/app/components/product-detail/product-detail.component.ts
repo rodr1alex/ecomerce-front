@@ -43,8 +43,8 @@ export class ProductDetailComponent implements OnInit{
   touchStartX = 0;
   touchEndX = 0;
   isAuth: boolean = false;
-  
-  
+
+
 
   constructor(
     private baseProductStore: Store<{baseProducts: any}>,
@@ -57,31 +57,31 @@ export class ProductDetailComponent implements OnInit{
       this.baseProductStore.select('baseProducts').subscribe(state =>{
         this.baseProduct = state.baseProduct;
         this.baseProductList = state.baseProductList;
-        
       });
       this.cartStore.select('carts').subscribe(state =>{
         this.cart = state.cart;
         this.orderedProduct = state.orderedProduct;
       })
-    
   }
- 
+
   ngOnInit(): void {
     this.sharingDataService.showSearchBarEventEmitter.emit();
     this.isAuth = this.authService.user.isAuth;
     this.route.paramMap.subscribe(params => {
       const base_product_id = +(params.get('base_product_id') || '0');
-      this.baseProductStore.dispatch(find({base_product_id}));
+      // @ts-ignore
+      this.baseProductStore.dispatch(find({base_product_id: +(params.get('base_product_id'))}));
+      console.log('Esta wea rara de javaScript', this.baseProduct);
       this.getImageList();
       this.getColorList(this.baseProduct.colorVariantProductList);
       this.sizeList = this.getSizeList(this.baseProduct.colorVariantProductList);
       this.EnabledSizeList = this.sizeList;
     })
-    
+
     setTimeout(()=>{
       this.setColorButtons();
     },1)
-   
+
     if(this.colorList[0].color_id == 1){
       this.selectedColor = this.colorList[0];
     }
@@ -120,7 +120,7 @@ export class ProductDetailComponent implements OnInit{
     sizeListClean.sort((a,b) => a.size_id - b.size_id); //microoptimizacion recomendada
     return sizeListClean;
   }
-  
+
   setSelectedSize(size: Size){
     this.selectedSize = size;
     this.EnabledSizeList.map(sizeItem => {
@@ -128,7 +128,7 @@ export class ProductDetailComponent implements OnInit{
       sizeItem.size_id === this.selectedSize.size_id ? node?.classList.add('button--selected'): node?.classList.remove('button--selected');
     })
   }
-  
+
   setSelectedColor(colorName: Color){
     this.selectedColor = colorName;
     const colorVariantProductList: ColorVariantProduct[] = this.baseProduct.colorVariantProductList.filter(item =>item.color.color_id == this.selectedColor.color_id);
@@ -148,7 +148,7 @@ export class ProductDetailComponent implements OnInit{
     });
     if(!isContainded){
       this.selectedSize = new Size();
-      
+
     }
   }
   getFinalProduct(): FinalProduct{
@@ -160,7 +160,7 @@ export class ProductDetailComponent implements OnInit{
     let productInCart = false;
     const orderedProduct = new OrderedProduct();
     orderedProduct.quantity = this.quantity;
-    orderedProduct.finalProduct = this.getFinalProduct(); 
+    orderedProduct.finalProduct = this.getFinalProduct();
     if(this.cart.orderedProductList != null){
       this.cart.orderedProductList.map(orderedProductCART => {
         if(orderedProductCART.finalProduct.final_product_id == orderedProduct.finalProduct.final_product_id){

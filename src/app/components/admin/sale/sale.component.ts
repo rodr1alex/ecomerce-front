@@ -28,8 +28,8 @@ import { CommonModule } from '@angular/common';
   templateUrl: './sale.component.html'
 })
 export class SaleComponent implements OnInit{
-  sale!: Sale;
-  user!: User;
+  sale: Sale = new Sale();
+  user: User = new User();
   baseProduct!: BaseProduct;
   colorVariantProduct!: ColorVariantProduct;
   cart: Cart = new Cart();
@@ -41,17 +41,9 @@ export class SaleComponent implements OnInit{
 
 
   constructor(
-    private baseProductService: BaseProductService,
-    private finalProductService: FinalProductService,
-    private categoryService: CategoryService,
-    private brandService: BrandService,
-    private colorService: ColorService,
-    private sizeService: SizeService,
     private route: ActivatedRoute,
-    private router: Router,
     private userService: UserService,
     private saleService: SaleService,
-    private cartService: CartService
   ){
 
 }
@@ -100,7 +92,7 @@ export class SaleComponent implements OnInit{
 
     this.saleService.modifySale(this.sale.sale_id, orderedProductListToSend).subscribe({
       next: response =>{
-        alert('Anulacion de venta exitosa')
+        alert('Anulación de venta exitosa')
       }
     })
   }
@@ -117,7 +109,7 @@ export class SaleComponent implements OnInit{
 
     this.saleService.modifySale(this.sale.sale_id, orderedProductListToSend).subscribe({
       next: response =>{
-        alert('Modificacion exitosa')
+        alert('Modificación exitosa')
       }
     })
     

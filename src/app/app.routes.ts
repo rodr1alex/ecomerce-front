@@ -8,9 +8,7 @@ import { DirectionListComponent } from './components/direction-list/direction-li
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
 import { ProductListComponent } from './components/product-list/product-list.component';
 import { PaymentComponent } from './components/payment/payment.component';
-import { AddProductComponent } from './components/admin/add-product/add-product.component';
 import { ViewProductComponent } from './components/admin/view-product/view-product.component';
-import { ModidyProductComponent } from './components/admin/modidy-product/modidy-product.component';
 import { ProductComponent } from './components/admin/product/product.component';
 import { SaleListComponent } from './components/admin/sale-list/sale-list.component';
 import { SaleComponent } from './components/admin/sale/sale.component';

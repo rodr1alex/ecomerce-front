@@ -22,8 +22,8 @@ export class SharingDataService {
   private _payCartEventEmitter: EventEmitter<Direction> = new EventEmitter(); 
   private _closeCartEventEmitter: EventEmitter<void> = new EventEmitter(); 
   private _showSearchBarEventEmitter: EventEmitter<void> = new EventEmitter(); 
-  private _hiddeSearchBarEventEmitter: EventEmitter<void> = new EventEmitter(); 
-  private _clickrEventEmitter: EventEmitter<any> = new EventEmitter(); 
+  private _hideSearchBarEventEmitter: EventEmitter<void> = new EventEmitter(); 
+  private _clickEventEmitter: EventEmitter<any> = new EventEmitter(); 
 
   
   constructor() { }
@@ -70,11 +70,11 @@ export class SharingDataService {
   get showSearchBarEventEmitter(){
     return this._showSearchBarEventEmitter;
   }
-  get hiddeSearchBarEventEmitter(){
-    return this._hiddeSearchBarEventEmitter;
+  get hideSearchBarEventEmitter(){
+    return this._hideSearchBarEventEmitter;
   }
-  get clickrEventEmitter(){
-    return this._clickrEventEmitter;
+  get clickEventEmitter(){
+    return this._clickEventEmitter;
   }
   
 }

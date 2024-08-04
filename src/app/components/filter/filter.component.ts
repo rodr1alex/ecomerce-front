@@ -65,7 +65,7 @@ export class FilterComponent implements OnInit {
   }
 
   clickHanddler(){
-    this.sharingDataService.clickrEventEmitter.subscribe(({width, height})=>{
+    this.sharingDataService.clickEventEmitter.subscribe(({width, height})=>{
       console.log('Info: ', width, height);
       if(width > 768){
         if(this.clickInFilter){

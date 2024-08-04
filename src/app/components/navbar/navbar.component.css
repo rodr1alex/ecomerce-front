@@ -15,11 +15,6 @@
     .category-item:hover .subcategory-item{
         display: block;
     }
-    .user:hover .user-modal{
-        /* height: 100px; */
-        /* opacity: 50; */
-        /* z-index: 10; */
-    }
     .user:hover .login{
         display: block;
     }

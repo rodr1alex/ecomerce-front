@@ -20,37 +20,16 @@ import { SharingDataService } from '../../services/sharing-data.service';
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent implements OnInit{
-  // @Input() contentHeight!: number;
-  // @Input() contentWidth!: number;
   @ViewChild('cartNode') cartNode!: ElementRef;
   @ViewChild('menuNode') menuNode!: ElementRef;
   cart!: Cart;
-  showMenu: boolean = true;
-  showCart: boolean = false;
-  showSessionHandler: boolean = false;
-  username!: String;
+  isMenuVisible: boolean = true;
+  isCartVisible: boolean = false;
+  isSessionHandlerVisible: boolean = false;
+  isAdminPanelVisible: boolean = false;
   categoryListToFilter: Category[] = [];
-  showAdminPanel: boolean = false;
   clickInLogin: boolean = false;
-  
-  categoryList: CategoryList[] = [
-    {
-      categoryName: new Category(1,'Running'),
-      subCategoryList: [new Category(7,'Calzado'),new Category(6,'Ropa'),new Category(8,'Elementos de proteccion'), new Category(4,'Accesorios')]
-    },
-    {
-      categoryName: new Category(2,'Ciclismo'),
-      subCategoryList: [new Category(5,'Bicicletas'),new Category(6,'Ropa'),new Category(8,'Elementos de proteccion'), new Category(4,'Accesorios')]
-    },
-    {
-      categoryName: new Category(3,'Natacion'),
-      subCategoryList: [new Category(9,'Trajes de neopreno'),new Category(8,'Elementos de proteccion'), new Category(4,'Accesorios')]
-    },
-    {
-      categoryName: new Category(4,'Accesorios'),
-      subCategoryList: [new Category(1,'Running'), new Category(2,'Ciclismo'), new Category(3,'Natacion'), new Category(13,'Nutricion')]
-    },
-  ]
+  categoryList: CategoryList[] = [];
   
   
   constructor(  private authService: AuthService, 
@@ -65,17 +44,24 @@ export class NavbarComponent implements OnInit{
 
  
   ngOnInit(): void {
-    this.clickHanddler();
-    this.menu();
-    this.sessionHandler();
-    this.closeCart();
-    this.sharingDataService.showSearchBarEventEmitter.subscribe(()=> this.showSearhBar())
-    this.sharingDataService.hiddeSearchBarEventEmitter.subscribe(()=>this.hiddenSearchBar())
+    this.clickHandler();
+    this.setCategoryList();
+    this.menuVisibilityToggle();
+    this.sessionHandlerVisibilityToggle();
+    this.hideCart();
+    this.sharingDataService.showSearchBarEventEmitter.subscribe(()=> this.showSearchBar())
+    this.sharingDataService.hideSearchBarEventEmitter.subscribe(()=>this.hideSearchBar())
   }
 
-  clickHanddler(){
-    this.sharingDataService.clickrEventEmitter.subscribe(({width, height})=>{
-      if(width > 768){
+  clickHandler(){
+    this.sharingDataService.clickEventEmitter.subscribe(({width, height})=>{
+      if(width < 768){
+       const heightToApply = height - (80 + 115);
+       const cartNode= this.cartNode.nativeElement;
+       const menuNode = this.menuNode.nativeElement;
+       this.renderer.setStyle(cartNode, 'min-height', `${heightToApply}px`);
+       this.renderer.setStyle(menuNode, 'height', `${heightToApply}px`);
+      }else{
         if(this.clickInLogin){
           const node = document.getElementById('userLogin');
           node?.classList.remove('hidden');
@@ -84,35 +70,24 @@ export class NavbarComponent implements OnInit{
           const node = document.getElementById('userLogin');
           node?.classList.add('hidden');
         }
-      }else{
-        //Altura dinamica de cart y menu
-        const heightToApply = height - (80 + 115);
-        const cartNode= this.cartNode.nativeElement;
-        const menuNode = this.menuNode.nativeElement;
-        this.renderer.setStyle(cartNode, 'min-height', `${heightToApply}px`);
-        this.renderer.setStyle(menuNode, 'height', `${heightToApply}px`);
       }
-
     })
-
-    
   }
-  adminPanel(){
-    this.showAdminPanel == true? this.showAdminPanel = false: this.showAdminPanel = true;
-    
-    this.showAdminPanel == true ? 
+
+  setCategoryList(){
+    this.isAdminPanelVisible ? 
     (
       this.categoryList = [
         {
-          categoryName: new Category(0,'Administracion de productos'),
+          categoryName: new Category(0,'Administración de productos'),
           subCategoryList: []
         },
         {
-          categoryName: new Category(1,'Administracion de ventas'),
+          categoryName: new Category(1,'Administración de ventas'),
           subCategoryList: []
         },
         {
-          categoryName: new Category(2,'Administracion de usuarios'),
+          categoryName: new Category(2,'Administración de usuarios'),
           subCategoryList: []
         },
       ]
@@ -121,60 +96,42 @@ export class NavbarComponent implements OnInit{
       this.categoryList =  [
         {
           categoryName: new Category(1,'Running'),
-          subCategoryList: [new Category(7,'Calzado'),new Category(6,'Ropa'),new Category(8,'Elementos de proteccion'), new Category(4,'Accesorios')]
+          subCategoryList: [new Category(7,'Calzado'),new Category(6,'Ropa'),new Category(8,'Elementos de protección'), new Category(4,'Accesorios')]
         },
         {
           categoryName: new Category(2,'Ciclismo'),
-          subCategoryList: [new Category(5,'Bicicletas'),new Category(6,'Ropa'),new Category(8,'Elementos de proteccion'), new Category(4,'Accesorios')]
+          subCategoryList: [new Category(5,'Bicicletas'),new Category(6,'Ropa'),new Category(8,'Elementos de protección'), new Category(4,'Accesorios')]
         },
         {
-          categoryName: new Category(3,'Natacion'),
-          subCategoryList: [new Category(9,'Trajes de neopreno'),new Category(8,'Elementos de proteccion'), new Category(4,'Accesorios')]
+          categoryName: new Category(3,'Natación'),
+          subCategoryList: [new Category(9,'Trajes de neopreno'),new Category(8,'Elementos de protección'), new Category(4,'Accesorios')]
         },
         {
           categoryName: new Category(4,'Accesorios'),
-          subCategoryList: [new Category(1,'Running'), new Category(2,'Ciclismo'), new Category(3,'Natacion'), new Category(13,'Nutricion')]
+          subCategoryList: [new Category(1,'Running'), new Category(2,'Ciclismo'), new Category(3,'Natación'), new Category(13,'Nutrición')]
         },
       ]
     );
-    
   }
 
-  adminPanelNavigate(category: Category){
-    this.router.navigate([`/admin_panel/${category.category_id}`, 0]);
+  menuVisibilityToggle(){
+    this.isCartVisible && this.cartVisibilityToggle();
+    const menu= document.getElementById('menuNode');
+    this.isMenuVisible ?
+      (this.isMenuVisible = false, menu?.classList.remove('left-[0px]')):
+      (this.isMenuVisible = true, menu?.classList.add('left-[0px]'));
   }
 
-  
-  showSearhBar(){
-    let navbarContentNode = document.getElementById('navbarContent');
-    let searchBarNode = document.getElementById('searchBar');
-    let userBarMpde = document.getElementById('userBar');
-    let logoBarNode = document.getElementById('logoBar');
-    navbarContentNode?.classList.remove('h-20');
-    navbarContentNode?.classList.add('h-36');
-    logoBarNode?.classList.add('h-20');
-    userBarMpde?.classList.add('h-20');
-    searchBarNode?.classList.remove('hidden');
-  }
-  hiddenSearchBar(){
-    let navbarContentNode = document.getElementById('navbarContent');
-    let searchBarNode = document.getElementById('searchBar');
-    let userBarMpde = document.getElementById('userBar');
-    let logoBarNode = document.getElementById('logoBar');
-
-    navbarContentNode?.classList.remove('h-36');
-    navbarContentNode?.classList.add('h-20');
-    logoBarNode?.classList.remove('h-20');
-    userBarMpde?.classList.remove('h-20');
-    searchBarNode?.classList.add('hidden');
-
+  sessionHandlerVisibilityToggle(){
+    const sessionHandler = document.getElementById('sessionHandler');
+    this.isSessionHandlerVisible?
+      (this.isSessionHandlerVisible = false, sessionHandler?.classList.remove('hidden')):
+      (this.isSessionHandlerVisible = true, sessionHandler?.classList.add('hidden'))
   }
 
-  
-
-  closeCart(){
+  hideCart(){
     this.sharingDataService.closeCartEventEmitter.subscribe(()=>{
-      this.showHiddenCart();
+      this.cartVisibilityToggle();
     })
   }
 
@@ -189,12 +146,7 @@ export class NavbarComponent implements OnInit{
   handlerLogout() {
     this.authService.logout();
     this.router.navigate(['/home'])
-    if(this.showAdminPanel){
-      this.adminPanel();
-    }
-    
-
-    //TRATAR DE OPTIMIZAR,CREAR ACCIO PARA LIMPIAR CARRITO
+    this.isAdminPanelVisible && this.adminPanelVisibilityToggle();
     let cartUpdated = {
       ...this.cart,
       orderedProductList: this.cart.orderedProductList.map(item => ({ ...item })) 
@@ -203,58 +155,76 @@ export class NavbarComponent implements OnInit{
     cartUpdated.total = 0;
     cartUpdated.orderedProductList = [];
     this.cartStore.dispatch(updateCart({cartUpdated}));
-
   }
 
-  menu(){
-    if(this.showCart == true){
-      this.showHiddenCart();
-    }
-    let menu= document.getElementById('menuNode');
-    this.showMenu === true ?  (this.showMenu=false,
-                                menu?.classList.remove('left-[0px]')):
-                              (this.showMenu=true, 
-                                menu?.classList.add('left-[0px]'));
-    
+  subCategoryVisibilityToggle(id: string){
+    const subCategoryNode = document.getElementById(id);
+    subCategoryNode?.classList.contains('mobile-hidden') ?
+      subCategoryNode?.classList.remove('mobile-hidden'):
+      subCategoryNode?.classList.add('mobile-hidden')
   }
-  showHiddenCart(){
-    if(this.showMenu == true){
-      this.menu();
-    }
-    let cart= document.getElementById('cartNode');
-    this.showCart === true ?  (this.showCart=false,
-                                cart?.classList.remove('left-[0px]')):
-                              (this.showCart=true, 
-                                cart?.classList.add('left-[0px]'));
-    
+
+  adminPanelVisibilityToggle(){
+    this.isAdminPanelVisible ? this.isAdminPanelVisible = false: this.isAdminPanelVisible = true;
+    this.setCategoryList();
   }
+
+  cartVisibilityToggle(){
+    this.isMenuVisible && this.menuVisibilityToggle();
+    const cart= document.getElementById('cartNode');
+    this.isCartVisible ?
+      (this.isCartVisible = false, cart?.classList.remove('left-[0px]')):
+      (this.isCartVisible = true, cart?.classList.add('left-[0px]'));
+  }
+
+  showSearchBar(){
+    let navbarContentNode = document.getElementById('navbarContent');
+    let searchBarNode = document.getElementById('searchBar');
+    let userBarNode = document.getElementById('userBar');
+    let logoBarNode = document.getElementById('logoBar');
+    navbarContentNode?.classList.remove('h-20');
+    navbarContentNode?.classList.add('h-36');
+    logoBarNode?.classList.add('h-20');
+    userBarNode?.classList.add('h-20');
+    searchBarNode?.classList.remove('hidden');
+  }
+
+  hideSearchBar(){
+    let navbarContentNode = document.getElementById('navbarContent');
+    let searchBarNode = document.getElementById('searchBar');
+    let userBarNode = document.getElementById('userBar');
+    let logoBarNode = document.getElementById('logoBar');
+    navbarContentNode?.classList.remove('h-36');
+    navbarContentNode?.classList.add('h-20');
+    logoBarNode?.classList.remove('h-20');
+    userBarNode?.classList.remove('h-20');
+    searchBarNode?.classList.add('hidden');
+  }
+
+  //Funciones de navegación
+  adminPanelNavigate(category: Category){
+    this.router.navigate([`/admin_panel/${category.category_id}`, 0]);
+  }
+
   filter(category: Category, subCategory: Category){
-    this.router.navigate(['/product_list',category.category_id, subCategory.category_id, 0] );
+    this.router.navigate(['/product_list',category.category_id, subCategory.category_id, 0]);
   }
 
-  showSubCategory(id: string){
-    let subCategoryNode = document.getElementById(id);
-    subCategoryNode?.classList.contains('mobile-hidden') ? subCategoryNode?.classList.remove('mobile-hidden'): subCategoryNode?.classList.add('mobile-hidden')
-  }
-  sessionHandler(){
-    let sessionHandler = document.getElementById('sessionHandler');
-    this.showSessionHandler === false ?  (this.showSessionHandler = true, sessionHandler?.classList.add('hidden')):
-                                        (this.showSessionHandler = false, sessionHandler?.classList.remove('hidden'))
-  }
   navigateLogin(){
-    if(this.showCart == true){
-      this.showHiddenCart();
-    }
-    if(this.showMenu == true){
-      this.menu();
-    }
+    this.isCartVisible && this.cartVisibilityToggle();
+    this.isMenuVisible && this.menuVisibilityToggle();
     this.router.navigate(['/login']);
-    this.hiddenSearchBar();
+    this.hideSearchBar();
   }
+
+  updateUserNavigate(){
+    this.router.navigate(['/update_user',this.login.user.id]);
+  }
+
+  //Funciones auxiliares
   formatCurrency(value: number): string {
-    if(value == undefined){
-      value = 0;
-    }
+    value == undefined && (value = 0);
     return value.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
   }
+
 }

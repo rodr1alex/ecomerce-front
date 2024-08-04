@@ -1,7 +1,7 @@
 <div class=" relative  nm-flat-white-sm z-10">
     <div class="flex h-36  md:h-16 md:mx-auto limit-content justify-between" id="navbarContent">
 
-        <div class="w-1/2 flex justify-start h-20 items-center pl-6 md:w-1/12 md:h-auto" id="logoBar" [ngClass]="{'md:w-3/12': (showAdminPanel)}">
+        <div class="w-1/2 flex justify-start h-20 items-center pl-6 md:w-1/12 md:h-auto" id="logoBar" [ngClass]="{'md:w-3/12': (isAdminPanelVisible)}">
             <!-- Logo -->
             <a class="flex" href="" >
                 <img class="w-10" src="../../../assets/img/main-logo.png"  alt="">
@@ -9,7 +9,7 @@
             </a>
         </div>
     
-       @if(!showAdminPanel){
+       @if(!isAdminPanelVisible){
         <div class="absolute top-24  w-full h-16 md:static md:flex md:items-center md:w-3/12 " id="searchBar">
             <!-- Buscador -->
             <form class="nm-inset-gray-100 rounded-full mx-auto w-4/5 h-10 flex justify-center items-center md:w-11/12" action="">
@@ -21,21 +21,21 @@
         </div>
        }
         
-        <div id="menuNode" #menuNode class="z-10 absolute left-[-1000px] top-20 transition-all w-full md:static md:w-5/12 md:h-max hiddenMenu" [ngClass]="{'md:w-6/12': (showAdminPanel)}">
+        <div id="menuNode" #menuNode class="z-10 absolute left-[-1000px] top-20 transition-all w-full md:static md:w-5/12 md:h-max hiddenMenu" [ngClass]="{'md:w-6/12': (isAdminPanelVisible)}">
              <!-- Categorias -->
-            <p class="text-center font-bold md:hidden my-2">CATEGORIAS</p>
+            <p class="text-center font-bold md:hidden my-2">CATEGORÍAS</p>
             <ul class="md:flex md:h-16 md:justify-center categoryContainer">
                 <li *ngFor="let category of categoryList; let i = index" class="category-item pl-4 shadow md:shadow-none py-2 md:h-16  md:hover:bg-gray-100 md:flex md:items-center md:px-4">
-                    @if (showAdminPanel) {
+                    @if (isAdminPanelVisible) {
                         <p class="font-bold text-blue-600 hover:cursor-pointer" (click)="adminPanelNavigate(category.categoryName)">{{category.categoryName.name}}</p>
                     }@else {
-                        <p class="font-bold " (click)="showSubCategory(category.categoryName.name)">{{category.categoryName.name}}</p>
+                        <p class="font-bold " (click)="subCategoryVisibilityToggle(category.categoryName.name)">{{category.categoryName.name}}</p>
                     }
                     <ul  
                         class="mobile-hidden md:flex md:w-screen md:h-0 md:opacity-0 md:-z-10 md:justify-center md:items-center md:absolute md:top-16 md:left-0 nm-flat-white-lg" 
-                        [ngClass]="{'subcategory-container': (!showAdminPanel)}">
+                        [ngClass]="{'subcategory-container': (!isAdminPanelVisible)}">
                         <li class="subcategory-item" *ngFor="let subCategory of category.subCategoryList">
-                            <a (click)="menu()" (click)="filter(category.categoryName, subCategory)" class="md:font-bold mx-4 cursor-pointer  md:hover:text-blue-300">
+                            <a (click)="menuVisibilityToggle()" (click)="filter(category.categoryName, subCategory)" class="md:font-bold mx-4 cursor-pointer  md:hover:text-blue-300">
                                 {{subCategory.name}}
                             </a>
                         </li>  
@@ -50,17 +50,17 @@
         </div>
         
         <div class="w-1/2 flex justify-between items-center h-20 pr-6 md:w-3/12 md:h-auto" id="userBar" >
-            <div class="user relative md:w-1/2 md:flex md:items-center md:hover:bg-gray-100  md:h-16" [ngClass]="{'md:w-full': (showAdminPanel)}">
+            <div class="user relative md:w-1/2 md:flex md:items-center md:hover:bg-gray-100  md:h-16" [ngClass]="{'md:w-full': (isAdminPanelVisible)}">
                 <!-- Usuario -->
                 @if(login.isAuth){
-                    <a (click)="sessionHandler()"><i class="fa-regular fa-user text-2xl"></i></a>
+                    <a (click)="sessionHandlerVisibilityToggle()"><i class="fa-regular fa-user text-2xl"></i></a>
                 }@else {
                     <a (click)="navigateLogin()"><i class="fa-regular fa-user text-2xl"></i></a>
                 }
                 <div class="card absolute flex flex-col justify-center items-center w-48 h-32 z-20 left-[-84px] top-12 md:hidden" id="sessionHandler">
-                    <p>Bienvenido {{username}}</p>
-                    <button class="button my-2" (click)="handlerLogout()" (click)="sessionHandler()">Cerrar sesion</button>
-                    <button class="button my-2" [routerLink]="['/update_user',1]" (click)="sessionHandler()">Actualizar datos</button>
+                    <p>{{login.isAuth && login.user.username }}</p>
+                    <button class="button my-2" (click)="handlerLogout()" (click)="sessionHandlerVisibilityToggle()">Cerrar sesión</button>
+                    <button class="button my-2" (click)="updateUserNavigate()" (click)="sessionHandlerVisibilityToggle()">Actualizar datos</button>
                 </div>
     
                 @if(login.isAuth){
@@ -72,23 +72,28 @@
                         <p class=" icon-check">x</p>
                      </div>
                  }
-                <div class="mobile-hidden ml-2">
-                    <p>{{(login.isAuth)? ('Bienvenido ' + login.user.username): 'No ha iniciado sesion'}}</p>
-                    @if(showAdminPanel){<p>ADMINSTRADOR DE SISTEMA</p>}
+                <div class="mobile-hidden ml-4">
+                    @if(isAdminPanelVisible){
+                        <p>{{login.user.username}}</p>
+                        <p>ADMINISTRADOR DE SISTEMA</p>
+                    }
+                    @else {
+                        <p >{{(login.isAuth)? ('Bienvenido ' + login.user.username + (admin && ' (Administrador)')): 'No ha iniciado sesión'}}</p>
+                    }  
                 </div>
-                <div class="user-modal absolute top-16 h-0 flex justify-center" (click)="clickInLogin = true" [ngClass]="{'left-0': (showAdminPanel)}">
+                <div class="user-modal absolute top-16 h-0 flex justify-center" (click)="clickInLogin = true" [ngClass]="{'left-0': (isAdminPanelVisible)}">
                     @if(login.isAuth){
                         <div class="isLogged hidden card  flex-col justify-center items-center w-4/5 h-48">
-                            <button class="button my-4" (click)="handlerLogout()">Cerrar sesion</button>
-                            <button class="button my-4"[routerLink]="['/update_user',login.user.id]" >Actualizar datos</button>
+                            <button class="button my-4" (click)="handlerLogout()">Cerrar sesión</button>
+                            <button class="button my-4" (click)="updateUserNavigate()">Actualizar datos</button>
                             @if(admin){
-                                <button class="button my-4" (click)="adminPanel()">
-                                    @if(showAdminPanel){
+                                <button class="button my-4" (click)="adminPanelVisibilityToggle()">
+                                    @if(isAdminPanelVisible){
                                         <p>Ocultar</p>
                                     }@else {
                                         <p>Mostrar</p>
                                     }
-                                    Panel de administracion
+                                    Panel de administración
                                 </button>
                             }
                         </div>
@@ -99,10 +104,10 @@
                     }
                 </div>
             </div>
-            @if (!showAdminPanel) {
+            @if (!isAdminPanelVisible) {
                 <div class="cart relative  md:w-1/2 md:flex md:items-center md:hover:bg-gray-100 md:h-16">
                     <!-- Carrito DESKTOP-->
-                    <a (click)="showHiddenCart()"><i class="fa-solid fa-cart-shopping text-2xl"></i></a>
+                    <a (click)="cartVisibilityToggle()"><i class="fa-solid fa-cart-shopping text-2xl"></i></a>
                     <div class="absolute top-6 md:top-10 left-5 h-4 w-4 nm-inset-blue-50-xs rounded-full flex justify-center items-center">
                         @if(cart.items){
                             <p class="icon-check">{{cart.items}}</p>
@@ -122,7 +127,7 @@
             
             <div class="md:hidden">
                 <!-- menu hamburgesa -->
-                <i class="fa-solid fa-bars text-2xl" (click)="menu()"></i>
+                <i class="fa-solid fa-bars text-2xl" (click)="menuVisibilityToggle()"></i>
             </div>
         </div>
     </div>

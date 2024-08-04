@@ -1,12 +1,12 @@
 <div class="card w-11/12 mx-auto py-4 px-12 flex flex-col items-center mb-10">
-    <p class="mb-4 font-bold text-base">Informacion venta n: {{sale.sale_id}}</p>
+    <p class="mb-4 font-bold text-base">Información venta n: {{sale.sale_id}}</p>
     <div class="flex w-full justify-between">
         <div class="w-1/2">
             <p>Total: <span class="font-bold">{{formatCurrency(cart.total)}}</span></p>
             <div class="flex items-center">Estado: <span class="font-bold">{{sale.status}}</span> 
                 <div 
                     class="h-3 w-3 rounded-full ml-1" 
-                    [ngClass]="{'bg-green-500': (sale.status == 'Realizada'), 'bg-red-500': (sale.status == 'Anulada'), 'bg-yellow-500': (sale.status == 'Modificada')}"
+                    [ngClass]="{'bg-green-500': (sale.status == 'Realizada' || sale == undefined), 'bg-red-500': (sale.status == 'Anulada'), 'bg-yellow-500': (sale.status == 'Modificada')}"
                 >
                 </div>
             </div>
@@ -14,7 +14,9 @@
             <p>Usuario: <span class="font-bold">{{user.username}}</span></p>
             <p>ID usuario: <span class="font-bold">{{user.id}}</span></p>
             <p>Fecha: <span class="font-bold">{{sale.date}}</span></p>
-            <p class="mb-4">Direccion: <span class="font-bold">{{sale.direction.city}}, {{sale.direction.street}}: {{sale.direction.number}}</span></p>
+            @if(sale.direction != undefined){
+                <p class="mb-4">Dirección: <span class="font-bold">{{sale.direction.city}}, {{sale.direction.street}}: {{sale.direction.number}}</span></p>
+            }
         </div>
         <div class="nm-inset-white rounded-xl mb-6 p-4 w-1/2">
             <p class="mb-4">Productos en esta venta:</p>

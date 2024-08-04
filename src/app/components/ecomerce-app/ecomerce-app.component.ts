@@ -48,8 +48,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
       this.cartStore.select('carts').subscribe(state =>{
         this.cart = {...state.cart};
       })
-    
-  }
+    }
   ngAfterViewInit(): void {
     //this.adjustHeight();
   }
@@ -61,7 +60,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
   @HostListener('window:click')
   onResize(): void {
     this.adjustHeight();
-    this.sharingDataService.clickrEventEmitter.emit({width:this.contentWidth, height:this.contentHeight});
+    this.sharingDataService.clickEventEmitter.emit({width:this.contentWidth, height:this.contentHeight});
   }
 
   private adjustHeight(): void {
@@ -100,7 +99,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
     this.sharingDataService.payCartEventEmitter.subscribe((direction: Direction)=>{
       this.saleService.createSale(this.cart.cart_id, direction, this.authService.user.user.id).subscribe({
         next: response =>{
-          alert('Venta creada con exito:');
+          alert('Compra realizada con éxito:');
           this.cartVerify(1);
           this.router.navigate(['/home']);
         }
@@ -114,7 +113,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
       if(this.cart.orderedProductList !=null){
         cartUpdated = {
           ...this.cart,
-          orderedProductList: [...this.cart.orderedProductList] || [] // Clonar shallow copy del array orderedProductList
+          orderedProductList: [...this.cart.orderedProductList] || [] 
         };
       }else{
         cartUpdated = {
@@ -208,7 +207,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
           };
           this.authService.token = token;
           this.authService.user = login;
-          console.log("Inicio de sesion exitoso!", login);
+          console.log("Inicio de sesión exitoso!", login);
          
           //verificacion de carrito de compras
           this.cartVerify(id);
@@ -338,7 +337,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
     this.sharingDataService.updateDirectionEventEmitter.subscribe((direction)=>{
       this.directionService.update(direction).subscribe({
         next: response =>{
-          alert("Direccion actualizada con exito!")
+          alert("Dirección actualizada con exito!")
         },
         error: error =>{
           throw new error;
@@ -352,7 +351,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
       this.directionService.remove(direction_id).subscribe(
         {
           next: response =>{
-            alert("Direccion eliminada con exito!");
+            alert("Dirección eliminada con exito!");
             this.router.navigate(['/home'])
           },
           error: error =>{

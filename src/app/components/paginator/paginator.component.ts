@@ -26,10 +26,13 @@ export class PaginatorComponent implements OnChanges{
   }
  
   setPageList(){
-    this.pageList = [];
-    for(let i = 0; i < this.paginator.totalPages; i++){
-      this.pageList.push(i+1);
+    if(this.paginator != undefined){
+      this.pageList = [];
+      for(let i = 0; i < this.paginator.totalPages; i++){
+        this.pageList.push(i+1);
+      }
     }
+    
   }
 
   setPage(page: number){

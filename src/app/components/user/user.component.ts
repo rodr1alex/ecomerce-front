@@ -28,7 +28,7 @@ export class UserComponent implements OnInit{
   constructor(private usersService: UserService, private sharingDataService: SharingDataService, private route: ActivatedRoute, private authService: AuthService){}
 
   ngOnInit(): void {
-    this.sharingDataService.hiddeSearchBarEventEmitter.emit();
+    this.sharingDataService.hideSearchBarEventEmitter.emit();
     this.route.paramMap.subscribe(params => {
       const id: number = +(params.get('id')|| '0');
       if(id > 0){

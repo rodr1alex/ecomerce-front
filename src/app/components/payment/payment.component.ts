@@ -36,7 +36,7 @@ export class PaymentComponent implements OnInit{
                 }
 
 ngOnInit(): void {
-  this.sharingDataService.hiddeSearchBarEventEmitter.emit();
+  this.sharingDataService.hideSearchBarEventEmitter.emit();
     this.userService.findById(this.authService.user.user.id).subscribe(
       {
         next: response => {

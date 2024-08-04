@@ -72,6 +72,10 @@ export class ProductComponent implements OnInit{
       this.baseProduct.categoryList = []
     }
 
+    if(this.baseProduct.baseProductImageList == undefined){
+      this.baseProduct.baseProductImageList = [];
+    }
+
     this.brandService.getAll().subscribe({
       next: response =>{
         this.brandList = response;
