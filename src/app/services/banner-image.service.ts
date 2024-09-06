@@ -2,15 +2,19 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BannerImage } from '../models/banner-image.model';
 import { Observable } from 'rxjs';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BannerImageService {
+  private baseUrl!: string;
+  private url!: string;
 
-  private url: string = 'http://localhost:8080/banner_images';
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private configService: ConfigService) { 
+    this.baseUrl = this.configService.baseUrl;
+    this.url = `${this.baseUrl}/banner_images`
+  }
 
   findAll(): Observable<BannerImage[]> {
     return this.http.get<BannerImage[]>(this.url);

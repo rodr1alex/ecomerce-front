@@ -3,14 +3,21 @@ import { User } from '../models/user.model';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Role } from '../models/role.model';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private url: string = 'http://localhost:8080/users';
+  //private url: string = 'http://localhost:8080/users';
 
-  constructor(private http: HttpClient) { }
+  private baseUrl!: string;
+  private url!: string;
+
+  constructor(private http: HttpClient, private configService: ConfigService) { 
+    this.baseUrl = this.configService.baseUrl;
+    this.url = `${this.baseUrl}/users`
+  }
 
   findAll(): Observable<User[]> {
     return this.http.get<User[]>(this.url);

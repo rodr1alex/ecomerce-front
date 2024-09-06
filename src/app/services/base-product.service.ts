@@ -4,15 +4,19 @@ import { Observable } from 'rxjs';
 import { Category } from '../models/category.model';
 import { BaseProduct } from '../models/base-product.model';
 import { BaseProductImage } from '../models/base-product-image.model';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BaseProductService {
-  private url: string = 'http://localhost:8080/base_products';
-  private user_id : number = 1;
+  private baseUrl!: string;
+  private url!: string;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private configService: ConfigService) { 
+    this.baseUrl = this.configService.baseUrl;
+    this.url = `${this.baseUrl}/base_products`
+  }
 
   create(baseProduct: BaseProduct):Observable<BaseProduct>{
     return this.http.post<BaseProduct>(`${this.url}/create`, baseProduct); 

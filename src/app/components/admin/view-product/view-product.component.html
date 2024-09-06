@@ -100,7 +100,7 @@
                             <td class="table-td">{{finalProduct.name == undefined ? 'Undefined': finalProduct.name}}</td>
                             <td class="table-td">{{finalProduct.color == undefined ? 'Undefined': finalProduct.color}}</td>
                             <td class="table-td">{{finalProduct.size == undefined ? 'Undefined': finalProduct.size.name}}</td>
-                            <td class="table-td">{{finalProduct.stock == undefined ? 'Undefined': finalProduct.stock}}</td>
+                            <td class="table-td font-bold">{{finalProduct.stock == undefined ? 'Undefined': finalProduct.stock}}</td>
                             <td class="table-td"><a class="text-blue-400" [routerLink]="['/admin_panel/0/1/',finalProduct.base_product_id]">Ver detalles</a></td>
                         </tr>
                     }

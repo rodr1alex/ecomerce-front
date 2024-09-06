@@ -4,14 +4,21 @@ import { Observable } from 'rxjs';
 import { Direction } from '../models/direction.model';
 import { Sale } from '../models/sale.model';
 import { OrderedProduct } from '../models/ordered-product.model';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SaleService {
-  private url: string = 'http://localhost:8080/sales';
+  //private url: string = 'http://localhost:8080/sales';
 
-  constructor(private http: HttpClient) { }
+  private baseUrl!: string;
+  private url!: string;
+
+  constructor(private http: HttpClient, private configService: ConfigService) { 
+    this.baseUrl = this.configService.baseUrl;
+    this.url = `${this.baseUrl}/sales`
+  }
 
   findById(sale_id: number): Observable<Sale> {
     return this.http.get<Sale>(`${this.url}/${sale_id}`);

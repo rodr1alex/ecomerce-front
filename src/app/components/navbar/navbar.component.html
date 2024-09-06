@@ -1,18 +1,18 @@
 <div class=" relative  nm-flat-white-sm z-10">
     <div class="flex h-36  md:h-16 md:mx-auto limit-content justify-between" id="navbarContent">
 
-        <div class="w-1/2 flex justify-start h-20 items-center pl-6 md:w-1/12 md:h-auto" id="logoBar" [ngClass]="{'md:w-3/12': (isAdminPanelVisible)}">
+        <div class="w-1/2 flex justify-start h-20 items-center pl-2 md:w-1/12 md:h-auto" id="logoBar" [ngClass]="{'md:w-3/12': (isAdminPanelVisible)}">
             <!-- Logo -->
             <a class="flex" href="" >
                 <img class="w-10" src="../../../assets/img/main-logo.png"  alt="">
-                <p class="movile-hidden mr-2">Empresa</p>
+                <p class="movile-hidden mr-2">FlexSports</p>
             </a>
         </div>
     
        @if(!isAdminPanelVisible){
         <div class="absolute top-24  w-full h-16 md:static md:flex md:items-center md:w-3/12 " id="searchBar">
             <!-- Buscador -->
-            <form class="nm-inset-gray-100 rounded-full mx-auto w-4/5 h-10 flex justify-center items-center md:w-11/12" action="">
+            <form class="nm-inset-gray-100 rounded-full mx-auto w-4/5 h-10 flex justify-center items-center md:w-10/12" action="">
                 <input class="w-full pl-3 bg-transparent outline-none"  type="text">
                 <button class="w-1/12">
                     <i class="opacity-40 fa-solid fa-magnifying-glass"></i>

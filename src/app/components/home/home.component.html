@@ -1,11 +1,14 @@
 <div class="md:mt-[-40px]">
+  <!-- <div class="mierda" *ngFor="let bannerImage of bannerImageList; let i = index">
+    
+  </div> -->
     <div class="carousel relative w-full mb-12 shadow" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
         <div class="carousel-inner relative overflow-hidden w-full">
           <div
             *ngFor="let bannerImage of bannerImageList; let i = index"
             class="carousel-item absolute opacity-0 w-full transition-opacity duration-1000"
-            [class.opacity-100]="i === currentIndex">
-            <img [src]="bannerImage.url" class="w-full img-detail">
+            [class.opacity-100]="i === currentIndex" [ngStyle]="{'background-image': bannerImage.url}">
+            <!-- <img [src]="bannerImage.url" class="w-full img-detail"> -->
           </div>
         </div>
     

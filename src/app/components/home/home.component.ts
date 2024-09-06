@@ -21,7 +21,12 @@ import { BannerImage } from '../../models/banner-image.model';
 export class HomeComponent implements OnInit{
   baseProductList!: BaseProduct[];
   paginator!: any;
-  bannerImageList: BannerImage[] = [];
+  bannerImageList: BannerImage[] =[]
+  // bannerImageList: BannerImage[] = [
+  //   new BannerImage('url("https://assets-ecomerce-rodr1alexdev.s3.sa-east-1.amazonaws.com/banner/1.jpg")'),
+  //   new BannerImage('url("https://assets-ecomerce-rodr1alexdev.s3.sa-east-1.amazonaws.com/banner/2.jpg")'),
+  //   new BannerImage('url("https://assets-ecomerce-rodr1alexdev.s3.sa-east-1.amazonaws.com/banner/3.jpg")')
+  // ];
 
   currentIndex = 0;
   touchStartX = 0;

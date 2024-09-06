@@ -3,14 +3,21 @@ import { Injectable } from '@angular/core';
 import { Cart } from '../models/cart.model';
 import { Observable } from 'rxjs';
 import { OrderedProduct } from '../models/ordered-product.model';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
-  private url: string = 'http://localhost:8080/cart';
+  //private url: string = 'http://localhost:8080/cart';
 
-  constructor(private http: HttpClient) { }
+  private baseUrl!: string;
+  private url!: string;
+
+  constructor(private http: HttpClient, private configService: ConfigService) { 
+    this.baseUrl = this.configService.baseUrl;
+    this.url = `${this.baseUrl}/cart`
+  }
 
   create(user_id: number): Observable<Cart>{
     return this.http.post<Cart>(`${this.url}/create/${user_id}`, user_id);
