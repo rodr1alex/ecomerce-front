@@ -5,6 +5,8 @@ import { Store } from '@ngrx/store';
 import { OrderedProduct } from '../../models/ordered-product.model';
 import { state } from '@angular/animations';
 import { SharingDataService } from '../../services/sharing-data.service';
+import { CartV2, ProductInCart } from '../../models/products-general.model';
+import { removeProduct } from '../../store/cart.action';
 
 @Component({
   selector: 'cart',
@@ -13,16 +15,18 @@ import { SharingDataService } from '../../services/sharing-data.service';
   templateUrl: './cart.component.html'
 })
 export class CartComponent implements OnInit{
-  cart: Cart = new Cart();
+  cart: CartV2 = new CartV2();
   
-  constructor(  private route: ActivatedRoute,
-                private router: Router,
-                private sharingDataService: SharingDataService,
-                private cartStore: Store<{carts: any}>,){
-                  this.cartStore.select('carts').subscribe(state =>{                   
-                    this.cart = state.cart;
-                  })
-                }
+  constructor(  
+    private route: ActivatedRoute,
+    private router: Router,
+    private sharingDataService: SharingDataService,
+    private cartStore: Store<{carts: any}>)
+  {
+    this.cartStore.select('carts').subscribe(state =>{                   
+      this.cart = state.cart;
+    })
+  }
 
   ngOnInit(): void {
     
@@ -39,9 +43,10 @@ export class CartComponent implements OnInit{
     event.stopPropagation();
     this.sharingDataService.modifyProductQuantityCartEventEmitter.emit({diferential: 1, orderedProduct});
   }
-  remove(event: Event,orderedProduct: OrderedProduct){
+  remove(event: Event,productToRemove: ProductInCart){
     event.stopPropagation();
-    this.sharingDataService.removeProductCartEventEmitter.emit(orderedProduct);
+    //this.sharingDataService.removeProductCartEventEmitter.emit(orderedProduct);
+    this.cartStore.dispatch(removeProduct({ product: productToRemove }));
   }
   cleanCart(){
     this.sharingDataService.cleanCartEventEmitter.emit();
@@ -50,11 +55,11 @@ export class CartComponent implements OnInit{
     this.sharingDataService.closeCartEventEmitter.emit();
      
   }
-  detailProduct(orderedProduct: OrderedProduct){
-    //MOMENDO DE OCIO: HACER QUE PRODUCTDETAIL ESTE EN CONCORDANCIA CON CARRITO (QUE RECIBA QUANTITY Y SE PUEDA MODICICAR DESDE PRODUCTO DEATIL EL QUANTITY DEL CARRITO)
-    this.sharingDataService.closeCartEventEmitter.emit();
-    this.router.navigate(['/product_detail/', orderedProduct.finalProduct.base_product_id]);
-  }
+  // detailProduct(orderedProduct: OrderedProduct){
+  //   //MOMENDO DE OCIO: HACER QUE PRODUCTDETAIL ESTE EN CONCORDANCIA CON CARRITO (QUE RECIBA QUANTITY Y SE PUEDA MODICICAR DESDE PRODUCTO DEATIL EL QUANTITY DEL CARRITO)
+  //   this.sharingDataService.closeCartEventEmitter.emit();
+  //   this.router.navigate(['/product_detail/', orderedProduct.finalProduct.base_product_id]);
+  // }
 
   getShortDescription(text: string): string{
     if(text == undefined){

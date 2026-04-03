@@ -3,4 +3,5 @@ export class Color{
     color_id!: number;
     name!: string;
     tailwindclass!: string;
+    hexCodeColor!: string;
 }

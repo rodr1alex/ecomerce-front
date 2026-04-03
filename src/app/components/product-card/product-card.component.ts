@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { BaseProduct } from '../../models/base-product.model';
 import { SharingDataService } from '../../services/sharing-data.service';
+import { ProductBasicInfo } from '../../models/products-general.model';
 
 @Component({
   selector: 'product-card',
@@ -10,7 +11,7 @@ import { SharingDataService } from '../../services/sharing-data.service';
   styleUrl: './product-card.component.css'
 })
 export class ProductCardComponent implements OnInit, AfterViewInit{
-  @Input() baseProduct!: BaseProduct;
+  @Input() baseProduct!: ProductBasicInfo
   @ViewChild('dynamicHeightContainer') dynamicHeightContainer!: ElementRef;
   @ViewChild('imgPortrait') imgPortrait!: ElementRef;
 

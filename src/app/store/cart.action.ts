@@ -1,11 +1,18 @@
 import { createAction, props } from "@ngrx/store";
 import { OrderedProduct } from "../models/ordered-product.model";
 import { Cart } from "../models/cart.model";
+import { CartV2, ProductInCart } from "../models/products-general.model";
 
 
-export const putCart = createAction('putCart', props<{cart: Cart}>());
+// export const putCart = createAction('putCart', props<{cart: Cart}>());
+// export const findProduct = createAction('findProduct', props<{final_product_id: number}>());
+// export const updateCart = createAction('updateCart', props<{cartUpdated: Cart}>())
+
+export const putCart = createAction('putCart', props<{cart: CartV2}>());
 export const findProduct = createAction('findProduct', props<{final_product_id: number}>());
-export const updateCart = createAction('updateCart', props<{cartUpdated: Cart}>())
+export const updateCart = createAction('updateCart', props<{cartUpdated: CartV2}>())
+export const addProduct = createAction('addProduct', props<{product: ProductInCart}>())
+export const removeProduct = createAction('removeProduct', props<{product: ProductInCart}>())
 
 // export const addProduct = createAction('addProduct', props<{cartUpdated: Cart,orderedProductNew: OrderedProduct}>())
 // export const updateProduct = createAction('updateProduct', props<{cartUpdated: Cart, orderedProductUpdated: OrderedProduct}>())

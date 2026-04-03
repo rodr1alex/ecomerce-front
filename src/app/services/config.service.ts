@@ -5,7 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class ConfigService {
 
-  public baseUrl: string = 'http://18.231.193.172:8080'
+  //public baseUrl: string = 'http://18.231.193.172:8080'
+  public baseUrl: string = 'http://localhost:8080'
 
 
   constructor() { }

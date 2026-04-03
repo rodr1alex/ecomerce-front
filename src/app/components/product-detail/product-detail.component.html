@@ -42,11 +42,12 @@
 
         <div class="p-6 md:w-1/2">
             <div class="mb-6">
-                <p><span class="font-bold">{{baseProduct.brand.name}} </span>{{baseProduct.name}}</p>
-                <p class="font-bold">{{formatCurrency(baseProduct.base_price) }}</p>
+                <p><span class="font-bold">{{productDetail.brand}} </span>{{productDetail.name}}</p>
+                <p class="font-bold">{{formatCurrency(productDetail.basePrice) }}</p>
             </div>
 
-            @if(colorList[0].color_id != 1){
+            <!-- colorList[0].color_id != 1 -->
+            @if(true){
                 <div class="mb-6">
                     @if(selectedColor.color_id){
                         <p class="mb-2">Color seleccionado: {{selectedColor.name}}</p>
@@ -77,8 +78,9 @@
 
 
 
-
-            @if(sizeList[0].size_id != 28){ 
+<!-- 
+            sizeList[0].size_id != 28 -->
+            @if(true){ 
                 <!-- 28 es el id del "sin talla" -->
                 <div class="mb-6">
                     @if(selectedSize.size_id){
@@ -127,12 +129,12 @@
 
             <div class="mb-6">
                 <p>Características: </p>
-                <p>{{baseProduct.chars}}</p>
+                <p>{{productDetail.chars}}</p>
             </div>
 
             <div class="mb-6">
                 <p>Especificaciones técnicas: </p>
-                <p>{{baseProduct.specs}}</p>
+                <p>{{productDetail.specs}}</p>
             </div>
         </div>
 

@@ -1,9 +1,9 @@
     <div class="card p-4">
-        @if(cart.orderedProductList != undefined){
-            @if(cart.orderedProductList.length > 0){
+        @if(cart.products != undefined){
+            @if(cart.products.length > 0){
                 <div class="mb-6">
                     <p>Su carrito</p>
-                    <p>Total items {{cart.items}}</p>
+                    <p>Total items {{cart.itemsNumber}}</p>
                     <p>Total en esta compra: {{formatCurrency(cart.total)}}</p>
                 </div>
             }@else {
@@ -14,33 +14,38 @@
         }
 
         <div class="mb-6">
-            @for (orderedProduct of cart.orderedProductList; track $index) {
-                <a (click)="detailProduct(orderedProduct)" >
+            @for (orderedProduct of cart.products; track $index) {
+                <!-- (click)="detailProduct(orderedProduct)"  -->
+                <a >
                     <div class="cart-item flex flex-row  mb-4 justify-between h-20 hover:cursor-pointer">
-                        <img src={{orderedProduct.finalProduct.img}} class="w-20" alt="">
+                        <img src={{orderedProduct.img.url}} class="w-20" alt="">
                         <div class="pt-2 pl-2">
-                            <p><span class="font-bold">{{orderedProduct.finalProduct.brand}} </span>{{getShortDescription(orderedProduct.finalProduct.name)}}</p>
-                            <p>Color: <span class="font-bold">{{orderedProduct.finalProduct.color}}</span> Talla: <span class="font-bold">{{orderedProduct.finalProduct.size.name}}</span></p>
-                            <p><span class=""> {{formatCurrency(orderedProduct.finalProduct.final_price)}}</span></p>
+                            <p><span class="font-bold">{{orderedProduct.brand}} </span>{{getShortDescription(orderedProduct.name)}}</p>
+                            <p>Color: <span class="font-bold">{{orderedProduct.color}}</span> Talla: <span class="font-bold">{{orderedProduct.size}}</span></p>
+                            <p><span class=""> {{formatCurrency(orderedProduct.price)}}</span></p>
+                            <p><span class=""> Final product ID: {{orderedProduct.finalProductId}}</span></p>
                         </div>
                         <div class="mr-2 flex flex-col items-center justify-center">
-                            <p class="mb-2 font-bold text-base">{{formatCurrency(orderedProduct.quantity * orderedProduct.finalProduct.final_price)}}</p>
+                            <p class="mb-2 font-bold text-base">{{formatCurrency(orderedProduct.quantity * orderedProduct.price)}}</p>
                             <div class="flex">
                                 <div class="cart-cuantity py-1 px-0  flex w-32 justify-center items-center">
-                                    <button class="w-10 active:text-red-400" (click)="decrease($event, orderedProduct)">-</button>
+                                    <!-- (click)="decrease($event, orderedProduct)" -->
+                                    <button class="w-10 active:text-red-400" >-</button>
                                     <p class="w-12 bg-white text-center rounded-md ">{{orderedProduct.quantity}}</p>
-                                    <button class="w-10 active:text-blue-400" (click)="increase($event,orderedProduct)">+</button>
+                                    <!-- (click)="increase($event,orderedProduct)" -->
+                                    <button class="w-10 active:text-blue-400" >+</button>
                                 </div>  
                             </div>
-                            <button (click)="remove($event,orderedProduct)"><i class="fa-solid fa-trash"></i></button>
+                            <!-- (click)="remove($event,orderedProduct)" -->
+                            <button (click)="remove($event,orderedProduct)" ><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
                 </a>
                
             }
         </div>
-        @if(cart.orderedProductList != undefined){
-            @if(cart.orderedProductList.length > 0){
+        @if(cart.products != undefined){
+            @if(cart.products.length > 0){
                 <div class="flex flex-col w-full items-center mb-6">
                     <button class="mb-2 hover:text-red-400" (click)="cleanCart()">Vaciar carro</button>
                     <button class="button w-11/12" [routerLink]="['/payment']" (click)="close()">Ir a pagar</button>

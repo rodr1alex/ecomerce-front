@@ -108,88 +108,88 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
   }
 
   addProductToCart(){
-    this.sharingDataService.addProductToCartEventEmitter.subscribe((orderedProduct)=>{
-      let cartUpdated: any;
-      if(this.cart.orderedProductList !=null){
-        cartUpdated = {
-          ...this.cart,
-          orderedProductList: [...this.cart.orderedProductList] || [] 
-        };
-      }else{
-        cartUpdated = {
-          ...this.cart,
-          orderedProductList: [] 
-        };
-      }
-      cartUpdated.orderedProductList.push(orderedProduct)
-      cartUpdated.items += orderedProduct.quantity;
-      cartUpdated.total += (orderedProduct.quantity * orderedProduct.finalProduct.final_price);
-      this.cartStore.dispatch(updateCart({cartUpdated}));
-      this.cartService.addProduct(cartUpdated.cart_id, orderedProduct).subscribe({
-        next: response => {
-          //console.log('Producto agregado con exito, carrito: ', response);
-        }
-      });
-    })
+    // this.sharingDataService.addProductToCartEventEmitter.subscribe((orderedProduct)=>{
+    //   let cartUpdated: any;
+    //   if(this.cart.orderedProductList !=null){
+    //     cartUpdated = {
+    //       ...this.cart,
+    //       orderedProductList: [...this.cart.orderedProductList] || [] 
+    //     };
+    //   }else{
+    //     cartUpdated = {
+    //       ...this.cart,
+    //       orderedProductList: [] 
+    //     };
+    //   }
+    //   cartUpdated.orderedProductList.push(orderedProduct)
+    //   cartUpdated.items += orderedProduct.quantity;
+    //   cartUpdated.total += (orderedProduct.quantity * orderedProduct.finalProduct.final_price);
+    //   this.cartStore.dispatch(updateCart({cartUpdated}));
+    //   this.cartService.addProduct(cartUpdated.cart_id, orderedProduct).subscribe({
+    //     next: response => {
+    //       //console.log('Producto agregado con exito, carrito: ', response);
+    //     }
+    //   });
+    // })
   }
 
   modifyProductQuantityCart(){
-    this.sharingDataService.modifyProductQuantityCartEventEmitter.subscribe(({diferential, orderedProduct})=>{
-      let cartUpdated = {
-        ...this.cart,
-        orderedProductList: this.cart.orderedProductList.map(item => ({ ...item })) // Clonar deep copy de los objetos en orderedProductList
-      };
-      //console.log('Antes de agregar/quitar: ', cartUpdated);
-      cartUpdated.items += diferential;
-      cartUpdated.total += orderedProduct.finalProduct.final_price * diferential;
-      cartUpdated.orderedProductList.map(item => item.ordered_product_id === orderedProduct.ordered_product_id ? item.quantity += diferential : item);
-      const orderedProductCopy = cartUpdated.orderedProductList.find(item => item.ordered_product_id === orderedProduct.ordered_product_id) || new OrderedProduct();
-      //console.log('Despues de agregar/quitar: ', cartUpdated);
-      this.cartStore.dispatch(updateCart({cartUpdated}));
-      this.cartService.updateProductQuantity(this.cart.cart_id,orderedProductCopy).subscribe({
-        next: response => {
-          //console.log('Producto modificado en DB con exito, carrito: ', response);
-        }
-      });
-    })
+    // this.sharingDataService.modifyProductQuantityCartEventEmitter.subscribe(({diferential, orderedProduct})=>{
+    //   let cartUpdated = {
+    //     ...this.cart,
+    //     orderedProductList: this.cart.orderedProductList.map(item => ({ ...item })) // Clonar deep copy de los objetos en orderedProductList
+    //   };
+    //   //console.log('Antes de agregar/quitar: ', cartUpdated);
+    //   cartUpdated.items += diferential;
+    //   cartUpdated.total += orderedProduct.finalProduct.final_price * diferential;
+    //   cartUpdated.orderedProductList.map(item => item.ordered_product_id === orderedProduct.ordered_product_id ? item.quantity += diferential : item);
+    //   const orderedProductCopy = cartUpdated.orderedProductList.find(item => item.ordered_product_id === orderedProduct.ordered_product_id) || new OrderedProduct();
+    //   //console.log('Despues de agregar/quitar: ', cartUpdated);
+    //   this.cartStore.dispatch(updateCart({cartUpdated}));
+    //   this.cartService.updateProductQuantity(this.cart.cart_id,orderedProductCopy).subscribe({
+    //     next: response => {
+    //       //console.log('Producto modificado en DB con exito, carrito: ', response);
+    //     }
+    //   });
+    // })
   }
 
   removeProductToCart(){
-    this.sharingDataService.removeProductCartEventEmitter.subscribe((orderedProduct) =>{
-      let cartUpdated = {
-        ...this.cart,
-        orderedProductList: this.cart.orderedProductList.map(item => ({ ...item })) // Clonar deep copy de los objetos en orderedProductList
-      };
-      cartUpdated.items -= orderedProduct.quantity;
-      cartUpdated.total -= (orderedProduct.quantity * orderedProduct.finalProduct.final_price);
-      cartUpdated.orderedProductList = cartUpdated.orderedProductList.filter(item => item.ordered_product_id != orderedProduct.ordered_product_id);
-      this.cartStore.dispatch(updateCart({cartUpdated}));
-      this.cartService.removeProduct(this.cart.cart_id, orderedProduct.finalProduct.final_product_id).subscribe({
-        next: response => {
-          //console.log('Producto eliminado con exito, carrito: ', response);
-        }
-      });
-    })
+    // this.sharingDataService.removeProductCartEventEmitter.subscribe((orderedProduct) =>{
+    //   let cartUpdated = {
+    //     ...this.cart,
+    //     orderedProductList: this.cart.orderedProductList.map(item => ({ ...item })) // Clonar deep copy de los objetos en orderedProductList
+    //   };
+    //   cartUpdated.items -= orderedProduct.quantity;
+    //   cartUpdated.total -= (orderedProduct.quantity * orderedProduct.finalProduct.final_price);
+    //   cartUpdated.orderedProductList = cartUpdated.orderedProductList.filter(item => item.ordered_product_id != orderedProduct.ordered_product_id);
+    //   this.cartStore.dispatch(updateCart({cartUpdated}));
+    //   this.cartService.removeProduct(this.cart.cart_id, orderedProduct.finalProduct.final_product_id).subscribe({
+    //     next: response => {
+    //       //console.log('Producto eliminado con exito, carrito: ', response);
+    //     }
+    //   });
+    // })
   }
 
   cleanCart(){
-    this.sharingDataService.cleanCartEventEmitter.subscribe(()=>{
-      let cartUpdated = {
-        ...this.cart,
-        orderedProductList: this.cart.orderedProductList.map(item => ({ ...item })) // Clonar deep copy de los objetos en orderedProductList
-      };
-      //console.log('Antes de agregar/quitar: ', cartUpdated);
-      cartUpdated.items = 0;
-      cartUpdated.total = 0;
-      cartUpdated.orderedProductList = [];
-      //console.log('Despues de agregar/quitar: ', cartUpdated);
-      this.cartStore.dispatch(updateCart({cartUpdated}));
-      this.cartService.cleanCart(this.cart.cart_id).subscribe({
-        next: response => {
-          //console.log('Carrito limpiado con exito, carrito: ', response);
-        }
-      });
-    })
+    // this.sharingDataService.cleanCartEventEmitter.subscribe(()=>{
+    //   let cartUpdated = {
+    //     ...this.cart,
+    //     orderedProductList: this.cart.orderedProductList.map(item => ({ ...item })) // Clonar deep copy de los objetos en orderedProductList
+    //   };
+    //   //console.log('Antes de agregar/quitar: ', cartUpdated);
+    //   cartUpdated.items = 0;
+    //   cartUpdated.total = 0;
+    //   cartUpdated.orderedProductList = [];
+    //   //console.log('Despues de agregar/quitar: ', cartUpdated);
+    //   this.cartStore.dispatch(updateCart({cartUpdated}));
+    //   this.cartService.cleanCart(this.cart.cart_id).subscribe({
+    //     next: response => {
+    //       //console.log('Carrito limpiado con exito, carrito: ', response);
+    //     }
+    //   });
+    // })
   }
   
   handlerLogin() {
@@ -228,38 +228,38 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
   }
 
   cartVerify(id: number){
-    this.userService.findById(id).subscribe({
-      next: user => {
-        if(user.cartList.length > 0){
-          console.log('Carrito list esta definido', user.cartList)
-          const cartList: Cart[] = user.cartList;
-          const lastCart = cartList.pop() || new Cart();
-          if(lastCart?.sale == null){
-            console.log('Ya existe un carrito!', lastCart)
+    // this.userService.findById(id).subscribe({
+    //   next: user => {
+    //     if(user.cartList.length > 0){
+    //       console.log('Carrito list esta definido', user.cartList)
+    //       const cartList: Cart[] = user.cartList;
+    //       const lastCart = cartList.pop() || new Cart();
+    //       if(lastCart?.sale == null){
+    //         console.log('Ya existe un carrito!', lastCart)
            
-            this.cartStore.dispatch(putCart({cart: lastCart}));
-          }else{
-            this.cartService.create(id).subscribe({
-              next: cart => {
-                console.log('Carrito creado con exito!', cart);
-                this.cartStore.dispatch(putCart({cart}));
+    //         this.cartStore.dispatch(putCart({cart: lastCart}));
+    //       }else{
+    //         this.cartService.create(id).subscribe({
+    //           next: cart => {
+    //             console.log('Carrito creado con exito!', cart);
+    //             this.cartStore.dispatch(putCart({cart}));
                
-              }
-            })
-          }
-        }else{
-          console.log('Carrito list NO esta definido')
-          this.cartService.create(id).subscribe({
-            next: cart => {
-              console.log('Carrito creado con exito!', cart);
-              this.cartStore.dispatch(putCart({cart}));
+    //           }
+    //         })
+    //       }
+    //     }else{
+    //       console.log('Carrito list NO esta definido')
+    //       this.cartService.create(id).subscribe({
+    //         next: cart => {
+    //           console.log('Carrito creado con exito!', cart);
+    //           this.cartStore.dispatch(putCart({cart}));
              
-            }
-          })
-        }
+    //         }
+    //       })
+    //     }
         
-      }
-    })
+    //   }
+    // })
   }
 
   pageProductsEvent(){

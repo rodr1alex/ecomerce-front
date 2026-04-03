@@ -1,8 +1,8 @@
 <div class="card flex flex-col w-auto md:hover:nm-flat-white-xl" #dynamicHeightContainer>
-    <img src="{{baseProduct.baseProductImageList[0].url}}" class="h-3/4 img-portrait" alt="product-card" #imgPortrait>
+    <img src="{{baseProduct.imageList[0].url}}" class="h-3/4 img-portrait" alt="product-card" #imgPortrait>
     <div class="px-4 flex flex-col h-1/4 mt-2">
-        <p class="font-bold">{{baseProduct.brand.name}}</p>
+        <p class="font-bold">{{baseProduct.brand}}</p>
         <p class="my-1" style="line-height: 14px;">{{getShortDescription(baseProduct.name)}}</p>
-        <p class="mb-2 font-bold">{{formatCurrency(baseProduct.base_price)}}</p>
+        <p class="mb-2 font-bold">{{formatCurrency(baseProduct.basePrice)}}</p>
     </div>
 </div>

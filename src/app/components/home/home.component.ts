@@ -11,6 +11,7 @@ import { BaseProduct } from '../../models/base-product.model';
 import { BaseProductService } from '../../services/base-product.service';
 import { BannerImageService } from '../../services/banner-image.service';
 import { BannerImage } from '../../models/banner-image.model';
+import { ProductBasicInfo } from '../../models/products-general.model';
 
 @Component({
   selector: 'home',
@@ -19,50 +20,43 @@ import { BannerImage } from '../../models/banner-image.model';
   templateUrl: './home.component.html'
 })
 export class HomeComponent implements OnInit{
-  baseProductList!: BaseProduct[];
-  paginator!: any;
+  //baseProductList!: BaseProduct[]
+  baseProductList!: ProductBasicInfo[]
+  paginator!: any
   bannerImageList: BannerImage[] =[]
-  // bannerImageList: BannerImage[] = [
-  //   new BannerImage('url("https://assets-ecomerce-rodr1alexdev.s3.sa-east-1.amazonaws.com/banner/1.jpg")'),
-  //   new BannerImage('url("https://assets-ecomerce-rodr1alexdev.s3.sa-east-1.amazonaws.com/banner/2.jpg")'),
-  //   new BannerImage('url("https://assets-ecomerce-rodr1alexdev.s3.sa-east-1.amazonaws.com/banner/3.jpg")')
-  // ];
-
-  currentIndex = 0;
-  touchStartX = 0;
-  touchEndX = 0;
-
+  currentIndex: number = 0
+  touchStartX: number = 0
+  touchEndX: number = 0
 
   constructor(
     private baseProductStore: Store<{baseProducts: any}>,
-    private router: Router,
     private baseProductService: BaseProductService,
     private sharingDataService: SharingDataService,
-    private bannerImageService: BannerImageService,
-    private authService: AuthService) {
-      this.baseProductStore.select('baseProducts').subscribe(state =>{
-        this.baseProductList = state.baseProductList;
-        this.paginator = state.paginator;
-      })
-    
-  }
+    private bannerImageService: BannerImageService) 
+    {
+      // this.baseProductStore.select('baseProducts').subscribe(state =>{
+      //   this.baseProductList = state.baseProductList;
+      //   this.paginator = state.paginator;
+      // })
+    }
 
   
   ngOnInit(): void {
-    this.sharingDataService.showSearchBarEventEmitter.emit();
-    setInterval(()=>{
-      this.next();
-    }, 7000);
+    this.sharingDataService.showSearchBarEventEmitter.emit()
+
+    setInterval(()=>this.next(), 7000)
+
     this.bannerImageService.findAll().subscribe({
       next: response =>{
         this.bannerImageList = response;
       }
     })
+
     this.baseProductService.findAllPageable(0).subscribe({
-      next: pageable =>{
-        this.baseProductList = pageable.content as BaseProduct[];
-        this.paginator = pageable;
-        this.sharingDataService.pageProductEventEmitter.emit({baseProductList: this.baseProductList, paginator: this.paginator})
+      next: response =>{
+        this.baseProductList = response//.map((item:any) => new BaseProductCommerce(item))
+        // this.paginator = pageable;
+        // this.sharingDataService.pageProductEventEmitter.emit({baseProductList: this.baseProductList, paginator: this.paginator})
       },
       error: error =>{
         throw new error;
@@ -95,6 +89,7 @@ export class HomeComponent implements OnInit{
       this.prev();
     }
   }
+
   hola(i: number){
     this.currentIndex = i;
   }

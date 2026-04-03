@@ -154,7 +154,7 @@ export class NavbarComponent implements OnInit{
     cartUpdated.items = 0;
     cartUpdated.total = 0;
     cartUpdated.orderedProductList = [];
-    this.cartStore.dispatch(updateCart({cartUpdated}));
+    //this.cartStore.dispatch(updateCart({cartUpdated}));
   }
 
   subCategoryVisibilityToggle(id: string){

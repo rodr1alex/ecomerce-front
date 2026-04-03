@@ -27,7 +27,8 @@ export class BaseProductService {
   }
 
   findAllPageable(page: number): Observable<any> {
-    return this.http.get<any[]>(`${this.url}/featured_products/page/${page}`);
+    //return this.http.get<any[]>(`${this.url}/featured_products/page/${page}`);
+    return this.http.get<any[]>(`${this.url}`);
   }
 
   filterByBrand(page: number, brand_id: number, categoryList: any): Observable<any> {
