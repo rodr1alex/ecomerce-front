@@ -36,10 +36,10 @@ export class ProductDetailComponent implements OnInit {
   selectedSize: Size = new Size();
   selectedColor: Color = new Color();
   sizeList: Size[] = [];
-  EnabledSizeList: Size[] = [];
+  enabledSizeList: Size[] = [];
   colorList: Color[] = [];
-  ImageUrlList: string[] = []
-  currentIndex = 0;
+  imageUrlList: string[] = []
+  currentImageIndex = 0;
 
   touchStartX = 0;
   touchEndX = 0;
@@ -62,135 +62,88 @@ export class ProductDetailComponent implements OnInit {
 
 
 
-  ngOnInit(): void {
-    this.sharingDataService.showSearchBarEventEmitter.emit();
-    this.isAuth = this.authService.user.isAuth;
-    //this.getProductoDetail()
-    // this.getColorList()
-    // this.getSizeList()
-    // this.getImageList()
-    this.route.paramMap.subscribe(params => {
-      const base_product_id = +(params.get('base_product_id') || '0');
 
-      this.asyncGetProductoDetail(base_product_id)
+  async ngOnInit(): Promise<void> {
+    this.sharingDataService.showSearchBarEventEmitter.emit()
+    this.isAuth = this.authService.user.isAuth
 
-      // @ts-ignore
-      // this.baseProductStore.dispatch(find({ base_product_id: +(params.get('base_product_id')) }));
-      // console.log('Esta wea rara de javaScript', this.baseProduct);
-      // this.getImageList();
-      // this.getColorList(this.baseProduct.colorVariantProductList);
-      // this.sizeList = this.getSizeList(this.baseProduct.colorVariantProductList);
-      // this.EnabledSizeList = this.sizeList;
+    this.route.paramMap.subscribe(async params => {
+      const base_product_id = +(params.get('base_product_id') || '0')
+      await this.getProductoDetail(base_product_id)
+      this.setColorList()
+      this.setSizeList()
+      this.setImageList()
+      setTimeout(() => this.setColorButtons(), 1)
     })
 
-    setTimeout(() => {
-      this.setColorButtons();
-    }, 1)
-
-    // if (this.colorList[0].color_id == 1) {
-    //   this.selectedColor = this.colorList[0];
-    // }
-
-    // if (this.sizeList[0].size_id == 28) {
-    //   this.selectedSize = this.sizeList[0];
-    // }
-
-
-    //setInterval(()=> console.log('mierda script: this.productDetail', this.productDetail), 3000)
   }
 
-  async asyncGetProductoDetail(base_product_id: number) {
+  async getProductoDetail(base_product_id: number) {
     try {
       const response = await firstValueFrom(this.baseProductService.findById(base_product_id))
       this.productDetail = response
-      this.getColorList()
-      this.getSizeList()
-      this.getImageList()
     } catch (err) {
       console.error(err)
     }
   }
 
-  getProductoDetail() {
-    const productDetail = new ProductDetail();
-    productDetail.baseProductId = 99
-    productDetail.name = 'name test'
-    productDetail.basePrice = 99
-    productDetail.chars = 'char test'
-    productDetail.specs = 'spect test'
-    productDetail.brand = 'brand test'
-    productDetail.imageList = [{ mobile: false, url: 'https://cl-dam-resizer.ecomm.cencosud.com/unsafe/adaptive-fit-in/3840x0/filters:quality(75)/paris/609045/variant/images/baad55da-8a2c-4f24-a2a9-7722b2c2e2a0/609045-0400-002.jpg' }]
-    productDetail.sizesColorsAvailable = [
-      {
-        finalProductId: 50,
-        color: { color_id: 1, tailwindclass: 'ad', hexCodeColor: '#6DB33F', name: 'Verde' },
-        size: { size_id: 1, name: 'S', finalProductList: [] }
-      },
-      {
-        finalProductId: 51,
-        color: { color_id: 1, tailwindclass: 'ad', hexCodeColor: '#6DB33F', name: 'Verde' },
-        size: { size_id: 2, name: 'M', finalProductList: [] }
-      },
-      {
-        finalProductId: 52,
-        color: { color_id: 1, tailwindclass: 'ad', hexCodeColor: '#6DB33F', name: 'Verde' },
-        size: { size_id: 3, name: 'L', finalProductList: [] }
-      },
-      {
-        finalProductId: 70,
-        color: { color_id: 2, tailwindclass: 'ad', hexCodeColor: '#3f45b3', name: 'Azul' },
-        size: { size_id: 3, name: 'L', finalProductList: [] }
-      },
-      {
-        finalProductId: 71,
-        color: { color_id: 2, tailwindclass: 'ad', hexCodeColor: '#3f45b3', name: 'Azul' },
-        size: { size_id: 4, name: 'XL', finalProductList: [] }
-      }
-    ]
-    productDetail.colorsVariantInfo = [
-      {
-        color: { color_id: 1, tailwindclass: 'ad', hexCodeColor: '#6DB33F', name: 'Verde' },
-        imageList: [
-          { mobile: false, url: 'https://assets.adidas.com/images/c_fill,g_auto,w_1200,h_630,f_auto,q_auto/w_600,f_auto,q_auto/b0b6d4a107ad4e84b3baaf8700866f07_9366/Zapatillas_Campus_00s_Verde_H03472_01_standard.jpg' },
-          { mobile: false, url: 'https://media.falabella.com/falabellaCL/80058744_01/w=800,h=800,fit=pad' },
-        ]
-      },
-      {
-        color: { color_id: 2, tailwindclass: 'ad', hexCodeColor: '#3f45b3', name: 'Azul' },
-        imageList: [
-          { mobile: false, url: 'https://assets.adidas.com/images/w_600,f_auto,q_auto/e896f4e921964dd6b668e534aa0b78b5_9366/Zapatillas_Break_Start_Azul_IH7967_01_standard.jpg' },
-          { mobile: false, url: 'https://media.istockphoto.com/id/2208170004/es/foto/primer-plano-de-pies-con-zapatillas-adidas-spezial-azules-y-jeans-de-mezclilla-en-la-calle-de.jpg?s=612x612&w=0&k=20&c=NaL3E0FrJCLV-WpWRM7Ewgc8kWiIK3g0_M65NQFV-Bs=' },
-        ]
-      }
-
-    ]
-
-
-    this.productDetail = productDetail
+  setColorList() {
+    const colorListAll = this.productDetail.sizesColorsAvailable.map(item => item.color);
+    const propertyToAvoid: string = 'name'
+    this.colorList = this.cleanRepeated(colorListAll, propertyToAvoid)
   }
 
+  setSizeList(): void {
+    let sizeListAll: Size[] = this.productDetail.sizesColorsAvailable.map(item => item.size)
+    const propertyToAvoid: string = 'name'
+    this.sizeList = this.cleanRepeated(sizeListAll, propertyToAvoid)
+    this.enabledSizeList = this.sizeList
+  }
 
+  setImageList() {
+    this.imageUrlList = this.productDetail.imageList.map(item => item.url)
+  }
 
   setColorButtons() {
-    for (let color of this.colorList) {
-      let node = document.getElementById(color.name + '');
-      node?.setAttribute('style', `background-color: ${color.hexCodeColor};`);
-    }
+    this.colorList.forEach(color => {
+      const node = document.getElementById(color.name)
+      if (node) node.style.backgroundColor = color.hex_code_color
+    })
   }
 
-  getImageList() {
-    this.ImageUrlList = [];
-    this.ImageUrlList = this.productDetail.imageList.map(item => item.url)
+  //ui
+  onSelectColor(selectedColorUI: Color) {
+    this.selectedColor = selectedColorUI;
+    this.imageUrlList = this.productDetail.colorsVariantInfo.find(item => item.color.color_id == selectedColorUI.color_id)?.imageList.map(item => item.url) || []
+    this.currentImageIndex = 0;
+
+    this.enabledSizeList = this.getEnabledSizeList(this.productDetail, selectedColorUI);
+    this.sizeList.forEach(size => this.disableSizeButton(size));
+    this.enabledSizeList.forEach(size => this.enableSizeButton(size));
+
+    this.verifyActualSelectedSizeIsContainedInNewEnabledSizeList()
+
   }
 
-  getColorList() {
-    const colorListAll = this.productDetail.sizesColorsAvailable.map(item => item.color);
-    this.colorList = this.cleanRepeated(colorListAll, 'name')
+
+  verifyActualSelectedSizeIsContainedInNewEnabledSizeList() {
+    let isContained = false;
+    this.enabledSizeList.forEach(enabledSize => {
+      if (enabledSize.size_id === this.selectedSize.size_id) isContained = true
+    });
+    if (!isContained) this.resetSelectedSize()
   }
 
-  getSizeList(): void {
-    let sizeListAll: Size[] = this.productDetail.sizesColorsAvailable.map(item => item.size)
-    this.sizeList = this.cleanRepeated(sizeListAll, 'name')
+  resetSelectedSize() {
+    this.selectedSize = new Size()
+  }
+
+  setSelectedSize(size: Size) {
+    this.selectedSize = size;
+    this.enabledSizeList.forEach(enabledSize => {
+      let node = document.getElementById(`${enabledSize.size_id}`);
+      enabledSize.size_id === this.selectedSize.size_id ? node?.classList.add('button--selected') : node?.classList.remove('button--selected');
+    })
   }
 
   getEnabledSizeList(productDetail: ProductDetail, colorSelectedUI: Color): Size[] {
@@ -198,42 +151,20 @@ export class ProductDetailComponent implements OnInit {
     return this.cleanRepeated(colors.map(item => item.size), 'name')
   }
 
-
-  setSelectedSize(size: Size) {
-    this.selectedSize = size;
-    this.EnabledSizeList.map(sizeItem => {
-      let node = document.getElementById(`${sizeItem.size_id}`);
-      sizeItem.size_id === this.selectedSize.size_id ? node?.classList.add('button--selected') : node?.classList.remove('button--selected');
-    })
+  onAddProductToCart() {
+    if (this.existProblemSize() && this.existProblemColor()) return alert('Debe seleccionar talla y color')
+    if (this.existProblemSize()) return alert('Debe seleccionar talla')
+    if (this.existProblemColor()) return alert('Debe seleccionar color')
+    this.addProductToCart()
   }
 
-  setSelectedColor(colorSelectedUI: Color) {
-    this.selectedColor = colorSelectedUI;
-    this.ImageUrlList = this.productDetail.colorsVariantInfo.find(item => item.color.color_id == colorSelectedUI.color_id)?.imageList.map(item => item.url) || []
-    this.currentIndex = 0;
-
-    this.EnabledSizeList = this.getEnabledSizeList(this.productDetail, colorSelectedUI);
-    this.sizeList.map(size => this.disableSizeButton(size));
-    this.EnabledSizeList.map(size => this.enableSizeButton(size));
-
-    let isContainded = false;
-    this.EnabledSizeList.map(item => {
-      if (item.size_id === this.selectedSize.size_id) {
-        isContainded = true;
-      }
-    });
-    if (!isContainded) {
-      this.selectedSize = new Size();
-
-    }
+  existProblemSize(): boolean {
+    return this.sizeList.length > 0 && !this.selectedSize.size_id
   }
 
-  getFinalProductId(): number {
-    const color_id_UI = this.selectedColor.color_id;
-    const size_id_UI = this.selectedSize.size_id;
-    return this.productDetail.sizesColorsAvailable.find(item => item.color.color_id == color_id_UI && item.size.size_id == size_id_UI)?.finalProductId || 0
+  existProblemColor(): boolean {
+    return this.colorList.length > 0 && !this.selectedColor.color_id
   }
-
 
   addProductToCart() {
     let cartUpdated: any
@@ -244,7 +175,7 @@ export class ProductDetailComponent implements OnInit {
     productInCart.name = this.productDetail.name
     productInCart.color = this.selectedColor.name
     productInCart.size = this.selectedSize.name
-    productInCart.img = { mobile: false, url: this.ImageUrlList[0] }
+    productInCart.img = { mobile: false, url: this.imageUrlList[0] }
     productInCart.quantity = this.quantity
     cartUpdated = {
       ...this.cart,
@@ -258,48 +189,12 @@ export class ProductDetailComponent implements OnInit {
 
   }
 
-  verifySizeAndColor() {
-    if (this.sizeList.length > 0 && this.colorList.length > 0) {
-      if (this.selectedSize.size_id && this.selectedColor.color_id) {
-        this.addProductToCart();
-      } else if (this.selectedSize.size_id == undefined && this.selectedColor.color_id == undefined) {
-        alert('Debe seleccionar talla y color');
-      } else if (this.selectedSize.size_id == undefined) {
-        alert('Debe seleccionar talla')
-      } else {
-        alert('Debe seleccionar color')
-      }
-    } else if (this.sizeList.length > 0 && this.colorList.length == 0) {
-      if (this.selectedSize.size_id) {
-        this.addProductToCart();
-      } else {
-        alert('Debe seleccionar talla')
-      }
-    } else if (this.sizeList.length == 0 && this.colorList.length > 0) {
-      if (this.selectedColor.color_id) {
-        this.addProductToCart();
-      } else {
-        alert('Debe seleccionar color')
-      }
-    } else {
-      this.addProductToCart();
-    }
+  getFinalProductId(): number {
+    const color_id_UI = this.selectedColor.color_id;
+    const size_id_UI = this.selectedSize.size_id;
+    return this.productDetail.sizesColorsAvailable.find(item => item.color.color_id == color_id_UI && item.size.size_id == size_id_UI)?.finalProductId || 0
   }
 
-  getBaseProductImageURL(baseProduct: BaseProduct): string[] {
-    let urlList: string[] = [];
-    for (let baseProductImage of baseProduct.baseProductImageList) {
-      urlList.push(baseProductImage.url);
-    }
-    return urlList;
-  }
-  getColorVariantProductImageURL(colorVariantProduct: ColorVariantProduct): string[] {
-    let urlList: string[] = [];
-    for (let colorVariantProductImage of colorVariantProduct.colorVariantProductImageList) {
-      urlList.push(colorVariantProductImage.url);
-    }
-    return urlList;
-  }
 
   enableSizeButton(size: Size) {
     let node = document.getElementById(`${size.size_id}`);
@@ -318,29 +213,35 @@ export class ProductDetailComponent implements OnInit {
   }
 
   decrease() {
-    if (this.quantity > 0) {
-      this.quantity--;
-    }
+    if (this.quantity === 0) return
+    this.quantity--
   }
+
   increase() {
-    this.quantity++;
+    this.quantity++
   }
+
   selectedImageIndex(i: number) {
-    this.currentIndex = i;
+    this.currentImageIndex = i;
   }
+
   prev() {
-    this.currentIndex = (this.currentIndex === 0) ? this.ImageUrlList.length - 1 : this.currentIndex - 1;
+    this.currentImageIndex = (this.currentImageIndex === 0) ? this.imageUrlList.length - 1 : this.currentImageIndex - 1;
   }
+
   next() {
-    this.currentIndex = (this.currentIndex === this.ImageUrlList.length - 1) ? 0 : this.currentIndex + 1;
+    this.currentImageIndex = (this.currentImageIndex === this.imageUrlList.length - 1) ? 0 : this.currentImageIndex + 1;
   }
+
   onTouchStart(event: TouchEvent) {
     this.touchStartX = event.changedTouches[0].screenX;
   }
+
   onTouchEnd(event: TouchEvent) {
     this.touchEndX = event.changedTouches[0].screenX;
     this.handleSwipe();
   }
+
   handleSwipe() {
     if (this.touchEndX < this.touchStartX) {
       this.next();
@@ -348,10 +249,9 @@ export class ProductDetailComponent implements OnInit {
       this.prev();
     }
   }
+
   formatCurrency(value: number): string {
-    if (value == undefined) {
-      value = 0;
-    }
+    if (value == undefined) value = 0
     return value.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
   }
 
