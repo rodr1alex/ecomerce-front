@@ -16,7 +16,7 @@ import { firstValueFrom, of } from 'rxjs';
 import { FinalProduct } from '../../models/final-product.model';
 import { OrderedProduct } from '../../models/ordered-product.model';
 import { Cart } from '../../models/cart.model';
-import { addProduct, findProduct, updateCart } from '../../store/cart.action';
+import { addProduct } from '../../store/cart/cart.action';
 import { tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { CartV2, ProductDetail, ProductInCart, SizesColors } from '../../models/products-general.model';
@@ -40,12 +40,11 @@ export class ProductDetailComponent implements OnInit {
   colorList: Color[] = [];
   imageUrlList: string[] = []
   currentImageIndex = 0;
-
   touchStartX = 0;
   touchEndX = 0;
   isAuth: boolean = false;
-
-
+  isUniqueColor: boolean =false
+  isUniqueSize: boolean = false
 
   constructor(
     private cartStore: Store<{ carts: any }>,
@@ -55,13 +54,9 @@ export class ProductDetailComponent implements OnInit {
     private sharingDataService: SharingDataService,
     private authService: AuthService) {
     this.cartStore.select('carts').subscribe(state => {
-      this.cart = state.cart;
-      //this.orderedProduct = state.orderedProduct;
+      this.cart = state.cart
     })
   }
-
-
-
 
   async ngOnInit(): Promise<void> {
     this.sharingDataService.showSearchBarEventEmitter.emit()
@@ -91,6 +86,8 @@ export class ProductDetailComponent implements OnInit {
     const colorListAll = this.productDetail.sizesColorsAvailable.map(item => item.color);
     const propertyToAvoid: string = 'name'
     this.colorList = this.cleanRepeated(colorListAll, propertyToAvoid)
+    this.isUniqueColor = this.colorList[0].color_id == 1 // color_id == 1 indicates 'no color'
+    if(this.isUniqueColor) this.selectedColor = this.colorList[0]
   }
 
   setSizeList(): void {
@@ -98,6 +95,8 @@ export class ProductDetailComponent implements OnInit {
     const propertyToAvoid: string = 'name'
     this.sizeList = this.cleanRepeated(sizeListAll, propertyToAvoid)
     this.enabledSizeList = this.sizeList
+    this.isUniqueSize = this.sizeList[0].size_id == 28 // size_id == 28 indicates in only one size 'no size'
+    if(this.isUniqueSize) this.selectedSize = this.sizeList[0]
   }
 
   setImageList() {
@@ -125,17 +124,12 @@ export class ProductDetailComponent implements OnInit {
 
   }
 
-
   verifyActualSelectedSizeIsContainedInNewEnabledSizeList() {
     let isContained = false;
     this.enabledSizeList.forEach(enabledSize => {
       if (enabledSize.size_id === this.selectedSize.size_id) isContained = true
     });
-    if (!isContained) this.resetSelectedSize()
-  }
-
-  resetSelectedSize() {
-    this.selectedSize = new Size()
+    if (!isContained) this.selectedSize = new Size() // apply reset
   }
 
   setSelectedSize(size: Size) {
@@ -152,23 +146,16 @@ export class ProductDetailComponent implements OnInit {
   }
 
   onAddProductToCart() {
-    if (this.existProblemSize() && this.existProblemColor()) return alert('Debe seleccionar talla y color')
-    if (this.existProblemSize()) return alert('Debe seleccionar talla')
-    if (this.existProblemColor()) return alert('Debe seleccionar color')
+    if (!this.selectedSize.size_id && !this.selectedColor.color_id) return alert('Debe seleccionar talla y color')
+    if (!this.selectedSize.size_id) return alert('Debe seleccionar talla')
+    if (!this.selectedColor.color_id) return alert('Debe seleccionar color')
     this.addProductToCart()
   }
 
-  existProblemSize(): boolean {
-    return this.sizeList.length > 0 && !this.selectedSize.size_id
-  }
-
-  existProblemColor(): boolean {
-    return this.colorList.length > 0 && !this.selectedColor.color_id
-  }
-
   addProductToCart() {
-    let cartUpdated: any
+
     const productInCart: ProductInCart = new ProductInCart();
+    productInCart.baseProductId = this.productDetail.baseProductId
     productInCart.finalProductId = this.getFinalProductId()
     productInCart.brand = this.productDetail.brand
     productInCart.price = this.productDetail.basePrice
@@ -177,13 +164,7 @@ export class ProductDetailComponent implements OnInit {
     productInCart.size = this.selectedSize.name
     productInCart.img = { mobile: false, url: this.imageUrlList[0] }
     productInCart.quantity = this.quantity
-    cartUpdated = {
-      ...this.cart,
-      products: [...this.cart.products, productInCart]
-    };
-
-    cartUpdated.itemsNumber = 1
-    cartUpdated.total = 9999
+  
 
     this.cartStore.dispatch(addProduct({ product: productInCart }));
 

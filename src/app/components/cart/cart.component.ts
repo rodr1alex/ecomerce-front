@@ -1,12 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Cart } from '../../models/cart.model';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { OrderedProduct } from '../../models/ordered-product.model';
-import { state } from '@angular/animations';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { CartV2, ProductInCart } from '../../models/products-general.model';
-import { removeProduct } from '../../store/cart.action';
+import { cleanCart, decreaseProductQuantity, increaseProductQuantity, removeProduct } from '../../store/cart/cart.action';
 
 @Component({
   selector: 'cart',
@@ -28,48 +25,41 @@ export class CartComponent implements OnInit{
     })
   }
 
-  ngOnInit(): void {
-    
-  }
+  ngOnInit(): void {}
   
+  decrease(event: Event, productInCart: ProductInCart){
+    if(productInCart.quantity == 0) return
+    event.stopPropagation()
+    this.cartStore.dispatch(decreaseProductQuantity({ finalProductId: productInCart.finalProductId}))
+  }
 
-  decrease(event: Event, orderedProduct: OrderedProduct){
-    event.stopPropagation();
-    if(orderedProduct.quantity > 0){
-      this.sharingDataService.modifyProductQuantityCartEventEmitter.emit({diferential: -1, orderedProduct});
-    }
+  increase(event: Event, productInCart: ProductInCart){
+    event.stopPropagation()
+    this.cartStore.dispatch(increaseProductQuantity({ finalProductId: productInCart.finalProductId}))
   }
-  increase(event: Event,orderedProduct: OrderedProduct){
-    event.stopPropagation();
-    this.sharingDataService.modifyProductQuantityCartEventEmitter.emit({diferential: 1, orderedProduct});
-  }
+
   remove(event: Event,productToRemove: ProductInCart){
     event.stopPropagation();
-    //this.sharingDataService.removeProductCartEventEmitter.emit(orderedProduct);
     this.cartStore.dispatch(removeProduct({ product: productToRemove }));
   }
+
   cleanCart(){
-    this.sharingDataService.cleanCartEventEmitter.emit();
+    this.cartStore.dispatch(cleanCart())
   }
+  
   close(){
     this.sharingDataService.closeCartEventEmitter.emit();
-     
   }
-  // detailProduct(orderedProduct: OrderedProduct){
-  //   //MOMENDO DE OCIO: HACER QUE PRODUCTDETAIL ESTE EN CONCORDANCIA CON CARRITO (QUE RECIBA QUANTITY Y SE PUEDA MODICICAR DESDE PRODUCTO DEATIL EL QUANTITY DEL CARRITO)
-  //   this.sharingDataService.closeCartEventEmitter.emit();
-  //   this.router.navigate(['/product_detail/', orderedProduct.finalProduct.base_product_id]);
-  // }
+
+  detailProduct(productInCart: ProductInCart){
+    this.sharingDataService.closeCartEventEmitter.emit();
+    this.router.navigate(['/product_detail/', productInCart.baseProductId]);
+  }
 
   getShortDescription(text: string): string{
-    if(text == undefined){
-      return ''
-    }
-    //SE PODRIA OPTIMIZAR A QUE EN DESKTOP SEA 45 O MAS Y MOBILE 35
-    if(text.length > 35){
-      return text.substring(0, 35) + '...'
-    }
-    return text;
+    if(text == undefined) return ''
+    if(text.length > 35) return text.substring(0, 35) + '...'
+    return text
   }
 
   formatCurrency(value: number): string {

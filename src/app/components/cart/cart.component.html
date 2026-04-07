@@ -15,8 +15,7 @@
 
         <div class="mb-6">
             @for (orderedProduct of cart.products; track $index) {
-                <!-- (click)="detailProduct(orderedProduct)"  -->
-                <a >
+                <a (click)="detailProduct(orderedProduct)" >
                     <div class="cart-item flex flex-row  mb-4 justify-between h-20 hover:cursor-pointer">
                         <img src={{orderedProduct.img.url}} class="w-20" alt="">
                         <div class="pt-2 pl-2">
@@ -29,14 +28,11 @@
                             <p class="mb-2 font-bold text-base">{{formatCurrency(orderedProduct.quantity * orderedProduct.price)}}</p>
                             <div class="flex">
                                 <div class="cart-cuantity py-1 px-0  flex w-32 justify-center items-center">
-                                    <!-- (click)="decrease($event, orderedProduct)" -->
-                                    <button class="w-10 active:text-red-400" >-</button>
+                                    <button (click)="decrease($event, orderedProduct)" class="w-10 active:text-red-400" >-</button>
                                     <p class="w-12 bg-white text-center rounded-md ">{{orderedProduct.quantity}}</p>
-                                    <!-- (click)="increase($event,orderedProduct)" -->
-                                    <button class="w-10 active:text-blue-400" >+</button>
+                                    <button (click)="increase($event,orderedProduct)" class="w-10 active:text-blue-400" >+</button>
                                 </div>  
                             </div>
-                            <!-- (click)="remove($event,orderedProduct)" -->
                             <button (click)="remove($event,orderedProduct)" ><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>

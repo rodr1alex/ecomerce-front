@@ -47,7 +47,7 @@
             </div>
 
             <!-- colorList[0].color_id != 1 -->
-            @if(true){
+            @if(!isUniqueColor){
                 <div class="mb-6">
                     @if(selectedColor.color_id){
                         <p class="mb-2">Color seleccionado: {{selectedColor.name}}</p>
@@ -80,7 +80,7 @@
 
 <!-- 
             sizeList[0].size_id != 28 -->
-            @if(true){ 
+            @if(!isUniqueSize){ 
                 <!-- 28 es el id del "sin talla" -->
                 <div class="mb-6">
                     @if(selectedSize.size_id){
@@ -119,7 +119,7 @@
                 </div>
 
                 <div class="mb-6 w-full flex justify-center md:justify-start md:w-1/3">
-                    @if(true){
+                    @if(isAuth){
                         <button class="button button--grey w-full" (click)="onAddProductToCart()">Agregar al carro</button>
                     }@else {
                         <button class="button button--grey w-full" [routerLink]="['/login']">Iniciar session para agregar a carrito</button>

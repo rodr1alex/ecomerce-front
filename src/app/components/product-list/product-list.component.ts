@@ -12,6 +12,8 @@ import { Category } from '../../models/category.model';
 import { BaseProductImage } from '../../models/base-product-image.model';
 import { update } from '../../store/base-product.action';
 import { Brand } from '../../models/brand.model';
+import { ProductBasicInfo } from '../../models/products-general.model';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'product-list',
@@ -19,28 +21,29 @@ import { Brand } from '../../models/brand.model';
   imports: [ProductCardComponent, FilterComponent, PaginatorComponent, RouterModule],
   templateUrl: './product-list.component.html'
 })
-export class ProductListComponent implements OnInit{
-  categoryName: string = ''; //IMPLEMENTAR SI O SI COMO OBTENER EL LISTADO DE LAS CATEGORIAS, LO DEBE ENTREGAR EL NAVBAR
-  baseProductList!: BaseProduct[];
+export class ProductListComponent implements OnInit {
+  categoryName: string = 'Categoria A / Categoria B'; //IMPLEMENTAR SI O SI COMO OBTENER EL LISTADO DE LAS CATEGORIAS, LO DEBE ENTREGAR EL NAVBAR
+  baseProductList!: ProductBasicInfo[];
   paginator!: any;
   baseProduct!: BaseProduct;
-  categoryListToFilter: Category[] = [];
-  brandList: Brand[]= [];
+  //categoryListToFilter: Category[] = [];
+  brandList: Brand[] = [];
   url: string = '';
+  categoriesIds: number[] = []
 
   constructor(
-    private baseProductStore: Store<{baseProducts: any}>,
+    private baseProductStore: Store<{ baseProducts: any }>,
     private router: Router,
     private route: ActivatedRoute,
     private baseProductService: BaseProductService,
     private sharingDataService: SharingDataService,
     private authService: AuthService) {
-      this.baseProductStore.select('baseProducts').subscribe(state =>{
-        this.baseProductList = state.baseProductList;
-        this.paginator = state.paginator;
-        this.baseProduct = state.baseProduct;
-      })
-    
+    this.baseProductStore.select('baseProducts').subscribe(state => {
+      this.baseProductList = state.baseProductList;
+      this.paginator = state.paginator;
+      this.baseProduct = state.baseProduct;
+    })
+
   }
 
   ngOnInit(): void {
@@ -49,35 +52,34 @@ export class ProductListComponent implements OnInit{
       const category_id: number = +(params.get('category') || '0');
       const subcategory_id: number = +(params.get('subcategory') || '0');
       this.url = `/product_list/${category_id}/${subcategory_id}`;
-      this.categoryListToFilter = [];
-      this.categoryListToFilter = [new Category(category_id, ''), new Category(subcategory_id, '')];
-      this.baseProductService.getBrandList(this.categoryListToFilter).subscribe({
-        next: response =>{
-          const brandListResponse = response;
-          const brandListClean: Brand [] = [];
-          const indexList: number[] = [];
-          brandListResponse.map((brand: Brand) =>{
-            if(indexList.indexOf(brand.brand_id) === -1){
-              indexList.push(brand.brand_id);
-              brandListClean.push(brand);
-            }
-          }) 
-          this.brandList = brandListClean;
-        }
-      });
-      this.baseProductService.filterByCategoryList(page, this.categoryListToFilter).subscribe({
-        next: pageable =>{
-          this.baseProductList = pageable.content as BaseProduct[];
-          this.paginator = pageable;
-          this.sharingDataService.pageProductEventEmitter.emit({baseProductList: this.baseProductList, paginator: this.paginator})
-          
-        },
-        error: error =>{
-          throw new error;
-        }
-      })
+      this.categoriesIds = [category_id, subcategory_id]
+
+      this.getBrandList()
+      this.getProducts(page)
+
     });
   }
 
-  
+  async getBrandList() {
+    try {
+      const res = await firstValueFrom(this.baseProductService.getBrandList(this.categoriesIds))
+      this.brandList = res
+
+    } catch (err) {
+      console.error('error getBrandList', err)
+    }
+  }
+
+  async getProducts(page: number) {
+    try {
+      const pageable = await firstValueFrom(this.baseProductService.filterByCategoryList(page, this.categoriesIds))
+      this.baseProductList = pageable.content as ProductBasicInfo[];
+      this.paginator = pageable;
+      //this.sharingDataService.pageProductEventEmitter.emit({ baseProductList: this.baseProductList, paginator: this.paginator })
+    } catch (err) {
+      console.error('error getProducts', err)
+    }
+  }
+
+
 }

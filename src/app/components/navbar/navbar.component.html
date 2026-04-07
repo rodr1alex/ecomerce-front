@@ -109,8 +109,8 @@
                     <!-- Carrito DESKTOP-->
                     <a (click)="cartVisibilityToggle()"><i class="fa-solid fa-cart-shopping text-2xl"></i></a>
                     <div class="absolute top-6 md:top-10 left-5 h-4 w-4 nm-inset-blue-50-xs rounded-full flex justify-center items-center">
-                        @if(cart.items){
-                            <p class="icon-check">{{cart.items}}</p>
+                        @if(cart.itemsNumber){
+                            <p class="icon-check">{{cart.itemsNumber}}</p>
                         }@else {
                             <p class="icon-check">0</p>
                         }

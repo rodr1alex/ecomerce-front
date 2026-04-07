@@ -5,6 +5,7 @@ import { Direction } from '../models/direction.model';
 import { Sale } from '../models/sale.model';
 import { OrderedProduct } from '../models/ordered-product.model';
 import { ConfigService } from './config.service';
+import { CartForPayment } from '../models/products-general.model';
 
 @Injectable({
   providedIn: 'root'
@@ -28,8 +29,8 @@ export class SaleService {
     return this.http.get<any[]>(`${this.url}/${pageSize}/${page}`);
   }
 
-  createSale(cart_id: number, direction: Direction, user_id: number): Observable<any>{
-    return this.http.post<any>(`${this.url}/create/${cart_id}/${user_id}`, direction);
+  createSale(cart: CartForPayment): Observable<any>{
+    return this.http.post<any>(`${this.url}/create`, cart);
   }
 
   filter(user_id: number,startTotal: number, endTotal: number, pageSize: number, page: number, status: string): Observable<any> {

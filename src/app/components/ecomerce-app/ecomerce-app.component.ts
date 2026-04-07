@@ -17,7 +17,6 @@ import { Store } from '@ngrx/store';
 import { putAll, setPaginator } from '../../store/base-product.action';
 import { Cart } from '../../models/cart.model';
 import { CartService } from '../../services/cart.service';
-import { putCart, updateCart } from '../../store/cart.action';
 import { OrderedProduct } from '../../models/ordered-product.model';
 import { SaleService } from '../../services/sale.service';
 import { Direction } from '../../models/direction.model';
@@ -57,6 +56,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
   onLoad(): void {
     this.adjustHeight();
   }
+
   @HostListener('window:click')
   onResize(): void {
     this.adjustHeight();
@@ -97,13 +97,13 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
 
   payCart(){
     this.sharingDataService.payCartEventEmitter.subscribe((direction: Direction)=>{
-      this.saleService.createSale(this.cart.cart_id, direction, this.authService.user.user.id).subscribe({
-        next: response =>{
-          alert('Compra realizada con éxito:');
-          this.cartVerify(1);
-          this.router.navigate(['/home']);
-        }
-      });
+      // this.saleService.createSale(this.cart.cart_id, direction, this.authService.user.user.id).subscribe({
+      //   next: response =>{
+      //     alert('Compra realizada con éxito:');
+      //     this.cartVerify(1);
+      //     this.router.navigate(['/home']);
+      //   }
+      // });
     })
   }
 

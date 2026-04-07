@@ -8,9 +8,9 @@ import { Cart } from '../../models/cart.model';
 import { Store } from '@ngrx/store';
 import { Category } from '../../models/category.model';
 import { CategoryList } from '../../models/category-list.model';
-import { updateCart } from '../../store/cart.action';
 import { flatMap } from 'rxjs';
 import { SharingDataService } from '../../services/sharing-data.service';
+import { CartV2 } from '../../models/products-general.model';
 
 @Component({
   selector: 'navbar',
@@ -22,7 +22,7 @@ import { SharingDataService } from '../../services/sharing-data.service';
 export class NavbarComponent implements OnInit{
   @ViewChild('cartNode') cartNode!: ElementRef;
   @ViewChild('menuNode') menuNode!: ElementRef;
-  cart!: Cart;
+  cart!: CartV2;
   isMenuVisible: boolean = true;
   isCartVisible: boolean = false;
   isSessionHandlerVisible: boolean = false;
@@ -147,13 +147,13 @@ export class NavbarComponent implements OnInit{
     this.authService.logout();
     this.router.navigate(['/home'])
     this.isAdminPanelVisible && this.adminPanelVisibilityToggle();
-    let cartUpdated = {
-      ...this.cart,
-      orderedProductList: this.cart.orderedProductList.map(item => ({ ...item })) 
-    };
-    cartUpdated.items = 0;
-    cartUpdated.total = 0;
-    cartUpdated.orderedProductList = [];
+    // let cartUpdated = {
+    //   ...this.cart,
+    //   orderedProductList: this.cart.orderedProductList.map(item => ({ ...item })) 
+    // };
+    // cartUpdated.items = 0;
+    // cartUpdated.total = 0;
+    //cartUpdated.orderedProductList = [];
     //this.cartStore.dispatch(updateCart({cartUpdated}));
   }
 

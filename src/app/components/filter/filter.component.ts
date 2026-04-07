@@ -19,7 +19,7 @@ import { Brand } from '../../models/brand.model';
 
 export class FilterComponent implements OnInit {
   @Input() brandList!: Brand[];
-  @Input() categoryList!: Category[];
+  @Input() categoriesIds!: number[];
   baseProductList!: BaseProduct[];
   paginator!: any;
   clickInFilter: boolean = false;
@@ -55,7 +55,7 @@ export class FilterComponent implements OnInit {
   }
   
   filter(){
-    this.baseProductService.filterByBrand(0,+this.brandSelected,this.categoryList).subscribe({
+    this.baseProductService.filterByBrand(0,+this.brandSelected,this.categoriesIds).subscribe({
       next: pageable => {
         this.baseProductList = pageable.content as BaseProduct[];
         this.paginator = pageable;

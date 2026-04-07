@@ -59,3 +59,19 @@ export class CartV2 {
     itemsNumber: number = 0;
     products: ProductInCart[] = [];
 }
+
+export class CartForPayment{
+    user_id: number = 0;
+    direction_id: number = 0;
+    products: OrderedProductDTO[] = []
+}
+
+export class OrderedProductDTO{
+    quantity: number = 0;
+    final_product_id: number = 0;
+
+    constructor( quantity: number, final_product_id: number,){
+        this.quantity = quantity
+        this.final_product_id = final_product_id
+    }
+}

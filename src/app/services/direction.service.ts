@@ -20,6 +20,11 @@ export class DirectionService {
     this.url = `${this.baseUrl}/users/directions`
   }
 
+
+  getByUserId(user_id :number): Observable<Direction[]>{
+    return this.http.get<Direction[]>(`${this.url}/getByUser/${user_id}`);
+  }
+
   create(direction: Direction, user_id :number): Observable<Direction>{
     return this.http.post<Direction>(`${this.url}/create/${user_id}`, direction);
   }

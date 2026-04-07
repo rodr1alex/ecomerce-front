@@ -9,6 +9,10 @@ import { UserComponent } from '../user/user.component';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
+import { DirectionService } from '../../services/direction.service';
+import { firstValueFrom } from 'rxjs';
+import { CartForPayment, CartV2, OrderedProductDTO } from '../../models/products-general.model';
+import { cleanCart } from '../../store/cart/cart.action';
 
 @Component({
   selector: 'payment',
@@ -16,56 +20,92 @@ import { FormsModule } from '@angular/forms';
   imports: [RouterModule, FormsModule],
   templateUrl: './payment.component.html'
 })
-export class PaymentComponent implements OnInit{
+export class PaymentComponent implements OnInit {
   directionList!: Direction[]
   selectedDirection!: Direction;
-  cart!: Cart;
+  cart!: CartV2;
+
+
+
+  constructor(private route: ActivatedRoute,
+    private router: Router,
+    private userService: UserService,
+    private authService: AuthService,
+    private saleService: SaleService,
+    private sharingDataService: SharingDataService,
+    private directionService: DirectionService,
+    private cartStore: Store<{ carts: any }>,) {
+    this.cartStore.select('carts').subscribe(state => {
+      this.cart = state.cart
+    })
+  }
+
+  ngOnInit(): void {
+    this.sharingDataService.hideSearchBarEventEmitter.emit();
+    // this.userService.findById(this.authService.user.user.id).subscribe(
+    //   {
+    //     next: response => {
+    //       //this.directionList = response.directionList;
+    //     },
+    //     error: error =>{
+    //       throw error;
+    //     }
+    //   }
+    // )
+
+    this.getDirections(this.authService.user.user.id)
+  }
+
+  async getDirections(user_id: number) {
+    try {
+      const res = await firstValueFrom(this.directionService.getByUserId(user_id))
+      this.directionList = res
+    } catch (err) {
+      console.error('fallo la direccion get', err)
+    }
+  }
+
+
+  async onPayCart() {
+    const cartForPayment = this.getCartForPayment()
+
+    try{
+      const response = await firstValueFrom(this.saleService.createSale(cartForPayment))
+      alert('La wea con exito!')
+      this.cleanCartAndReload()
+    }catch(err){
+      console.error('error en paycart', err)
+    }
 
   
 
-  constructor(  private route: ActivatedRoute,
-                private router: Router,
-                private userService: UserService,
-                private authService: AuthService,
-                private saleService: SaleService,
-                private sharingDataService: SharingDataService,
-                private cartStore: Store<{carts: any}>,){
-                  this.cartStore.select('carts').subscribe(state =>{                   
-                    this.cart = state.cart
-                  })
-                }
+  }
 
-ngOnInit(): void {
-  this.sharingDataService.hideSearchBarEventEmitter.emit();
-    this.userService.findById(this.authService.user.user.id).subscribe(
-      {
-        next: response => {
-          this.directionList = response.directionList;
-        },
-        error: error =>{
-          throw error;
-        }
-      }
-    )
+  cleanCartAndReload(){
+    this.cartStore.dispatch(cleanCart())
+    this.router.navigate(['/home']);
+  }
+
+ 
+
+
+  getCartForPayment(): CartForPayment {
+    const cart: CartForPayment = new CartForPayment()
+    cart.direction_id = this.selectedDirection.direction_id
+    cart.user_id = this.authService.user.user.id
+    cart.products = this.cart.products.map(product => new OrderedProductDTO(product.quantity, product.finalProductId))
+    return cart
   }
 
 
-  payCart(){
-    if(this.selectedDirection){
-      this.sharingDataService.payCartEventEmitter.emit(this.selectedDirection);
-    }else{
-      alert('Seleccione una direccion')
-    }
-    
-  }
-  selectDirection(direction: Direction){
+  selectDirection(direction: Direction) {
     this.selectedDirection = direction;
     const confirmButtonNode = document.getElementById('confirmButton');
     confirmButtonNode?.classList.remove('button--disabled');
     confirmButtonNode?.removeAttribute('disabled');
-    this.directionList.map(item=>{
+    this.directionList.map(item => {
       let node = document.getElementById(`${item.direction_id}`);
-      item.direction_id === this.selectedDirection.direction_id? node?.classList.add('card--selected'):node?.classList.remove('card--selected')
+      item.direction_id === this.selectedDirection.direction_id ? node?.classList.add('card--selected') : node?.classList.remove('card--selected')
     })
   }
 
