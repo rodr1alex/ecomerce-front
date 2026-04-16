@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Brand } from '../../../models/brand.model';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BrandService } from '../../../services/brand.service';
@@ -11,6 +11,8 @@ import { Size } from '../../../models/size.model';
 import { SizeService } from '../../../services/size.service';
 import { CategoryService } from '../../../services/category.service';
 import { Category } from '../../../models/category.model';
+import { firstValueFrom } from 'rxjs';
+import { BaseProductService } from '../../../services/base-product.service';
 
 @Component({
   selector: 'product',
@@ -37,7 +39,8 @@ export class ProductComponent implements OnInit {
     private colorService: ColorService,
     private sizeService: SizeService,
     private categoryService: CategoryService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private baseProductService: BaseProductService
   ) { }
 
 
@@ -50,6 +53,34 @@ export class ProductComponent implements OnInit {
     this.sizeService.getAll().subscribe({ next: response => this.sizeList = response })
     this.categoryService.getAll().subscribe({ next: response => this.categoryList = response })
     this.initForm()
+    this.listenBasePriceChanges();
+  }
+
+  async createProduct(){
+    const payload = this.productForm.value;
+    try {
+      const res = await firstValueFrom(this.baseProductService.create(payload))
+      console.log(res)
+    } catch (error) {
+      console.error('error en createProduct', error)
+    }
+  }
+
+
+  private listenBasePriceChanges() {
+    this.productForm.get('base_price')?.valueChanges.subscribe(newPrice => {
+      this.updateAllFinalPrices(newPrice);
+    });
+  }
+
+  private updateAllFinalPrices(price: number) {
+    this.colorVariants.controls.forEach((variant) => {
+      const finalProducts = variant.get('finalProductList') as FormArray;
+
+      finalProducts.controls.forEach(product => {
+        product.patchValue({ final_price: price }, { emitEvent: false });
+      });
+    });
   }
 
   initForm() {
@@ -59,16 +90,17 @@ export class ProductComponent implements OnInit {
       chars: [''],
       specs: [''],
       brand_id: [null, Validators.required],
-      baseProductImagesURL: this.fb.array([]),
+      baseProductImagesURL: this.fb.array([], Validators.required),
       categories_id: [[], Validators.required],
       colorVariantProductList: this.fb.array([])
     });
+    this.addColorVariant()
   }
 
   addColorVariant() {
     const variantForm = this.fb.group({
       color_id: [null, Validators.required],
-      colorVariantProductImagesURL: this.fb.array([]),
+      colorVariantProductImagesURL: this.fb.array([], Validators.required),
       finalProductList: this.fb.array([
         this.createFinalProductGroup()
       ])
@@ -185,24 +217,33 @@ export class ProductComponent implements OnInit {
       brand_id: null,
       categories_id: []
     });
-    
+
     this.baseProductImages.clear()
     this.colorVariants.clear()
     this.addColorVariant()
   }
 
+  onSubmit() {
+    if (this.productForm.invalid) {
+      this.productForm.markAllAsTouched();
+      this.logFormErrors(this.productForm);
+      return;
+    }
 
-
-
-  verComoVa() {
-    console.log('Objeto listo para enviar a Java:', this.productForm.value);
+    const payload = this.productForm.value;
+    console.log('JSON Validado:', payload);
+    this.createProduct()
   }
 
-  onSubmit() {
-    if (this.productForm.valid) {
-      console.log('Objeto listo para enviar a Java:', this.productForm.value);
-      // Aquí el objeto this.productForm.value ya tiene la forma de tu clase CreateBaseProduct
-    }
+  private logFormErrors(group: FormGroup | FormArray) {
+    Object.keys(group.controls).forEach(key => {
+      const control = (group.controls as any)[key];
+      if (control instanceof FormGroup || control instanceof FormArray) {
+        this.logFormErrors(control);
+      } else if (control.invalid) {
+        console.warn(`Error en -> ${key}:`, control.errors);
+      }
+    });
   }
 
 

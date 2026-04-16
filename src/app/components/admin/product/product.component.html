@@ -1,6 +1,7 @@
 <div class="flex flex-col w-11/12 mx-auto mb-10 nm-flat-white-xl rounded-xl p-4">
 
-    <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="card card--blue flex flex-col justify-around p-4 mb-10" style="min-height: 500px;">
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()"
+        class="card card--blue flex flex-col justify-around p-4 mb-10" style="min-height: 500px;">
         <p class="text-center font-bold mb-4">
             {{ base_product_id != 0 ? 'ID producto base: ' + base_product_id: 'Agregar nuevo producto'}}
         </p>
@@ -28,12 +29,20 @@
                             }
                         </div>
                     </div>
-                    <select class="button text-slate-600 w-4/12" style="height: 36px;" formControlName="brand_id">
-                        <option [ngValue]="null" disabled>Marca</option>
-                        <option *ngFor="let brand of brandList" [value]="brand.brand_id">
-                            {{brand.name}}
-                        </option>
-                    </select>
+                    <div class="flex flex-col w-4/12">
+                        <select class="button text-slate-600 w-full"
+                            [ngClass]="{'border-red-500': productForm.get('brand_id')?.invalid && productForm.get('brand_id')?.touched}"
+                            style="height: 36px;" formControlName="brand_id">
+                            <option [ngValue]="null" disabled>Marca</option>
+                            <option *ngFor="let brand of brandList" [value]="brand.brand_id">
+                                {{brand.name}}
+                            </option>
+                        </select>
+
+                        @if (productForm.get('brand_id')?.invalid && productForm.get('brand_id')?.touched) {
+                        <span class="text-red-500 text-[10px] mt-1 ml-1">Selecciona una marca</span>
+                        }
+                    </div>
                 </div>
             </div>
 
@@ -56,6 +65,9 @@
                                 {{category.name}}
                             </option>
                         </select>
+                        @if (productForm.get('categories_id')?.invalid && productForm.get('categories_id')?.touched) {
+                        <span class="text-red-500 text-[10px] mt-1 ml-1">Selecciona al menos una categoria</span>
+                        }
                     </div>
                 </div>
 
@@ -84,7 +96,11 @@
         </div>
 
         <div class="nm-inset-white-lg rounded-xl px-4 relative" style="height: 220px;">
-            <p class="text-slate-400 absolute top-2" [class.hidden]="baseProductImages.length > 0">Galeria de imagenes</p>
+            <p class="text-slate-400 absolute top-2" [class.hidden]="baseProductImages.length > 0">Galeria de imagenes
+            </p>
+            @if (productForm.get('baseProductImagesURL')?.invalid && productForm.get('baseProductImagesURL')?.touched) {
+            <span class="text-red-500 text-[10px]">Debes subir al menos una imagen principal</span>
+            }
             <div class="flex mb-2 h-2/3 flex-wrap justify-start pt-4 overflow-y-auto">
                 @for (url of baseProductImages.value; track $index) {
                 <div class="w-28 h-28 overflow-hidden nm-flat-white-xs mr-2 bg-slate-400 relative">
@@ -111,13 +127,13 @@
             </div>
         </div>
 
-        @if(productForm.get('base_product_id')?.value != 0){
+        <!-- @if(productForm.get('base_product_id')?.value != 0){
         <div class="flex justify-center mt-5">
             <button type="button" class="button button--disabled mx-10">Resetear cambios</button>
             <button class="button mx-10" [disabled]="productForm.invalid">Actualizar producto base</button>
             <button type="button" (click)="verComoVa()" class="button mx-10">Como va</button>
         </div>
-        }
+        } -->
     </form>
 
     <div class="w-2/3" [formGroup]="productForm">
@@ -126,15 +142,23 @@
             <div [formGroupName]="i" class="card card--blue mb-4 p-4" style="min-height: 400px;">
 
                 <div class="flex justify-between mb-3">
-              
-                    <div class="flex items-center">
-                        <p>Seleccione color: </p>
-                        <select class="button text-slate-600 ml-2" formControlName="color_id">
-                            <option [ngValue]="null" disabled>Color</option>
-                            <option *ngFor="let color of colorList" [value]="color.color_id">
-                                {{color.name}}
-                            </option>
-                        </select>
+
+                    <div class="flex flex-col">
+                        <div class="flex items-center">
+                            <p>Seleccione color: </p>
+                            <select class="button text-slate-600 ml-2"
+                                [ngClass]="{'border-red-500': variant.get('color_id')?.invalid && variant.get('color_id')?.touched}"
+                                formControlName="color_id">
+                                <option [ngValue]="null" disabled>Color</option>
+                                <option *ngFor="let color of colorList" [value]="color.color_id">
+                                    {{color.name}}
+                                </option>
+                            </select>
+                        </div>
+
+                        @if (variant.get('color_id')?.invalid && variant.get('color_id')?.touched) {
+                        <span class="text-red-500 text-[10px] mt-1">Debe seleccionar un color para esta variante</span>
+                        }
                     </div>
                     @if(i != 0) {
                     <button type="button" (click)="removeColorVariant(i)" class="button">
@@ -147,6 +171,10 @@
                     style="min-height: 200px;">
                     <p class="text-slate-400 absolute top-2" [class.hidden]="getVariantImages(i).length > 0">Galería de
                         imágenes</p>
+                    @if (variant.get('colorVariantProductImagesURL')?.invalid &&
+                    variant.get('colorVariantProductImagesURL')?.touched) {
+                    <span class="text-red-500 text-[10px]">Debes subir al menos una imagen para este color</span>
+                    }
 
                     <div class="flex flex-wrap justify-start h-2/3 pt-4 overflow-y-auto">
                         @for (imgUrl of getVariantImages(i).value; let imgIdx = $index; track imgIdx) {
@@ -178,7 +206,7 @@
                     <table class="table w-full table-fixed">
                         <thead class="table-thead">
                             <tr>
-                                <th class="table-th--small w-32">Talla</th>
+                                <th class="table-th--small w-32">Talla </th>
                                 <th class="table-th--small w-32">Precio final</th>
                                 <th class="table-th--small">Stock</th>
                             </tr>
@@ -193,6 +221,9 @@
                                             {{size.name}}
                                         </option>
                                     </select>
+                                    @if (finalProduct.get('size_id')?.invalid && finalProduct.get('size_id')?.touched) {
+                                    <span class="text-red-500 text-[10px] mt-1">Seleccione</span>
+                                    }
                                 </td>
                                 <td class="table-td--small">
                                     <input type="number" formControlName="final_price"
@@ -239,15 +270,9 @@
     <div class="flex justify-center mt-16 mb-5">
         @if(true){
         <button class="button mx-10 h-8 w-48" (click)="cleanForm()">Limpiar Formulario</button>
-        <!-- <button 
-                    class="button  h-8 w-48 mx-10" 
-                    (click)="createProduct()" 
-                    [disabled]="(userForm.invalid || baseProduct.baseProductImageList.length == 0 || selectedBrand == '' || baseProduct.categoryList.length == 0 || finalProductListInvalid)" 
-                    id="addProductButton"
-                    [ngClass]="{'button--disabled': (userForm.invalid || baseProduct.baseProductImageList.length == 0 || selectedBrand == '' || baseProduct.categoryList.length == 0 || finalProductListInvalid)}"
-                >
-                    Agregar producto
-                </button> -->
+        <button (click)="onSubmit()" class="button  h-8 w-48 mx-10" id="addProductButton">
+            Agregar producto
+        </button>
         <button class="button mx-10 h-8 w-48" [routerLink]="['/admin_panel/0',0]">Cancelar</button>
         }@else {
         <button class="button mx-10 h-8 w-48" [routerLink]="['/admin_panel/0',0]">Cancelar</button>
