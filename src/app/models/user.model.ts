@@ -12,4 +12,5 @@ export class User {
     directionList!: Direction[];
     cartList!: Cart[];
     roles!: Role[];
+    admin!: boolean
 }

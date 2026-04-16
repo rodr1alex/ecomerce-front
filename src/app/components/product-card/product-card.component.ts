@@ -1,7 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { BaseProduct } from '../../models/base-product.model';
-import { SharingDataService } from '../../services/sharing-data.service';
-import { ProductBasicInfo } from '../../models/products-general.model';
+import { ProductBasicInfo } from '../../models/general.model';
 
 @Component({
   selector: 'product-card',
@@ -15,7 +13,7 @@ export class ProductCardComponent implements OnInit, AfterViewInit{
   @ViewChild('dynamicHeightContainer') dynamicHeightContainer!: ElementRef;
   @ViewChild('imgPortrait') imgPortrait!: ElementRef;
 
-  constructor(private renderer: Renderer2, private sharingDataService: SharingDataService) { }
+  constructor(private renderer: Renderer2) { }
 
   ngOnInit(): void {
     this.adjustHeight();
@@ -42,20 +40,14 @@ export class ProductCardComponent implements OnInit, AfterViewInit{
   }
 
   formatCurrency(value: number): string {
-    if(value == undefined){
-      value = 0;
-    }
-    return value.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
+    if(value == undefined) value = 0;
+    return value.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })
   }
+
   getShortDescription(text: string): string{
-    if(text == undefined){
-      return ''
-    }
-    //SE PODRIA OPTIMIZAR A QUE EN DESKTOP SEA 45 O MAS Y MOBILE 35
-    if(text.length > 55){
-      return text.substring(0, 55) + '...'
-    }
-    return text;
+    if(text == undefined) return ''
+    if(text.length > 55) return text.substring(0, 55) + '...'
+    return text
   }
 
 }

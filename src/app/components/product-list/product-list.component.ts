@@ -12,7 +12,7 @@ import { Category } from '../../models/category.model';
 import { BaseProductImage } from '../../models/base-product-image.model';
 import { update } from '../../store/base-product.action';
 import { Brand } from '../../models/brand.model';
-import { ProductBasicInfo } from '../../models/products-general.model';
+import { ProductBasicInfo } from '../../models/general.model';
 import { firstValueFrom } from 'rxjs';
 
 @Component({

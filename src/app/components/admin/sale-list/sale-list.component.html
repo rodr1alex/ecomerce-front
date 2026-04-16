@@ -75,7 +75,7 @@
         
         <div class="flex w-full justify-between absolute -top-8" style="z-index: 2;">
             <div class="rounded-xl  px-5 h-12 pt-2" style="background: #BFDBFE">
-                <paginator [paginator]="paginator" [url]="url"></paginator>
+                <paginator [paginator]="salePaginator" (pageChanged)="paginatorListener($event)"></paginator>
             </div>
             <div class="flex mr-1">
                 <p>Ventas por pagina: </p>
@@ -102,21 +102,25 @@
                     </tr>  
                 </thead>
                 <tbody>
-                    @for (sale of saleList; track $index) {
+                    @for (sale of salePaginator.content; track $index) {
                         <tr class="table-tr">
                             <td class="table-td">{{sale.sale_id == undefined? 'Undefined': sale.sale_id}}</td>
                             <td class="table-td">{{sale.date == undefined? 'Undefined': sale.date}}</td>
-                            <td class="table-td">{{cartList[$index].total == undefined ? 'Undefined': formatCurrency(cartList[$index].total)}}</td>
-                            <td class="table-td">{{cartList[$index].items == undefined ? 'Undefined': cartList[$index].items}}</td>
-                            <td class="table-td">{{sale.username == undefined ? 'Undefined': sale.username}}</td>
+                            <td class="table-td">{{sale.total}}</td>
+                            <td class="table-td">{{sale.items}}</td>
+                            <!-- <td class="table-td">{{cartList[$index].total == undefined ? 'Undefined': formatCurrency(cartList[$index].total)}}</td>
+                            <td class="table-td">{{cartList[$index].items == undefined ? 'Undefined': cartList[$index].items}}</td> -->
+                            <td class="table-td">{{sale.user.username == undefined ? 'Undefined': sale.user.username}}</td>
                             <td class="table-td ">
+
+                                <!-- [ngClass]="{'bg-green-500': (sale.status == 'Realizada'), 'bg-red-500': (sale.status == 'Anulada'), 'bg-yellow-500': (sale.status == 'Modificada')}" -->
                                 <div class="flex items-center w-full">
                                     <p 
                                     class="h-3 w-3 rounded-full mr-1" 
-                                    [ngClass]="{'bg-green-500': (sale.status == 'Realizada'), 'bg-red-500': (sale.status == 'Anulada'), 'bg-yellow-500': (sale.status == 'Modificada')}"
+                                    
                                     >
                                 </p>
-                                {{sale.status == undefined ? 'Undefined': sale.status}}
+                                {{ sale.saleStatus.name }}
                                 </div>
                                 
                             </td>

@@ -1,17 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ProductCardComponent } from '../product-card/product-card.component';
-import { Store } from '@ngrx/store';
-import { Router, RouterModule } from '@angular/router';
-import { UserService } from '../../services/user.service';
+import { RouterModule } from '@angular/router';
 import { SharingDataService } from '../../services/sharing-data.service';
-import { AuthService } from '../../services/auth.service';
-import { DirectionService } from '../../services/direction.service';
-import { BaseProduct } from '../../models/base-product.model';
 import { BaseProductService } from '../../services/base-product.service';
 import { BannerImageService } from '../../services/banner-image.service';
 import { BannerImage } from '../../models/banner-image.model';
-import { ProductBasicInfo } from '../../models/products-general.model';
+import { ProductBasicInfo } from '../../models/general.model';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'home',
@@ -20,48 +16,41 @@ import { ProductBasicInfo } from '../../models/products-general.model';
   templateUrl: './home.component.html'
 })
 export class HomeComponent implements OnInit{
-  //baseProductList!: BaseProduct[]
   baseProductList!: ProductBasicInfo[]
-  paginator!: any
   bannerImageList: BannerImage[] =[]
   currentIndex: number = 0
   touchStartX: number = 0
   touchEndX: number = 0
+  timeToSwitchImage: number = 7000
 
-  constructor(
-    private baseProductStore: Store<{baseProducts: any}>,
-    private baseProductService: BaseProductService,
+  constructor(private baseProductService: BaseProductService,
     private sharingDataService: SharingDataService,
-    private bannerImageService: BannerImageService) 
-    {
-      // this.baseProductStore.select('baseProducts').subscribe(state =>{
-      //   this.baseProductList = state.baseProductList;
-      //   this.paginator = state.paginator;
-      // })
-    }
+    private bannerImageService: BannerImageService) { }
 
   
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.sharingDataService.showSearchBarEventEmitter.emit()
+    await this.getBannerImages()
+    setInterval(()=>this.next(), this.timeToSwitchImage)
+    this.getProducts()
+  }
 
-    setInterval(()=>this.next(), 7000)
+  async getBannerImages(){
+    try{
+      const res = await firstValueFrom(this.bannerImageService.findAll())
+      this.bannerImageList = res  
+    }catch(err){
+      console.error('error en getBannerImages', err)
+    }
+  }
 
-    this.bannerImageService.findAll().subscribe({
-      next: response =>{
-        this.bannerImageList = response;
-      }
-    })
-
-    this.baseProductService.findAllPageable(0).subscribe({
-      next: response =>{
-        this.baseProductList = response//.map((item:any) => new BaseProductCommerce(item))
-        // this.paginator = pageable;
-        // this.sharingDataService.pageProductEventEmitter.emit({baseProductList: this.baseProductList, paginator: this.paginator})
-      },
-      error: error =>{
-        throw new error;
-      }
-    })
+  async getProducts(){
+    try{
+      const res = await firstValueFrom(this.baseProductService.findAllPageable(0))
+      this.baseProductList = res
+    }catch(err){
+      console.error('error en getProducts', err)
+    }
   }
 
 
@@ -90,7 +79,8 @@ export class HomeComponent implements OnInit{
     }
   }
 
-  hola(i: number){
+  setCurrentIndex(i: number){
     this.currentIndex = i;
   }
+
 }

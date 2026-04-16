@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { BaseProductService } from '../../services/base-product.service';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { AuthService } from '../../services/auth.service';
+import { Page } from '../../models/general.model';
 
 @Component({
   selector: 'paginator',
@@ -13,10 +14,10 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './paginator.component.html'
 })
 export class PaginatorComponent implements OnChanges{
-  @Input() paginator!: any;
-  @Input() url: String = '';
-  pageList: number[]= [];
+  @Input() paginator!: Page<any>;
+  @Output() pageChanged = new EventEmitter<number>();
   actualPage: number = 0;
+  pageList: number[]= [];
 
   
   ngOnChanges(changes: SimpleChanges): void {
@@ -26,16 +27,24 @@ export class PaginatorComponent implements OnChanges{
   }
  
   setPageList(){
-    if(this.paginator != undefined){
-      this.pageList = [];
-      for(let i = 0; i < this.paginator.totalPages; i++){
-        this.pageList.push(i+1);
-      }
-    }
-    
+    if(!this.paginator) return
+    this.pageList = [...Array(this.paginator.totalPages).keys()];
   }
 
   setPage(page: number){
-    this.actualPage = page;
+    this.actualPage = page
+    this.pageChanged.emit(this.actualPage)
+  }
+
+  goToNextPage(){
+    if(this.actualPage == this.paginator.totalPages - 1) return
+    this.actualPage++
+    this.pageChanged.emit(this.actualPage)
+  }
+
+  goToPreviousPage(){
+    if(this.actualPage == 0) return
+    this.actualPage--
+    this.pageChanged.emit(this.actualPage)
   }
 }

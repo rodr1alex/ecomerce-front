@@ -10,7 +10,7 @@ import { Category } from '../../models/category.model';
 import { CategoryList } from '../../models/category-list.model';
 import { flatMap } from 'rxjs';
 import { SharingDataService } from '../../services/sharing-data.service';
-import { CartV2 } from '../../models/products-general.model';
+import { CartV2 } from '../../models/general.model';
 
 @Component({
   selector: 'navbar',

@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { User } from '../../models/user.model';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { UserService } from '../../services/user.service';
-import { ActivatedRoute, Route, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule, NgForm } from '@angular/forms';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'update-password',
@@ -12,60 +13,73 @@ import { FormsModule, NgForm } from '@angular/forms';
   imports: [FormsModule, RouterModule],
   templateUrl: './update-password.component.html'
 })
-export class UpdatePasswordComponent implements OnInit{
-  userOld: User = new User;
-  userNew: User = new User;
+export class UpdatePasswordComponent implements OnInit {
+  userId!: number
+  userName!: string
   isAdmin!: boolean;
-  passwordRepeat: String = '';
-  
-  constructor(private sharingDataService: SharingDataService, 
-              private userService: UserService, 
-              private route: ActivatedRoute, 
-              private router: Router,
-              private authService: AuthService
-  ){}
+  actualPassword: string = ''
+  newPassword: string = ''
+  repeatNewPassword: String = '';
+
+  constructor(
+    private userService: UserService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private authService: AuthService
+  ) { }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const id: number = +(params.get('id')|| '0');
-      this.userNew.id = id;
-    })
-    this.userOld.username = this.authService.user.user.username;
-    this.isAdmin = this.authService.user.isAdmin;
-    console.log('Admin:', this.isAdmin)
+    const id: number = +(this.route.snapshot.paramMap.get('id') || '0')
+    this.userId = id
+    this.userName = this.authService.user.user.username
+    this.isAdmin = this.authService.user.isAdmin
   }
 
   onClear(userForm: NgForm): void {
-    this.userNew = new User();
-    this.userOld = new User();
     userForm.reset();
     userForm.resetForm();
   }
-  updatePassword(){
-    this.authService.loginUser(this.userOld).subscribe(
-      {
-        next: response => {
-          this.userService.updatePassword(this.userNew).subscribe({
-            next: response => {
-              alert('Contrasenia actualizada con exito');
-              this.router.navigate(['/home'])
-            },
-            error: error =>{
-              throw error;
-            }
-          });
-        },
-        error: error => {
-          if (error.status == 401) {
-            alert('Contrasena actual equivocada');
-          } else {
-            throw error;
-          }
-        }
-      }
-    )
+
+  async onUpdatePassword() {
+    const sussessfullLogin: boolean = await this.login()
+    if (!sussessfullLogin) return alert('Contrasenia ingresada es incorrecta!')
+    this.updatePassword()
   }
 
-  
+  async updatePassword() {
+    const user: User = new User()
+    user.id = this.userId
+    user.username = this.authService.user.user.username
+    user.password = this.newPassword
+    try {
+      const res = await firstValueFrom(this.userService.updatePassword(user))
+      alert('Contrasenia actualizada con exito');
+      this.router.navigate(['/home'])
+    } catch (error) {
+      console.error('error en updatePassword', error)
+    }
+  }
+
+  async login(): Promise<boolean> {
+    const user: User = new User()
+    user.id = this.userId
+    user.username = this.authService.user.user.username
+    user.password = this.actualPassword
+    try {
+      const res = await firstValueFrom(this.authService.loginUser(user))
+      return true
+    }
+    catch (err) {
+      console.error('Error en login', err)
+      return false
+    }
+  }
+
+  onBack() {
+    const user_id = this.authService.user.id
+    this.router.navigate(['/update_user', this.userId])
+  }
+
+
 
 }

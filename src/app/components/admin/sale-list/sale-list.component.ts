@@ -1,20 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { BaseProductService } from '../../../services/base-product.service';
-import { FinalProductService } from '../../../services/final-product.service';
-import { CategoryService } from '../../../services/category.service';
-import { BrandService } from '../../../services/brand.service';
-import { ColorService } from '../../../services/color.service';
-import { SizeService } from '../../../services/size.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Sale } from '../../../models/sale.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PaginatorComponent } from '../../paginator/paginator.component';
 import { SaleService } from '../../../services/sale.service';
 import { User } from '../../../models/user.model';
 import { UserService } from '../../../services/user.service';
-import { Cart } from '../../../models/cart.model';
-import { CartService } from '../../../services/cart.service';
+import { Page, Sale, SaleFilter } from '../../../models/general.model';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'sale-list',
@@ -22,108 +15,112 @@ import { CartService } from '../../../services/cart.service';
   imports: [RouterModule, CommonModule, FormsModule, PaginatorComponent],
   templateUrl: './sale-list.component.html'
 })
-export class SaleListComponent implements OnInit{
-  saleList: Sale[] = [];
-  cartList: Cart[] = [];
-  cartListDB: Cart[] = [];
-  paginator!: any;
-  url: string = '/admin_panel/1';
+export class SaleListComponent implements OnInit {
+  salePaginator: Page<Sale> = new Page<Sale>();
   page!: number;
-  pageSizeList: number[] = [5,10,20,50,100,200,500];
+  pageSizeList: number[] = [5, 10, 20, 50, 100, 200, 500];
   selectedPageSize: string = '10';
   userList!: User[];
   selectedUser: string = '';
   startTotal: number = 0;
   endTotal: number = 0;
-  selectedStatus: string = 'Estado' ;
-  statusList: string [] = ['Estado', 'Realizada', 'Modificada', 'Anulada'];
-
-
-
+  selectedStatus: string = 'Estado';
+  statusList: string[] = ['Estado', 'Realizada', 'Modificada', 'Anulada'];
+  filter: SaleFilter = new SaleFilter()
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private userService: UserService,
     private saleService: SaleService,
-    private cartService: CartService
-  ){
-
-}
+  ) {}
+  
   ngOnInit(): void {
-    this.cartService.findAll().subscribe({
-      next: response =>{
-        this.cartListDB = response;
-        this.route.paramMap.subscribe(params => {
-          this.page = +(params.get('page') || '0');;
-          this.filter();
-        })
-      }
-    })    
-    this.userService.findAll().subscribe({
-      next: response =>{
-        this.userList = response;
-      }
-    })
-
+    const page: number = +(this.route.snapshot.paramMap.get('page') || '0')
+    this.page = page
+    this.getSales(this.filter)  
+    this.getUsers()
+    this.getSaleStatuses()
   }
 
-  onChange(event: Event){
-    this.filter();
+  onChange(event: Event) {
+    this.onFilter()
     this.router.navigate(['/admin_panel/1', 0])
   }
 
-  filter(){
-    
-    this.saleService.filter(+this.selectedUser, +this.startTotal, +this.endTotal, +this.selectedPageSize, this.page, this.selectedStatus).subscribe({
-      next: response =>{
-        this.paginator = response;
-        this.saleList = response.content;
-        this.cartList = [];
-        for(let sale of this.saleList){
-          this.cartList.push(this.findCartById(sale.cart_id)|| new Cart());
-        }
-        
-      }
-    })
-
+  async getSaleStatuses(){
+    try {
+      const res = await firstValueFrom(this.saleService.getSaleStatuses())
+    } catch (error) {
+      console.error('error en getSaleStatuses')
+    }
   }
 
-  unfilter(){
-
+  async getUsers(){
+    try {
+      const res = await firstValueFrom(this.userService.findAll())
+      this.userList = res
+    } catch (error) {
+      console.error('error en getUsers', error)
+    }
   }
 
-  removeUserFilter(){
+  async getSales(filter: SaleFilter){
+     try {
+      const res = await firstValueFrom(this.saleService.filter(filter))
+      this.salePaginator = res
+    } catch (error) {
+      console.error('error en getSales', error)      
+    }
+  }
+
+  onFilter() {
+    this.setFilters()
+    this.getSales(this.filter)
+  }
+
+
+  setFilters() {
+    this.filter.user_id = +this.selectedUser == 0 ? null: +this.selectedUser
+    this.filter.pageSize = +this.selectedPageSize
+    this.filter.page = this.page
+  }
+
+   paginatorListener(event: any) {
+    this.page = event
+    this.onFilter()
+  }
+
+
+  removeUserFilter() {
     this.selectedUser = '';
-    this.filter();
+    this.onFilter();
   }
-  removeStatusFilter(){
+
+  removeStatusFilter() {
     this.selectedStatus = 'Estado';
-    this.filter();
+    this.onFilter();
   }
 
   formatCurrency(value: number): string {
-    if(value == undefined){
+    if (value == undefined) {
       value = 0;
     }
     return value.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
   }
 
-  findCartById(cart_id: number){
-    return this.cartListDB.find(item => item.cart_id == cart_id);
-  }
-
-  filterByTotal(){
-    if(this.startTotal < this.endTotal){
-      this.filter();
-    }else{
+  filterByTotal() {
+    if (this.startTotal < this.endTotal) {
+      this.onFilter();
+    } else {
       alert('La cantidad minima debe ser menor que la maxima!')
     }
-    
   }
-  removeTotalFilter(){
+
+  removeTotalFilter() {
     this.startTotal = 0;
     this.endTotal = 0;
-    this.filter();
+    this.onFilter();
   }
+
 }

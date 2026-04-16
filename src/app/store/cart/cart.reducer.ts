@@ -1,6 +1,6 @@
 import { createReducer, on } from "@ngrx/store";
 import { addProduct, cleanCart, decreaseProductQuantity,  increaseProductQuantity,  removeProduct,  } from "./cart.action";
-import { CartV2, ProductInCart } from "../../models/products-general.model";
+import { CartV2, ProductInCart } from "../../models/general.model";
 
 
 const getInitialCartState = (): { cart: CartV2 } => {

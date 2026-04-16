@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '../../../models/user.model';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PaginatorComponent } from '../../paginator/paginator.component';
-import { Role } from '../../../models/role.model';
+import { Page, UserFilter } from '../../../models/general.model';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-user-list',
@@ -13,50 +14,53 @@ import { Role } from '../../../models/role.model';
   imports: [CommonModule, FormsModule, PaginatorComponent, RouterModule],
   templateUrl: './user-list.component.html'
 })
-export class UserListComponent implements OnInit{
-userList: User[] = [];
-paginator!: any;
-url: string = '/admin_panel/2';
-pageSizeList: number[] = [5,10,20,50,100,200,500];
-selectedPageSize: string = '20';
-roleList: any []  =[{'id':'1','roleName':'User'}, {'id':'2','roleName':'Admin'}];
-selectedRoleId: string = '';
+export class UserListComponent implements OnInit {
+  userPaginator: Page<User> = new Page<User>();
+  pageSizeList: number[] = [5, 10, 20, 50, 100, 200, 500];
+  selectedPageSize: string = '20';
+  roleList: any[] = [{ 'id': '1', 'roleName': 'User' }, { 'id': '2', 'roleName': 'Admin' }];
+  selectedRoleId: string = '';
+  filters: UserFilter = new UserFilter()
+  actualPage: number = 0
 
-constructor(
-  private route: ActivatedRoute,
-  private router: Router,
-  private userService: UserService
-){
+  constructor(private userService: UserService) {}
 
-}
   ngOnInit(): void {
     this.filter();
   }
 
-  filter(){
-    const role = new Role();
-    role.id = +this.selectedRoleId;
-    this.route.paramMap.subscribe(params => {
-      const page = +(params.get('page') || '0');
-      this.userService.filter(role, +this.selectedPageSize, page).subscribe({
-        next: response =>{
-          this.paginator = response;
-          this.userList = response.content;
-        }
-      })
-    })
+  async filter() {
+    this.getFilters()
+    try {
+      const res = await firstValueFrom(this.userService.filter(this.filters))
+      this.userPaginator = res
+    } catch (error) {
+      console.error('error en filtrar usuarios', error)
+    }
   }
 
-  onChange(event: Event){
+  getFilters(){
+    this.filters.admin = undefined
+    this.filters.page = this.actualPage
+    this.filters.page_size = +this.selectedPageSize
+    if (this.selectedRoleId != '') this.filters.admin = (+this.selectedRoleId == 2)
+  }
+
+  onChange(event: Event) {
     this.filter();
   }
 
-  removeTypeUserFilter(){
+  removeTypeUserFilter() {
     this.selectedRoleId = '';
     this.filter();
   }
 
- 
-  
+  paginatorListener(event: any) {
+    this.actualPage = event
+    this.filter()
+  }
+
+
+
 
 }

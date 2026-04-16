@@ -1,5 +1,5 @@
 import { createAction, props } from "@ngrx/store";
-import { ProductInCart } from "../../models/products-general.model";
+import { ProductInCart } from "../../models/general.model";
 
 
 

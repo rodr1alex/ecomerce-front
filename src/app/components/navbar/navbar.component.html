@@ -78,7 +78,7 @@
                         <p>ADMINISTRADOR DE SISTEMA</p>
                     }
                     @else {
-                        <p >{{(login.isAuth)? ('Bienvenido ' + login.user.username + (admin && ' (Administrador)')): 'No ha iniciado sesión'}}</p>
+                        <p >{{(login.isAuth)? ('Bienvenido ' + login.user.username ): 'No ha iniciado sesión'}}</p>
                     }  
                 </div>
                 <div class="user-modal absolute top-16 h-0 flex justify-center" (click)="clickInLogin = true" [ngClass]="{'left-0': (isAdminPanelVisible)}">

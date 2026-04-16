@@ -4,6 +4,7 @@ import { FinalProduct } from '../models/final-product.model';
 import { Observable } from 'rxjs';
 import { Category } from '../models/category.model';
 import { ConfigService } from './config.service';
+import { FilterAdminProduct } from '../models/general.model';
 
 @Injectable({
   providedIn: 'root'
@@ -28,8 +29,9 @@ export class FinalProductService {
     return this.http.get<any[]>(`${this.url}/${size}/${page}`);
   }
 
-  filter(brand_id: number, color_id: number, size_id: number, size: number, page: number, categoryList: Category[]): Observable<any> {
-    return this.http.post<any[]>(`${this.url}/filter/${brand_id}/${color_id}/${size_id}/${size}/${page}`, categoryList);
+  //ok
+  filter(filters: FilterAdminProduct): Observable<any> {
+    return this.http.post<any>(`${this.url}/filter`, filters);
   }
 
   update(finalProduct : FinalProduct, final_product_id: number): Observable<FinalProduct> {

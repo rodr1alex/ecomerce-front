@@ -1,36 +1,40 @@
 <div class="card w-11/12 mx-auto py-4 px-12 flex flex-col items-center mb-10">
-    <p class="mb-4 font-bold text-base">Información venta n: {{sale.sale_id}}</p>
+    <p class="mb-4 font-bold text-base">Información venta n: {{saleDetail.sale_id}}</p>
     <div class="flex w-full justify-between">
         <div class="w-1/2">
-            <p>Total: <span class="font-bold">{{formatCurrency(cart.total)}}</span></p>
-            <div class="flex items-center">Estado: <span class="font-bold">{{sale.status}}</span> 
+            <p>Total: <span class="font-bold">{{formatCurrency(saleDetail.total)}}</span></p>
+
+            <!--  -->
+            <div class="flex items-center">Estado: <span class="font-bold">{{saleDetail.saleStatus.name || ''}}</span> 
+
+                <!-- [ngClass]="{'bg-green-500': (sale.status == 'Realizada' || sale == undefined), 'bg-red-500': (sale.status == 'Anulada'), 'bg-yellow-500': (sale.status == 'Modificada')}" -->
                 <div 
                     class="h-3 w-3 rounded-full ml-1" 
-                    [ngClass]="{'bg-green-500': (sale.status == 'Realizada' || sale == undefined), 'bg-red-500': (sale.status == 'Anulada'), 'bg-yellow-500': (sale.status == 'Modificada')}"
+                    
                 >
                 </div>
             </div>
-            <p>Numero de productos: <span class="font-bold">{{cart.items}}</span></p>
-            <p>Usuario: <span class="font-bold">{{user.username}}</span></p>
-            <p>ID usuario: <span class="font-bold">{{user.id}}</span></p>
-            <p>Fecha: <span class="font-bold">{{sale.date}}</span></p>
-            @if(sale.direction != undefined){
-                <p class="mb-4">Dirección: <span class="font-bold">{{sale.direction.city}}, {{sale.direction.street}}: {{sale.direction.number}}</span></p>
+            <p>Numero de productos: <span class="font-bold">{{saleDetail.items}}</span></p>
+            <p>Usuario: <span class="font-bold">{{saleDetail.user.name}} {{saleDetail.user.lastname}}</span></p>
+            <p>ID usuario: <span class="font-bold">{{saleDetail.user.id}}</span></p>
+            <p>Fecha: <span class="font-bold">{{saleDetail.date}}</span></p>
+            @if(saleDetail.direction != undefined){
+                <p class="mb-4">Dirección: <span class="font-bold">{{saleDetail.direction.city}}, {{saleDetail.direction.street}}: {{saleDetail.direction.number}}</span></p>
             }
         </div>
         <div class="nm-inset-white rounded-xl mb-6 p-4 w-1/2">
             <p class="mb-4">Productos en esta venta:</p>
-            @for (orderedProduct of cart.orderedProductList; track $index) {
+            @for (orderedProduct of saleDetail.products; track $index) {
                     <div class="cart-item flex flex-row  mb-5 justify-between min-h-20">
                         <div class="w-1/2 flex">
-                            <img src={{orderedProduct.finalProduct.img}} class="w-20" alt="">
+                            <img src={{orderedProduct.imgUrl}} class="w-20" alt="">
                             <div class="pt-2 pl-2">
-                                <p><span class="font-bold">{{orderedProduct.finalProduct.brand}}</span>{{orderedProduct.finalProduct.name}}</p>
-                                <p>Color: <span class="font-bold">{{orderedProduct.finalProduct.color}}</span> Talla: <span class="font-bold">{{orderedProduct.finalProduct.size.name}}</span></p>
-                                <p><span class="font-bold"> {{formatCurrency(orderedProduct.finalProduct.final_price)}}</span></p>
+                                <p><span class="font-bold">{{orderedProduct.brand}}</span>{{orderedProduct.productName}}</p>
+                                <p>Color: <span class="font-bold">{{orderedProduct.color}}</span> Talla: <span class="font-bold">{{orderedProduct.size}}</span></p>
+                                <p><span class="font-bold"> {{formatCurrency(orderedProduct.priceAtPurchase)}}</span></p>
                                 <p class="mb-2">
-                                    ID producto: {{orderedProduct.finalProduct.final_product_id}} 
-                                    <a class="text-blue-400 hover:cursor-pointer" [routerLink]="['/admin_panel/0/1',orderedProduct.finalProduct.base_product_id]">
+                                    ID producto: {{orderedProduct.final_product_id}} 
+                                    <a class="text-blue-400 hover:cursor-pointer" [routerLink]="['/admin_panel/0/1',orderedProduct.base_product_id]">
                                         Ver detalles
                                     </a>
                                 </p>
@@ -39,12 +43,12 @@
                         </div>
                         <div class="flex w-1/2">
                             <div class="w-1/3 flex flex-col justify-center">
-                                <p class="mb-2 font-bold text-sm">{{formatCurrency(orderedProduct.originalquantity * orderedProduct.finalProduct.final_price)}}</p>
-                                <p class="mb-2 font-bold text-sm">{{orderedProduct.originalquantity}}</p>
+                                <p class="mb-2 font-bold text-sm">{{formatCurrency(orderedProduct.originalQuantity * orderedProduct.priceAtPurchase)}} </p>
+                                <p class="mb-2 font-bold text-sm">{{orderedProduct.originalQuantity}}</p>
                                 <p>Original</p>
                             </div>
                             <div class="mr-2 flex flex-col items-center justify-center">
-                                <p class="mb-2 font-bold text-sm">{{formatCurrency(returnProductQuantityList[$index] * orderedProduct.finalProduct.final_price)}}</p>
+                                <p class="mb-2 font-bold text-sm">{{formatCurrency(returnProductQuantityList[$index] * orderedProduct.priceAtPurchase)}}</p>
                                 <div class="flex">
                                     <div class="cart-cuantity py-1 px-0  flex w-32 justify-center items-center">
                                         <button class="w-10 active:text-red-400" (click)="decrease($index)" >-</button>
@@ -55,8 +59,8 @@
                                 <p>Devueltos</p>
                             </div>
                             <div class="w-1/3 flex flex-col justify-center items-end pr-4">
-                                <p class="mb-2 font-bold text-sm">{{formatCurrency((orderedProduct.originalquantity - returnProductQuantityList[$index]) * orderedProduct.finalProduct.final_price)}}</p>
-                                <p class="mb-2 font-bold text-sm" >{{orderedProduct.originalquantity - returnProductQuantityList[$index]}}</p>
+                                <p class="mb-2 font-bold text-sm">{{formatCurrency((orderedProduct.originalQuantity - returnProductQuantityList[$index]) * orderedProduct.priceAtPurchase)}}</p>
+                                <p class="mb-2 font-bold text-sm" >{{orderedProduct.originalQuantity - returnProductQuantityList[$index]}}</p>
                                 <p>Actual</p>
                             </div>
                         </div>
@@ -66,10 +70,13 @@
         </div>
     </div>
     <div class="flex w-full justify-around">
+
+
+             <!-- [disabled]="sale.status == 'Anulada' " 
+        [ngClass]="{'button--disabled': (sale.status == 'Anulada')}" -->
         <button class="button w-48" 
         (click)="cancelSale()" 
-        [disabled]="sale.status == 'Anulada' " 
-        [ngClass]="{'button--disabled': (sale.status == 'Anulada')}">
+   >
             Anular venta
         </button>
         <button class="button w-48" [disabled]="disableUpdateButton" [ngClass]="{'button--disabled': (disableUpdateButton)}" (click)="updateSale()">

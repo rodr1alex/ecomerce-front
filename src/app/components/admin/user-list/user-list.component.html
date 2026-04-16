@@ -3,34 +3,37 @@
         <div class="card  h-48 pt-2  pb-6 mb-10">
             <!-- filtros -->
             <p class="text-center">Filtrar por</p>
-             <div class="px-6  py-10 flex flex-col justify-between h-full">
+            <div class="px-6  py-10 flex flex-col justify-between h-full">
                 <div class="flex relative">
-                    <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;" [(ngModel)]="selectedRoleId">
+                    <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;"
+                        [(ngModel)]="selectedRoleId">
                         <option value="" disabled selected>Tipo de usuario</option>
                         <option *ngFor="let role of roleList" [value]="role.id">
                             {{role.roleName}}
                         </option>
                     </select>
                     @if(selectedRoleId != ''){
-                        <button class="ml-2 absolute -right-4 top-1" (click)="removeTypeUserFilter()"><i class="fa-solid fa-trash"></i></button>
+                    <button class="ml-2 absolute -right-4 top-1" (click)="removeTypeUserFilter()"><i
+                            class="fa-solid fa-trash"></i></button>
                     }
                 </div>
-               
-             </div>
+                
+            </div>
         </div>
-        <button class="button h-10" [routerLink]="['/create_user']">Agregar nuevo usuario</button>
+        <button  class="button h-10" [routerLink]="['/create_user']">Agregar nuevo usuario</button>
     </div>
-   
+
 
     <div class="w-4/5 relative">
         <!-- paginador -->
         <div class="flex w-full justify-between absolute -top-8" style="z-index: 2;">
             <div class="rounded-xl  px-5 h-12 pt-2" style="background: #BFDBFE">
-                <paginator [paginator]="paginator" [url]="url"></paginator>
+                <paginator [paginator]="userPaginator" (pageChanged)="paginatorListener($event)"></paginator>
             </div>
             <div class="flex mr-1">
                 <p>Usuarios por pagina: </p>
-                <select (change)="onChange($event)"  class="button text-slate-600 w-16 ml-2" style="height: 24px;" [(ngModel)]="selectedPageSize">
+                <select (change)="onChange($event)" class="button text-slate-600 w-16 ml-2" style="height: 24px;"
+                    [(ngModel)]="selectedPageSize">
                     <option *ngFor="let pageSize of pageSizeList" [value]="pageSize">
                         {{pageSize}}
                     </option>
@@ -49,25 +52,24 @@
                         <th scope="col" class="table-th">Correo </th>
                         <th scope="col" class="table-th">Administrador</th>
                         <th scope="col" class="table-th w-32"></th>
-                    </tr>  
+                    </tr>
                 </thead>
                 <tbody>
-                    @for (user of userList; track $index) {
-                        <tr class="table-tr">
-                            <td class="table-td">{{user.id == undefined? 'Undefined': user.id}}</td>
-                            <td class="table-td">{{user.name == undefined? 'Undefined': user.name}}</td>
-                            <td class="table-td">{{user.lastname == undefined ? 'Undefined': user.lastname}}</td>
-                            <td class="table-td">{{user.username == undefined ? 'Undefined': user.username}}</td>
-                            <td class="table-td">{{user.email == undefined ? 'Undefined': user.email}}</td>
-                            <td class="table-td">{{user.roles.length > 1 ? 'Admin': 'User'}}</td>
-                            <td class="table-td"><a [routerLink]="['/update_user',user.id]">Ver detalles</a></td>
-                        </tr>
+                    @for (user of userPaginator.content; track $index) {
+                    <tr class="table-tr">
+                        <td class="table-td">{{user.id == undefined? 'Undefined': user.id}}</td>
+                        <td class="table-td">{{user.name == undefined? 'Undefined': user.name}}</td>
+                        <td class="table-td">{{user.lastname == undefined ? 'Undefined': user.lastname}}</td>
+                        <td class="table-td">{{user.username == undefined ? 'Undefined': user.username}}</td>
+                        <td class="table-td">{{user.email == undefined ? 'Undefined': user.email}}</td>
+                        <td class="table-td">{{user.admin ? 'Admin': 'User'}}</td>
+                        <td class="table-td"><a [routerLink]="['/update_user',user.id]">Ver detalles</a></td>
+                    </tr>
                     }
                 </tbody>
             </table>
-        
+
         </div>
-     
+
     </div>
-    </div>
-    
+</div>

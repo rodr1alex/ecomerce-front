@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Category } from '../models/category.model';
 import { BaseProduct } from '../models/base-product.model';
 import { BaseProductImage } from '../models/base-product-image.model';
 import { ConfigService } from './config.service';

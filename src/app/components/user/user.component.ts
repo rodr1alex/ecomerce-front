@@ -6,6 +6,8 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { firstValueFrom } from 'rxjs';
+import { Direction } from '../../models/direction.model';
 
 @Component({
   selector: 'user',
@@ -17,43 +19,50 @@ export class UserComponent implements OnInit{
   user: User = new User();
   showDirection: boolean = false;
   passwordRepeat: String = '';
-  addres: any = {
-    city:"",
-    street: "",
-    number: ""
-  }
+  addres: Direction = new Direction()
   isAdmin: boolean = false;
 
 
-  constructor(private usersService: UserService, private sharingDataService: SharingDataService, private route: ActivatedRoute, private authService: AuthService){}
+  constructor(
+    private userService: UserService, 
+    private sharingDataService: SharingDataService, 
+    private route: ActivatedRoute,
+    private authService: AuthService){}
 
+  
   ngOnInit(): void {
     this.sharingDataService.hideSearchBarEventEmitter.emit();
-    this.route.paramMap.subscribe(params => {
-      const id: number = +(params.get('id')|| '0');
-      if(id > 0){
-        console.log('INTENTA ACTUALIZAR!');
-        this.usersService.findById(id).subscribe( {
-          next: (userResponse)=>{
-            this.user = userResponse;
-            this.passwordRepeat = userResponse.password;
-          },
-          error: (err) => {
-            if (err.status == 400) {
-              console.error(err);
-            }
-          }
-        })
-      }
-    })
-    this.isAdmin = this.authService.user.isAdmin;
+    const id: number = +(this.route.snapshot.paramMap.get('id') || '0')
+    if(id > 0) this.getUser(id)
+    this.isAdmin = this.authService.user.isAdmin
   }
 
-  createUser(){
-    console.log(this.user);
-    console.log(this.addres);
-    this.sharingDataService.newUserEventEmitter.emit({'user':this.user, 'direction': this.addres});
+  async getUser(user_id: number){
+    try {
+      const res = await firstValueFrom(this.userService.findById(user_id))
+      this.user = res
+      this.passwordRepeat = res.password
+    } catch (error) {
+      console.error('erro en getUser', error)
+    }
+  }
 
+  async createUser(){
+    this.user.directionList = (this.showDirection) ? [this.addres] : []
+    
+    try {
+      const res = await firstValueFrom(this.userService.create(this.user))
+    } catch (error) {
+      console.error('error en createUser', error)
+    }
+  }
+
+  async updateUser(){
+    try {
+      const res = await firstValueFrom(this.userService.update(this.user))
+    } catch (error) { 
+        console.error('error en updateUser', error)
+    }
   }
 
   onClear(userForm: NgForm): void {
@@ -61,14 +70,10 @@ export class UserComponent implements OnInit{
     userForm.reset();
     userForm.resetForm();
   }
-  updateUser(){
-    console.log('Datos actualizados: ', this.user);
-    this.sharingDataService.updateUserEventEmitter.emit(this.user);
+
+  toggleDirectionForm(){
+    this.showDirection = !this.showDirection;
   }
-  showDirectionForm(){
-    this.showDirection = true;
-  }
-  mierda(){
-    console.log(this.authService.user.isAdmin)
-  }
+
+
 }

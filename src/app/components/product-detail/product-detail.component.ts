@@ -1,37 +1,27 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ProductCardComponent } from '../product-card/product-card.component';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BaseProductService } from '../../services/base-product.service';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { AuthService } from '../../services/auth.service';
-import { BaseProduct } from '../../models/base-product.model';
-import { putAll, setPaginator, find } from '../../store/base-product.action';
 import { Size } from '../../models/size.model';
 import { Color } from '../../models/color.model';
-import { BaseProductImage } from '../../models/base-product-image.model';
-import { ColorVariantProduct } from '../../models/color-variant-product.model';
-import { firstValueFrom, of } from 'rxjs';
-import { FinalProduct } from '../../models/final-product.model';
-import { OrderedProduct } from '../../models/ordered-product.model';
-import { Cart } from '../../models/cart.model';
+import { firstValueFrom } from 'rxjs';
 import { addProduct } from '../../store/cart/cart.action';
-import { tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { CartV2, ProductDetail, ProductInCart, SizesColors } from '../../models/products-general.model';
+import { CartV2, ProductDetail, ProductInCart, SizesColors } from '../../models/general.model';
 
 @Component({
   selector: 'product-detail',
   standalone: true,
-  imports: [ProductCardComponent, CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './product-detail.component.html'
 })
 
 export class ProductDetailComponent implements OnInit {
   productDetail: ProductDetail = new ProductDetail()
   cart: CartV2 = new CartV2();
-  orderedProduct!: OrderedProduct;
   quantity: number = 1;
   selectedSize: Size = new Size();
   selectedColor: Color = new Color();
@@ -48,7 +38,6 @@ export class ProductDetailComponent implements OnInit {
 
   constructor(
     private cartStore: Store<{ carts: any }>,
-    private router: Router,
     private route: ActivatedRoute,
     private baseProductService: BaseProductService,
     private sharingDataService: SharingDataService,

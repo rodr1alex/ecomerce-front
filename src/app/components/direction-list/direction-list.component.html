@@ -39,7 +39,7 @@
                             </div>
                             <div class="w-1/3 flex flex-col justify-center">
                                 <button class="button my-2" (click)="updateDirection(direction)">Actualizar</button>
-                                <button class="button button--danger my-2"  (click)="deleteDirection(direction.direction_id)">Borrar</button>
+                                <button class="button button--danger my-2"  (click)="onDeleteDirection(direction.direction_id)">Borrar</button>
                             </div>
                         </form>
                     </div>
@@ -86,8 +86,8 @@
                 </div>
             </div>
             <div class="w-1/3 flex flex-col justify-center">
-                <button class="button my-2" (click)="createDirection(directionNew)">Agregar</button>
+                <button class="button my-2" (click)="onCreateDirection(directionNew)">Agregar</button>
             </div>
         </form>
-        <button class="button w-11/12 md:w-2/12 mx-auto" [routerLink]="['/update_user', 1]">Cancelar</button>
+        <button class="button w-11/12 md:w-2/12 mx-auto" (click)="onBack()">Cancelar</button>
 </div>

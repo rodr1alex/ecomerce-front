@@ -1,5 +1,5 @@
+import { Sale } from "./general.model";
 import { OrderedProduct } from "./ordered-product.model";
-import { Sale } from "./sale.model";
 import { User } from "./user.model";
 
 export class Cart{

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { SharingDataService } from '../../services/sharing-data.service';
-import { CartV2, ProductInCart } from '../../models/products-general.model';
+import { CartV2, ProductInCart } from '../../models/general.model';
 import { cleanCart, decreaseProductQuantity, increaseProductQuantity, removeProduct } from '../../store/cart/cart.action';
 
 @Component({
@@ -14,9 +14,7 @@ import { cleanCart, decreaseProductQuantity, increaseProductQuantity, removeProd
 export class CartComponent implements OnInit{
   cart: CartV2 = new CartV2();
   
-  constructor(  
-    private route: ActivatedRoute,
-    private router: Router,
+  constructor(private router: Router,
     private sharingDataService: SharingDataService,
     private cartStore: Store<{carts: any}>)
   {
@@ -63,9 +61,7 @@ export class CartComponent implements OnInit{
   }
 
   formatCurrency(value: number): string {
-    if(value == undefined){
-      value = 0;
-    }
+    if(value == undefined)   value = 0;
     return value.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
   }
   

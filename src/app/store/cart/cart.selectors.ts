@@ -1,5 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { CartV2 } from '../../models/products-general.model';
+import { CartV2 } from '../../models/general.model';
 
 
 export interface CartState {
