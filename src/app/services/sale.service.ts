@@ -22,9 +22,9 @@ export class SaleService {
     return this.http.get<SaleDetail>(`${this.url}/${sale_id}`);
   }
 
-  findAllPageable(pageSize: number, page: number): Observable<any> {
-    return this.http.get<any[]>(`${this.url}/${pageSize}/${page}`);
-  }
+  // findAllPageable(pageSize: number, page: number): Observable<any> {
+  //   return this.http.get<any[]>(`${this.url}/${pageSize}/${page}`);
+  // }
 
   createSale(cart: CartForPayment): Observable<any> {
     return this.http.post<any>(`${this.url}/create`, cart);

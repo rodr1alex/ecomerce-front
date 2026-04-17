@@ -1,9 +1,9 @@
 import { createReducer, on } from "@ngrx/store";
 import { addProduct, cleanCart, decreaseProductQuantity,  increaseProductQuantity,  removeProduct,  } from "./cart.action";
-import { CartV2, ProductInCart } from "../../models/general.model";
+import { Cart, ProductInCart } from "../../models/general.model";
 
 
-const getInitialCartState = (): { cart: CartV2 } => {
+const getInitialCartState = (): { cart: Cart } => {
   const savedCart = localStorage.getItem('cart_storage');
   
   if (savedCart) {
@@ -14,7 +14,7 @@ const getInitialCartState = (): { cart: CartV2 } => {
     }
   }
 
-  const defaultCart = new CartV2();
+  const defaultCart = new Cart();
   defaultCart.total = 0;
   defaultCart.itemsNumber = 0;
   defaultCart.products = [];

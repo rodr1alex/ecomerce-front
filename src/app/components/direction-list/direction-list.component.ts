@@ -1,10 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Direction } from '../../models/direction.model';
-import { UserService } from '../../services/user.service';
-import { SharingDataService } from '../../services/sharing-data.service';
+import { Direction } from '../../models/general.model'; 
 import { firstValueFrom } from 'rxjs';
 import { DirectionService } from '../../services/direction.service';
 

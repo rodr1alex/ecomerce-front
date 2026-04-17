@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from '../../../models/user.model';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { SaleService } from '../../../services/sale.service';
-import { BaseProduct } from '../../../models/base-product.model';
-import { ColorVariantProduct } from '../../../models/color-variant-product.model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ProductReturned, SaleDetail } from '../../../models/general.model';
@@ -17,9 +14,6 @@ import { firstValueFrom } from 'rxjs';
 })
 export class SaleComponent implements OnInit{
   saleDetail: SaleDetail = new SaleDetail();
-  user: User = new User();
-  baseProduct!: BaseProduct;
-  colorVariantProduct!: ColorVariantProduct;
   mostrar: boolean = false;
   returnProductQuantityList : number [] = [];
   originalReturnProductQuantityList : number [] = [];

@@ -5,12 +5,12 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BaseProductService } from '../../services/base-product.service';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { AuthService } from '../../services/auth.service';
-import { Size } from '../../models/size.model';
-import { Color } from '../../models/color.model';
+import { Size } from '../../models/general.model';
+import { Color } from '../../models/general.model';
 import { firstValueFrom } from 'rxjs';
 import { addProduct } from '../../store/cart/cart.action';
 import { FormsModule } from '@angular/forms';
-import { CartV2, ProductDetail, ProductInCart, SizesColors } from '../../models/general.model';
+import { Cart, ProductDetail, ProductInCart, SizesColors } from '../../models/general.model';
 
 @Component({
   selector: 'product-detail',
@@ -21,7 +21,7 @@ import { CartV2, ProductDetail, ProductInCart, SizesColors } from '../../models/
 
 export class ProductDetailComponent implements OnInit {
   productDetail: ProductDetail = new ProductDetail()
-  cart: CartV2 = new CartV2();
+  cart: Cart = new Cart();
   quantity: number = 1;
   selectedSize: Size = new Size();
   selectedColor: Color = new Color();

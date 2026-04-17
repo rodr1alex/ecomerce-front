@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PaginatorComponent } from '../../paginator/paginator.component';
 import { SaleService } from '../../../services/sale.service';
-import { User } from '../../../models/user.model';
+import { User } from '../../../models/general.model'; 
 import { UserService } from '../../../services/user.service';
 import { Page, Sale, SaleFilter } from '../../../models/general.model';
 import { firstValueFrom } from 'rxjs';

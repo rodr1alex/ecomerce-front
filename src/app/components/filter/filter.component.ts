@@ -1,14 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { BaseProductService } from '../../services/base-product.service';
 import { SharingDataService } from '../../services/sharing-data.service';
-import { AuthService } from '../../services/auth.service';
-import { BaseProduct } from '../../models/base-product.model';
-import { Category } from '../../models/category.model';
-import { Brand } from '../../models/brand.model';
+import { Brand } from '../../models/general.model';
+import { Page, ProductBasicInfo } from '../../models/general.model';
 
 @Component({
   selector: 'filter',
@@ -20,8 +17,7 @@ import { Brand } from '../../models/brand.model';
 export class FilterComponent implements OnInit {
   @Input() brandList!: Brand[];
   @Input() categoriesIds!: number[];
-  baseProductList!: BaseProduct[];
-  paginator!: any;
+  paginator!: Page<ProductBasicInfo>;
   clickInFilter: boolean = false;
   clickInFilterHeader: boolean = false;
 
@@ -37,15 +33,9 @@ export class FilterComponent implements OnInit {
 
   constructor(
     private baseProductStore: Store<{baseProducts: any}>,
-    private router: Router,
-    private route: ActivatedRoute,
     private baseProductService: BaseProductService,
-    private sharingDataService: SharingDataService,
-    private authService: AuthService) {
-      this.baseProductStore.select('baseProducts').subscribe(state =>{
-        this.baseProductList = state.baseProductList;
-        this.paginator = state.paginator;
-      })
+    private sharingDataService: SharingDataService) {
+
   }
   ngOnInit(): void {
     this.clickHanddler();
@@ -57,9 +47,7 @@ export class FilterComponent implements OnInit {
   filter(){
     this.baseProductService.filterByBrand(0,+this.brandSelected,this.categoriesIds).subscribe({
       next: pageable => {
-        this.baseProductList = pageable.content as BaseProduct[];
-        this.paginator = pageable;
-        this.sharingDataService.pageProductEventEmitter.emit({baseProductList: this.baseProductList, paginator: this.paginator})
+        this.paginator = pageable
       }
     })
   }

@@ -5,8 +5,8 @@ import { RouterModule } from '@angular/router';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { BaseProductService } from '../../services/base-product.service';
 import { BannerImageService } from '../../services/banner-image.service';
-import { BannerImage } from '../../models/banner-image.model';
-import { ProductBasicInfo } from '../../models/general.model';
+
+import { BannerImage, ProductBasicInfo } from '../../models/general.model';
 import { firstValueFrom } from 'rxjs';
 
 @Component({

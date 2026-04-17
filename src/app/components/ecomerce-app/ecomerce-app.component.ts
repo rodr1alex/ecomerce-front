@@ -5,8 +5,7 @@ import { Router, RouterOutlet } from '@angular/router';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { AuthService } from '../../services/auth.service';
 import { Store } from '@ngrx/store';
-import { putAll, setPaginator } from '../../store/base-product.action';
-import { Cart } from '../../models/cart.model';
+
 
 @Component({
   selector: 'ecomerce-app',
@@ -16,7 +15,6 @@ import { Cart } from '../../models/cart.model';
 })
 export class EcomerceAppComponent implements OnInit, AfterViewInit{
   @ViewChild('dynamicHeightContainer') dynamicHeightContainer!: ElementRef;
-  cart!: Cart;
   contentHeight: number = 0;
   contentWidth: number = 0;
 
@@ -25,12 +23,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
     private cartStore: Store<{carts: any}>,
     private router: Router,
     private sharingDataService: SharingDataService,
-    private authService: AuthService) 
-    {
-      this.cartStore.select('carts').subscribe(state =>{
-        this.cart = {...state.cart};
-      })
-    }
+    private authService: AuthService) {}
 
   ngAfterViewInit(): void {
     //this.adjustHeight();
@@ -62,7 +55,6 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
   ngOnInit(): void {
     this.adjustHeight();
     this.handlerLogin();
-    this.pageProductsEvent();
 
     if(this.authService.authenticated()){
       console.log('ID: ', this.authService.user.user.id)
@@ -140,12 +132,6 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
     // })
   }
 
-  pageProductsEvent(){
-    this.sharingDataService.pageProductEventEmitter.subscribe(pageable =>{
-      this.baseProductStore.dispatch(putAll({baseProductList: pageable.baseProductList}));
-      this.baseProductStore.dispatch(setPaginator({paginator: pageable.paginator}));
-    })
-  }
 
 
 

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from '../../models/user.model';
-import { SharingDataService } from '../../services/sharing-data.service';
+import { User } from '../../models/general.model'; 
 import { UserService } from '../../services/user.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';

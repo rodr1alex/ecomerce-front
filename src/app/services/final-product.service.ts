@@ -1,8 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { FinalProduct } from '../models/final-product.model';
 import { Observable } from 'rxjs';
-import { Category } from '../models/category.model';
 import { ConfigService } from './config.service';
 import { FilterAdminProduct } from '../models/general.model';
 
@@ -21,21 +19,21 @@ export class FinalProductService {
     this.url = `${this.baseUrl}/final_products`
   }
 
-  create(finalProduct: FinalProduct): Observable<FinalProduct>{
-    return this.http.post<FinalProduct>(`${this.url}/create`, finalProduct);
-  }
+  // create(finalProduct: FinalProduct): Observable<FinalProduct>{
+  //   return this.http.post<FinalProduct>(`${this.url}/create`, finalProduct);
+  // }
 
-  findAllPageable(page: number, size: number): Observable<any> {
-    return this.http.get<any[]>(`${this.url}/${size}/${page}`);
-  }
+  // findAllPageable(page: number, size: number): Observable<any> {
+  //   return this.http.get<any[]>(`${this.url}/${size}/${page}`);
+  // }
 
   //ok
   filter(filters: FilterAdminProduct): Observable<any> {
     return this.http.post<any>(`${this.url}/filter`, filters);
   }
 
-  update(finalProduct : FinalProduct, final_product_id: number): Observable<FinalProduct> {
-    return this.http.put<FinalProduct>(`${this.url}/update/${final_product_id}`, finalProduct);
-  }
+  // update(finalProduct : FinalProduct, final_product_id: number): Observable<FinalProduct> {
+  //   return this.http.put<FinalProduct>(`${this.url}/update/${final_product_id}`, finalProduct);
+  // }
 
 }

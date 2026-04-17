@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { SharingDataService } from '../../services/sharing-data.service';
-import { CartV2, ProductInCart } from '../../models/general.model';
+import { Cart, ProductInCart } from '../../models/general.model';
 import { cleanCart, decreaseProductQuantity, increaseProductQuantity, removeProduct } from '../../store/cart/cart.action';
 
 @Component({
@@ -12,7 +12,7 @@ import { cleanCart, decreaseProductQuantity, increaseProductQuantity, removeProd
   templateUrl: './cart.component.html'
 })
 export class CartComponent implements OnInit{
-  cart: CartV2 = new CartV2();
+  cart: Cart = new Cart();
   
   constructor(private router: Router,
     private sharingDataService: SharingDataService,

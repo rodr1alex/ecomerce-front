@@ -1,10 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { BaseProductService } from '../../services/base-product.service';
-import { SharingDataService } from '../../services/sharing-data.service';
-import { AuthService } from '../../services/auth.service';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { Page } from '../../models/general.model';
 
 @Component({

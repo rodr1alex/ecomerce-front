@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Color } from '../models/color.model';
+import { Color } from '../models/general.model'; 
 import { Observable } from 'rxjs';
 import { ConfigService } from './config.service';
 

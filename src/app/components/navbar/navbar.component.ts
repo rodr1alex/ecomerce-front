@@ -1,16 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Input, OnChanges, OnInit, Renderer2, SimpleChanges, ViewChild, input } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2, ViewChild, } from '@angular/core';
 import { LoginComponent } from '../login/login.component';
 import { CartComponent } from '../cart/cart.component';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { Cart } from '../../models/cart.model';
 import { Store } from '@ngrx/store';
-import { Category } from '../../models/category.model';
-import { CategoryList } from '../../models/category-list.model';
-import { flatMap } from 'rxjs';
+import { Category } from '../../models/general.model'; 
+import { CategoryList } from '../../models/general.model'; 
 import { SharingDataService } from '../../services/sharing-data.service';
-import { CartV2 } from '../../models/general.model';
+import { Cart } from '../../models/general.model';
 
 @Component({
   selector: 'navbar',
@@ -22,7 +20,7 @@ import { CartV2 } from '../../models/general.model';
 export class NavbarComponent implements OnInit{
   @ViewChild('cartNode') cartNode!: ElementRef;
   @ViewChild('menuNode') menuNode!: ElementRef;
-  cart!: CartV2;
+  cart!: Cart;
   isMenuVisible: boolean = true;
   isCartVisible: boolean = false;
   isSessionHandlerVisible: boolean = false;

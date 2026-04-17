@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { User } from '../../models/user.model';
+import { User } from '../../models/general.model'; 
 import { UserService } from '../../services/user.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { firstValueFrom } from 'rxjs';
-import { Direction } from '../../models/direction.model';
+import { Direction } from '../../models/general.model'; 
 
 @Component({
   selector: 'user',

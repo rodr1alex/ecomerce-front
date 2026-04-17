@@ -1,8 +1,47 @@
-import { Cart } from "./cart.model";
-import { Color } from "./color.model";
-import { Direction } from "./direction.model";
-import { Size } from "./size.model";
-import { User } from "./user.model";
+export class Brand{
+    brand_id: number = 0;
+    name!: String
+}
+
+export class Color{
+    color_id!: number;
+    name!: string;
+    tailwindclass!: string;
+    hex_code_color!: string;
+}
+
+export class Size{
+    size_id!: number;
+    name!: string;
+}
+
+export class Category{
+    category_id: number = 0;
+    name!: string;
+
+    constructor(category_id: number, name: string){
+        this.category_id = category_id;
+        this.name = name;
+    }
+}
+
+
+export class CategoryList{
+    categoryName!: Category;
+    subCategoryList!: Category[];
+}
+
+export class Direction{
+    direction_id: number = 0;
+    city!: String;
+    street!: String;
+    number!: String;
+    user_id!: number;
+}
+
+
+
+
 
 export class ProductBasicInfo {
     baseProductId: number = 0;
@@ -54,7 +93,7 @@ export class ProductInCart {
     color: string = '';
 }
 
-export class CartV2 {
+export class Cart {
     cart_id: number = 0;
     total: number = 0;
     itemsNumber: number = 0;
@@ -126,25 +165,11 @@ export class Page<T> {
   }
 }
 
-
-// @Data
-// public class SaleDTO {
-//   private Long sale_id;
-//   private LocalDateTime date;
-//   private DirectionDTO direction;
-//   private SaleStatusDTO status;
-//   private CartDTO cart;
-//   private Integer total;
-//   private Integer items;
-//   private UserDTO user;
-// }
-
 export class Sale{
     sale_id!: number;
     date!: any;
     direction!: Direction;
     saleStatus!: SaleStatus
-    cart!: Cart
     total!: number
     items!: number
     user!: User
@@ -238,6 +263,7 @@ export class FinalProductDTO {
 
 export class AdminFinalProductDTO extends FinalProductDTO {
   stock: number = 0;
+  base_product_id!: number
 }
 
 export class FilterAdminProduct {
@@ -254,4 +280,53 @@ export class FilterAdminProduct {
     this.size_id = null;
     this.categories = [];
   }
+}
+
+
+export class BannerImage{
+    banner_image_id!: number;
+    url!: string;
+    mobile!: boolean;
+
+    constructor(url: string){
+        this.url = url;
+    }
+}
+
+
+export class User {
+    id: number = 0;
+    name!: string;
+    lastname!: string;
+    email!: string;
+    username!: string;
+    password!: string;
+    directionList!: Direction[];
+    admin!: boolean
+}
+
+export class CreateBaseProduct{
+    name!: string;
+    base_price!: number;
+    chars!: string;
+    specs!: string;
+    brand_id!: number
+    baseProductImagesURL!: String[];
+    colorVariantProductList!: CreateColorVariantProduct[];
+    categories_id!: number[];
+}
+
+
+export class CreateColorVariantProduct{
+    color_id!: number
+    colorVariantProductImagesURL!: String[];
+    finalProductList!: CreateFinalProduct[];
+}
+
+
+
+export class CreateFinalProduct{
+    stock!: number;
+    final_price!: number;
+    size_id!: number
 }

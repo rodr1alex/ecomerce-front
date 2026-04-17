@@ -268,7 +268,7 @@
     </div>
 
     <div class="flex justify-center mt-16 mb-5">
-        @if(true){
+        @if(base_product_id == 0){
         <button class="button mx-10 h-8 w-48" (click)="cleanForm()">Limpiar Formulario</button>
         <button (click)="onSubmit()" class="button  h-8 w-48 mx-10" id="addProductButton">
             Agregar producto

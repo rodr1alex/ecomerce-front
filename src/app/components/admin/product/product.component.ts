@@ -1,16 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Brand } from '../../../models/brand.model';
+import { Brand } from '../../../models/general.model'; 
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BrandService } from '../../../services/brand.service';
 import { CommonModule } from '@angular/common';
-import { ColorVariantProduct } from '../../../models/color-variant-product.model';
-import { Color } from '../../../models/color.model';
+import { Color } from '../../../models/general.model'; 
 import { ColorService } from '../../../services/color.service';
-import { Size } from '../../../models/size.model';
+import { Size } from '../../../models/general.model'; 
 import { SizeService } from '../../../services/size.service';
 import { CategoryService } from '../../../services/category.service';
-import { Category } from '../../../models/category.model';
+import { Category } from '../../../models/general.model'; 
 import { firstValueFrom } from 'rxjs';
 import { BaseProductService } from '../../../services/base-product.service';
 
@@ -27,7 +26,6 @@ export class ProductComponent implements OnInit {
   colorList: Color[] = []
   sizeList: Size[] = []
   categoryList: Category[] = []
-  colorVariantProductListOriginal: ColorVariantProduct[] = []
   get colorVariants(): FormArray { return this.productForm.get('colorVariantProductList') as FormArray }
   get baseProductImages() { return this.productForm.get('baseProductImagesURL') as FormArray }
 
@@ -45,15 +43,66 @@ export class ProductComponent implements OnInit {
 
 
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     const base_product_id: number = +(this.route.snapshot.paramMap.get('base_product_id') || '0')
     this.base_product_id = base_product_id
+    
     this.brandService.getAll().subscribe({ next: response => this.brandList = response })
     this.colorService.getAll().subscribe({ next: response => this.colorList = response })
     this.sizeService.getAll().subscribe({ next: response => this.sizeList = response })
     this.categoryService.getAll().subscribe({ next: response => this.categoryList = response })
     this.initForm()
     this.listenBasePriceChanges();
+
+    const data = (this.base_product_id > 0) ?  await this.getProductDetail(base_product_id) : null
+    if(data) this.patchProductForm(data)
+  }
+
+  patchProductForm(data: any) {
+  this.colorVariants.clear();
+  this.baseProductImages.clear();
+
+  if (data.baseProductImagesURL) {
+    data.baseProductImagesURL.forEach((url: string) => {
+      this.baseProductImages.push(this.fb.control(url, Validators.required));
+    });
+  }
+  if (data.colorVariantProductList) {
+    data.colorVariantProductList.forEach((variant: any) => {
+      const imagesArray = this.fb.array(
+        variant.colorVariantProductImagesURL.map((url: string) => this.fb.control(url, Validators.required)),
+        Validators.required
+      );
+
+      const finalProductsArray = this.fb.array(
+        variant.finalProductList.map((fp: any) => this.fb.group({
+          stock: [fp.stock, [Validators.required, Validators.min(0)]],
+          final_price: [fp.final_price, [Validators.required, Validators.min(1)]],
+          size_id: [fp.size_id, Validators.required]
+        }))
+      );
+
+      const variantForm = this.fb.group({
+        color_id: [variant.color_id, Validators.required],
+        colorVariantProductImagesURL: imagesArray,
+        finalProductList: finalProductsArray
+      });
+
+      this.colorVariants.push(variantForm);
+    });
+  }
+
+  this.productForm.patchValue(data);
+}
+
+  async getProductDetail(base_product_id: number): Promise<any | null>{
+    try {
+      const res = await firstValueFrom(this.baseProductService.findProductAdminById(base_product_id))
+      console.log('getProductDetail', res)
+      return res
+    } catch (error) {
+      return null
+    }
   }
 
   async createProduct(){

@@ -5,7 +5,6 @@ import { routes } from './app.routes';
 import { provideStore } from '@ngrx/store';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { tokenInterceptor } from './interceptors/token.interceptor';
-import { baseProductsReducer } from './store/base-product.reducer';
 import { cartsReducer } from './store/cart/cart.reducer';
 import { provideEffects } from '@ngrx/effects';
 import { CartEffects } from './store/cart/cart.effects';
@@ -17,7 +16,6 @@ export const appConfig: ApplicationConfig = {
     provideEffects([CartEffects]),
     provideStore(
       {
-        baseProducts: baseProductsReducer,
         carts: cartsReducer
       }
     )]

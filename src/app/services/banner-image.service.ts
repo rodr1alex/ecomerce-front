@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BannerImage } from '../models/banner-image.model';
 import { Observable } from 'rxjs';
 import { ConfigService } from './config.service';
+import { BannerImage } from '../models/general.model';
 
 @Injectable({
   providedIn: 'root'

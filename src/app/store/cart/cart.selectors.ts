@@ -1,9 +1,9 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { CartV2 } from '../../models/general.model';
+import { Cart } from '../../models/general.model';
 
 
 export interface CartState {
-  cart: CartV2;
+  cart: Cart;
 }
 
 export const selectCartFeature = createFeatureSelector<CartState>('carts');
@@ -15,17 +15,17 @@ export const selectCart = createSelector(
 
 export const selectCartProducts = createSelector(
   selectCart,
-  (cart: CartV2) => cart.products
+  (cart: Cart) => cart.products
 );
 
 export const selectCartTotal = createSelector(
   selectCart,
-  (cart: CartV2) => cart.total
+  (cart: Cart) => cart.total
 );
 
 export const selectItemsNumber = createSelector(
   selectCart,
-  (cart: CartV2) => cart.itemsNumber
+  (cart: Cart) => cart.itemsNumber
 );
 
 export const selectIsCartEmpty = createSelector(

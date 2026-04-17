@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Brand } from '../../../models/brand.model';
+import { Brand } from '../../../models/general.model'; 
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FinalProductService } from '../../../services/final-product.service';
 import { FormsModule } from '@angular/forms';
 import { BrandService } from '../../../services/brand.service';
 import { CommonModule } from '@angular/common';
-import { Color } from '../../../models/color.model';
-import { Size } from '../../../models/size.model';
-import { Category } from '../../../models/category.model';
+import { Color } from '../../../models/general.model'; 
+import { Size } from '../../../models/general.model'; 
+import { Category } from '../../../models/general.model'; 
 import { CategoryService } from '../../../services/category.service';
 import { ColorService } from '../../../services/color.service';
 import { SizeService } from '../../../services/size.service';

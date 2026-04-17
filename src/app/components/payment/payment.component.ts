@@ -3,12 +3,12 @@ import { Router, RouterModule } from '@angular/router';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { Store } from '@ngrx/store';
 import { SaleService } from '../../services/sale.service';
-import { Direction } from '../../models/direction.model';
+import { Direction } from '../../models/general.model'; 
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { DirectionService } from '../../services/direction.service';
 import { firstValueFrom } from 'rxjs';
-import { CartForPayment, CartV2, OrderedProductDTO } from '../../models/general.model';
+import { CartForPayment, Cart, OrderedProductDTO } from '../../models/general.model';
 import { cleanCart } from '../../store/cart/cart.action';
 
 @Component({
@@ -20,7 +20,7 @@ import { cleanCart } from '../../store/cart/cart.action';
 export class PaymentComponent implements OnInit {
   directionList!: Direction[]
   selectedDirection!: Direction
-  cart!: CartV2
+  cart!: Cart
 
   constructor(
     private router: Router,
