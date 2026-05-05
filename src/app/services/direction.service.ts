@@ -16,7 +16,6 @@ export class DirectionService {
     this.url = `${this.baseUrl}/users/directions`
   }
 
-
   getByUserId(user_id :number): Observable<Direction[]>{
     return this.http.get<Direction[]>(`${this.url}/getByUser/${user_id}`);
   }
@@ -26,7 +25,7 @@ export class DirectionService {
   }
 
   update(direction: Direction): Observable<Direction>{
-    return this.http.put<Direction>(`${this.url}/update/${direction.direction_id}`, direction);
+    return this.http.put<Direction>(`${this.url}/update/${direction.directionId}`, direction);
   }
   
   remove(id: number): Observable<void>{

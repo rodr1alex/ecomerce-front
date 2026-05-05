@@ -9,8 +9,6 @@ import { UserFilter } from '../models/general.model';
   providedIn: 'root'
 })
 export class UserService {
-  //private url: string = 'http://localhost:8080/users';
-
   private baseUrl!: string;
   private url!: string;
 
@@ -23,10 +21,6 @@ export class UserService {
     return this.http.get<User[]>(this.url);
   }
 
-  // findAllPageable(page_size: number, page: number): Observable<any> {
-  //   return this.http.get<any[]>(`${this.url}/page/${page_size}/${page}`);
-  // }
-
   filter(filter: UserFilter): Observable<any> {
     return this.http.post<any[]>(`${this.url}/filter`, filter);
   }
@@ -36,7 +30,7 @@ export class UserService {
   }
 
   create(user: User): Observable<User>{
-    return this.http.post<User>(this.url, user);
+    return this.http.post<User>(`${this.url}/create`, user);
   }
 
   update(user: User): Observable<User>{
@@ -47,9 +41,10 @@ export class UserService {
     return this.http.put<User>(`${this.url}/update_password/${user.id}`, user);
   }
 
-  // remove(id: number): Observable<void>{
-  //   return this.http.delete<void>(`${this.url}/${id}`);
-  // }
+  //try remove
+  remove(id: number): Observable<void>{
+    return this.http.delete<void>(`${this.url}/${id}`);
+  }
 
 
 }

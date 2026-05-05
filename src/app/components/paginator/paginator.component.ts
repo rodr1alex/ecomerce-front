@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Page } from '../../models/general.model';
 
@@ -14,11 +14,11 @@ export class PaginatorComponent implements OnChanges{
   @Output() pageChanged = new EventEmitter<number>();
   actualPage: number = 0;
   pageList: number[]= [];
-
-  
+    
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['paginator']) {
       this.setPageList();
+      this.actualPage = this.paginator.number
     }
   }
  

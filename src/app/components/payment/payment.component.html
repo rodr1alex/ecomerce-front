@@ -9,7 +9,7 @@
         <p>Seleccione direccion para envio:</p>
         <div class="md:flex md:justify-around" >
             @for (direction of directionList; track $index){
-                <button class="card card--gray p-2 flex flex-col my-4 w-full md:w-3/12" (click)="selectDirection(direction)" id="{{direction.direction_id}}">
+                <button class="card card--gray p-2 flex flex-col my-4 w-full md:w-3/12" (click)="selectDirection(direction)" id="{{direction.directionId}}">
                     <p class="my-1 h-8 w-11/12 md:text-center">
                         {{direction.city}}, {{direction.street}}:{{direction.number}}
                     </p>

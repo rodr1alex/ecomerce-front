@@ -8,9 +8,6 @@ import { ConfigService } from './config.service';
   providedIn: 'root'
 })
 export class ColorService {
-
-  //private url: string = 'http://localhost:8080/colors';
-
   private baseUrl!: string;
   private url!: string;
 

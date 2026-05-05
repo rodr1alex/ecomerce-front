@@ -12,6 +12,7 @@ export class SharingDataService {
   private _showSearchBarEventEmitter: EventEmitter<void> = new EventEmitter(); 
   private _hideSearchBarEventEmitter: EventEmitter<void> = new EventEmitter(); 
   private _clickEventEmitter: EventEmitter<any> = new EventEmitter(); 
+  private _breadcrumbCategoriesEventEmitter: EventEmitter<string[]> = new EventEmitter(); 
 
   
   constructor() { }
@@ -30,6 +31,9 @@ export class SharingDataService {
   }
   get clickEventEmitter(){
     return this._clickEventEmitter;
+  }
+  get breadcrumbCategoriesEventEmitter(){
+    return this._breadcrumbCategoriesEventEmitter
   }
   
 }

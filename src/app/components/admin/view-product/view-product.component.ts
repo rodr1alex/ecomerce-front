@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Brand } from '../../../models/general.model'; 
+import { AdminFinalProduct, Brand } from '../../../models/general.model'; 
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FinalProductService } from '../../../services/final-product.service';
 import { FormsModule } from '@angular/forms';
@@ -12,7 +12,7 @@ import { CategoryService } from '../../../services/category.service';
 import { ColorService } from '../../../services/color.service';
 import { SizeService } from '../../../services/size.service';
 import { PaginatorComponent } from '../../paginator/paginator.component';
-import { AdminFinalProductDTO, FilterAdminProduct, Page } from '../../../models/general.model';
+import { FilterAdminProduct, Page } from '../../../models/general.model';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -27,7 +27,7 @@ export class ViewProductComponent implements OnInit {
   brandList: Brand[] = []
   colorList: Color[] = [];
   sizeList: Size[] = [];
-  paginator: Page<AdminFinalProductDTO> = new Page()
+  paginator: Page<AdminFinalProduct> = new Page()
   pageSizeList: number[] = [5, 10, 20, 50, 100, 200, 500];
   filters: FilterAdminProduct = new FilterAdminProduct()
 
@@ -92,7 +92,7 @@ export class ViewProductComponent implements OnInit {
   }
 
   removeSizeFilter() {
-    this.filters.size_id = null
+    this.filters.sizeId = null
     this.onFilter();
   }
 
@@ -102,12 +102,12 @@ export class ViewProductComponent implements OnInit {
   }
 
   removeBrandFilter() {
-    this.filters.brand_id = null
+    this.filters.brandId = null
     this.onFilter();
   }
 
   removeColorFilter() {
-    this.filters.color_id = null
+    this.filters.colorId = null
     this.onFilter();
   }
 

@@ -201,11 +201,12 @@ export class NavbarComponent implements OnInit{
 
   //Funciones de navegación
   adminPanelNavigate(category: Category){
-    this.router.navigate([`/admin_panel/${category.category_id}`, 0]);
+    this.router.navigate([`/admin_panel/${category.categoryId}`, 0]);
   }
 
   filter(category: Category, subCategory: Category){
-    this.router.navigate(['/product_list',category.category_id, subCategory.category_id, 0]);
+    this.router.navigate(['/product_list',category.categoryId, subCategory.categoryId]);
+    setTimeout(()=> this.sharingDataService.breadcrumbCategoriesEventEmitter.emit([category.name, subCategory.name]), 100)
   }
 
   navigateLogin(){

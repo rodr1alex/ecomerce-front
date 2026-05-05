@@ -46,10 +46,10 @@
                 <p class="font-bold">{{formatCurrency(productDetail.basePrice) }}</p>
             </div>
 
-            <!-- colorList[0].color_id != 1 -->
+            <!-- colorList[0].colorId != 1 -->
             @if(!isUniqueColor){
                 <div class="mb-6">
-                    @if(selectedColor.color_id){
+                    @if(selectedColor.id){
                         <p class="mb-2">Color seleccionado: {{selectedColor.name}}</p>
                     }@else {
                         <p class="mb-2">Colores disponibles:</p>
@@ -79,11 +79,11 @@
 
 
 <!-- 
-            sizeList[0].size_id != 28 -->
+            sizeList[0].sizeId != 28 -->
             @if(!isUniqueSize){ 
                 <!-- 28 es el id del "sin talla" -->
                 <div class="mb-6">
-                    @if(selectedSize.size_id){
+                    @if(selectedSize.id){
                         <p class="mb-2">Tallas seleccionada: {{selectedSize.name}}</p>
                     }@else {
                         <p class="mb-2">Tallas disponibles:</p>
@@ -91,7 +91,7 @@
                     <div>
                         <button
                         *ngFor="let size of sizeList"
-                        id="{{size.size_id}}"
+                        id="{{size.id}}"
                         [disabled]="false"
                         class="button mr-2 w-12 h-7 my-2"
                         (click)="setSelectedSize(size)"
@@ -146,7 +146,7 @@
         <div class="slider-container">
             @for (baseProduct of baseProductList; track $index) {
                 <div class=" mx-2" style="width: 2000px;">
-                    <a [routerLink]="['/product_detail', baseProduct.base_product_id]">
+                    <a [routerLink]="['/product_detail', baseProduct.baseProductId]">
                         <product-card  [baseProduct]="baseProduct"></product-card>
                     </a>
                 </div>

@@ -8,7 +8,7 @@
        <p class="" (click)="clickFilterMobile()">Filtrar por</p>
        <select (change)="onChange($event)" class="button w-11/12 text-center pr-2 hidden mt-2"  name="orderBy" id="orderBy" [(ngModel)]="brandSelected">
             <option value="" disabled selected>Marca</option>
-            <option *ngFor="let brand of brandList" [value]="brand.brand_id">
+            <option *ngFor="let brand of brandList" [value]="brand.id">
                 {{brand.name}}
             </option>
         </select>

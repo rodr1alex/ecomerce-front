@@ -8,9 +8,6 @@ import { ConfigService } from './config.service';
   providedIn: 'root'
 })
 export class SizeService {
-
-  //private url: string = 'http://localhost:8080/sizes';
-
   private baseUrl!: string;
   private url!: string;
 
@@ -19,7 +16,9 @@ export class SizeService {
     this.url = `${this.baseUrl}/sizes`
   }
 
+
   getAll(): Observable<Size[]>{
     return this.http.get<Size[]>(`${this.url}`);
   }
+  
 }

@@ -75,7 +75,7 @@ export class ProductDetailComponent implements OnInit {
     const colorListAll = this.productDetail.sizesColorsAvailable.map(item => item.color);
     const propertyToAvoid: string = 'name'
     this.colorList = this.cleanRepeated(colorListAll, propertyToAvoid)
-    this.isUniqueColor = this.colorList[0].color_id == 1 // color_id == 1 indicates 'no color'
+    this.isUniqueColor = this.colorList[0].id == 1 // colorId == 1 indicates 'no color'
     if(this.isUniqueColor) this.selectedColor = this.colorList[0]
   }
 
@@ -84,7 +84,7 @@ export class ProductDetailComponent implements OnInit {
     const propertyToAvoid: string = 'name'
     this.sizeList = this.cleanRepeated(sizeListAll, propertyToAvoid)
     this.enabledSizeList = this.sizeList
-    this.isUniqueSize = this.sizeList[0].size_id == 28 // size_id == 28 indicates in only one size 'no size'
+    this.isUniqueSize = this.sizeList[0].id == 28 // id == 28 indicates in only one size 'no size'
     if(this.isUniqueSize) this.selectedSize = this.sizeList[0]
   }
 
@@ -95,14 +95,14 @@ export class ProductDetailComponent implements OnInit {
   setColorButtons() {
     this.colorList.forEach(color => {
       const node = document.getElementById(color.name)
-      if (node) node.style.backgroundColor = color.hex_code_color
+      if (node) node.style.backgroundColor = color.hexCodeColor
     })
   }
 
   //ui
   onSelectColor(selectedColorUI: Color) {
     this.selectedColor = selectedColorUI;
-    this.imageUrlList = this.productDetail.colorsVariantInfo.find(item => item.color.color_id == selectedColorUI.color_id)?.imageList.map(item => item.url) || []
+    this.imageUrlList = this.productDetail.colorsVariantInfo.find(item => item.color.id == selectedColorUI.id)?.imageList.map(item => item.url) || []
     this.currentImageIndex = 0;
 
     this.enabledSizeList = this.getEnabledSizeList(this.productDetail, selectedColorUI);
@@ -116,7 +116,7 @@ export class ProductDetailComponent implements OnInit {
   verifyActualSelectedSizeIsContainedInNewEnabledSizeList() {
     let isContained = false;
     this.enabledSizeList.forEach(enabledSize => {
-      if (enabledSize.size_id === this.selectedSize.size_id) isContained = true
+      if (enabledSize.id === this.selectedSize.id) isContained = true
     });
     if (!isContained) this.selectedSize = new Size() // apply reset
   }
@@ -124,20 +124,20 @@ export class ProductDetailComponent implements OnInit {
   setSelectedSize(size: Size) {
     this.selectedSize = size;
     this.enabledSizeList.forEach(enabledSize => {
-      let node = document.getElementById(`${enabledSize.size_id}`);
-      enabledSize.size_id === this.selectedSize.size_id ? node?.classList.add('button--selected') : node?.classList.remove('button--selected');
+      let node = document.getElementById(`${enabledSize.id}`);
+      enabledSize.id === this.selectedSize.id ? node?.classList.add('button--selected') : node?.classList.remove('button--selected');
     })
   }
 
   getEnabledSizeList(productDetail: ProductDetail, colorSelectedUI: Color): Size[] {
-    const colors: SizesColors[] = productDetail.sizesColorsAvailable.filter(item => item.color.color_id == colorSelectedUI.color_id)
+    const colors: SizesColors[] = productDetail.sizesColorsAvailable.filter(item => item.color.id == colorSelectedUI.id)
     return this.cleanRepeated(colors.map(item => item.size), 'name')
   }
 
   onAddProductToCart() {
-    if (!this.selectedSize.size_id && !this.selectedColor.color_id) return alert('Debe seleccionar talla y color')
-    if (!this.selectedSize.size_id) return alert('Debe seleccionar talla')
-    if (!this.selectedColor.color_id) return alert('Debe seleccionar color')
+    if (!this.selectedSize.id && !this.selectedColor.id) return alert('Debe seleccionar talla y color')
+    if (!this.selectedSize.id) return alert('Debe seleccionar talla')
+    if (!this.selectedColor.id) return alert('Debe seleccionar color')
     this.addProductToCart()
   }
 
@@ -160,23 +160,24 @@ export class ProductDetailComponent implements OnInit {
   }
 
   getFinalProductId(): number {
-    const color_id_UI = this.selectedColor.color_id;
-    const size_id_UI = this.selectedSize.size_id;
-    return this.productDetail.sizesColorsAvailable.find(item => item.color.color_id == color_id_UI && item.size.size_id == size_id_UI)?.finalProductId || 0
+    const colorIdUI = this.selectedColor.id;
+    const idUI = this.selectedSize.id;
+    return this.productDetail.sizesColorsAvailable.find(item => item.color.id == colorIdUI && item.size.id == idUI)?.finalProductId || 0
   }
 
 
   enableSizeButton(size: Size) {
-    let node = document.getElementById(`${size.size_id}`);
+    let node = document.getElementById(`${size.id}`);
     node?.removeAttribute('disabled');
     node?.classList.remove('button--disabled');
-    if (size.size_id === this.selectedSize.size_id) {
+    if (size.id === this.selectedSize.id) {
       node?.classList.add('button--selected');
     }
   }
 
   disableSizeButton(size: Size) {
-    let node = document.getElementById(`${size.size_id}`);
+    let node = document.getElementById(`${size.id}`);
+
     node?.classList.add('button--disabled');
     node?.classList.remove('button--selected');
     node?.setAttribute('disabled', 'true');

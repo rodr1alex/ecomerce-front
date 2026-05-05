@@ -15,9 +15,6 @@ export class BrandService {
     this.baseUrl = this.configService.baseUrl;
     this.url = `${this.baseUrl}/brands`
   }
-
-  //private url: string = 'http://localhost:8080/brands';
-
   
   getAll(): Observable<Brand[]>{
     return this.http.get<Brand[]>(`${this.url}`);

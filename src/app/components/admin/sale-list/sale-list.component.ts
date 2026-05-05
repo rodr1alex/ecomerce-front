@@ -6,7 +6,7 @@ import { PaginatorComponent } from '../../paginator/paginator.component';
 import { SaleService } from '../../../services/sale.service';
 import { User } from '../../../models/general.model'; 
 import { UserService } from '../../../services/user.service';
-import { Page, Sale, SaleFilter } from '../../../models/general.model';
+import { Page, AdminSaleBasicInfo, SaleFilter } from '../../../models/general.model';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -16,7 +16,7 @@ import { firstValueFrom } from 'rxjs';
   templateUrl: './sale-list.component.html'
 })
 export class SaleListComponent implements OnInit {
-  salePaginator: Page<Sale> = new Page<Sale>();
+  salePaginator: Page<AdminSaleBasicInfo> = new Page<AdminSaleBasicInfo>();
   page!: number;
   pageSizeList: number[] = [5, 10, 20, 50, 100, 200, 500];
   selectedPageSize: string = '10';
@@ -81,7 +81,7 @@ export class SaleListComponent implements OnInit {
 
 
   setFilters() {
-    this.filter.user_id = +this.selectedUser == 0 ? null: +this.selectedUser
+    this.filter.userId = +this.selectedUser == 0 ? null: +this.selectedUser
     this.filter.pageSize = +this.selectedPageSize
     this.filter.page = this.page
   }

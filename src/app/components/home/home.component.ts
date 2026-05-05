@@ -5,8 +5,7 @@ import { RouterModule } from '@angular/router';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { BaseProductService } from '../../services/base-product.service';
 import { BannerImageService } from '../../services/banner-image.service';
-
-import { BannerImage, ProductBasicInfo } from '../../models/general.model';
+import { BannerImage, BasicProductInfo,  } from '../../models/general.model';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -16,7 +15,7 @@ import { firstValueFrom } from 'rxjs';
   templateUrl: './home.component.html'
 })
 export class HomeComponent implements OnInit{
-  baseProductList!: ProductBasicInfo[]
+  baseProductList!: BasicProductInfo[]
   bannerImageList: BannerImage[] =[]
   currentIndex: number = 0
   touchStartX: number = 0
@@ -46,7 +45,7 @@ export class HomeComponent implements OnInit{
 
   async getProducts(){
     try{
-      const res = await firstValueFrom(this.baseProductService.findAllPageable(0))
+      const res = await firstValueFrom(this.baseProductService.getFeaturedProducts())
       this.baseProductList = res
     }catch(err){
       console.error('error en getProducts', err)

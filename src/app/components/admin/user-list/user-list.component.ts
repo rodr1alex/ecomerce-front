@@ -40,9 +40,9 @@ export class UserListComponent implements OnInit {
   }
 
   getFilters(){
-    this.filters.admin = undefined
+    this.filters.admin = null
     this.filters.page = this.actualPage
-    this.filters.page_size = +this.selectedPageSize
+    this.filters.pageSize = +this.selectedPageSize
     if (this.selectedRoleId != '') this.filters.admin = (+this.selectedRoleId == 2)
   }
 

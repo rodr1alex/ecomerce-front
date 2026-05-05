@@ -15,7 +15,7 @@ import { DirectionService } from '../../services/direction.service';
 export class DirectionListComponent implements OnInit {
   directionList: Direction[] = []
   directionNew: Direction = new Direction()
-  user_id: number = 0
+  userId: number = 0
 
   constructor(
     private route: ActivatedRoute,
@@ -24,13 +24,13 @@ export class DirectionListComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     const id: number = +(this.route.snapshot.paramMap.get('id') || '0')
-    this.user_id = id
-    await this.getDirectionListByUser(this.user_id)
+    this.userId = id
+    await this.getDirectionListByUser(this.userId)
   }
 
-  async getDirectionListByUser(user_id: number) {
+  async getDirectionListByUser(userId: number) {
     try {
-      const res = await firstValueFrom(this.directionService.getByUserId(user_id))
+      const res = await firstValueFrom(this.directionService.getByUserId(userId))
       this.directionList = res
     }
     catch (err) {
@@ -41,12 +41,12 @@ export class DirectionListComponent implements OnInit {
   async onCreateDirection(direction: Direction) {
     //validar
     await this.createDirection(direction)
-    this.getDirectionListByUser(this.user_id)
+    this.getDirectionListByUser(this.userId)
   }
 
   async createDirection(direction: Direction) {
     try {
-      const res = await firstValueFrom(this.directionService.create(direction, this.user_id))
+      const res = await firstValueFrom(this.directionService.create(direction, this.userId))
       alert('Direccion creada con exito')
     } catch (error) {
       alert('Error agregando la direccion')
@@ -57,7 +57,7 @@ export class DirectionListComponent implements OnInit {
   async onUpdateDirection(direction: Direction) {
     //validar
     await this.updateDirection(direction)
-    this.getDirectionListByUser(this.user_id)
+    this.getDirectionListByUser(this.userId)
   }
 
   async updateDirection(direction: Direction) {
@@ -70,11 +70,11 @@ export class DirectionListComponent implements OnInit {
     }
   }
 
-  async onDeleteDirection(direction_id: number) {
+  async onDeleteDirection(directionId: number) {
     try {
-      const res = await firstValueFrom(this.directionService.remove(direction_id))
+      const res = await firstValueFrom(this.directionService.remove(directionId))
       alert('Direccion eliminada con exito')
-      this.getDirectionListByUser(this.user_id)
+      this.getDirectionListByUser(this.userId)
     } catch (error) {
       alert('Error eliminando la direccion')
       console.error('error en onDeleteDirection', error)
@@ -82,7 +82,7 @@ export class DirectionListComponent implements OnInit {
   }
 
   onBack() {
-    this.router.navigate(['/update_user', this.user_id])
+    this.router.navigate(['/update_user', this.userId])
   }
 
 }

@@ -8,7 +8,7 @@ import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { DirectionService } from '../../services/direction.service';
 import { firstValueFrom } from 'rxjs';
-import { CartForPayment, Cart, OrderedProductDTO } from '../../models/general.model';
+import { CartForPayment, Cart, OrderedProduct } from '../../models/general.model';
 import { cleanCart } from '../../store/cart/cart.action';
 
 @Component({
@@ -67,9 +67,9 @@ export class PaymentComponent implements OnInit {
 
   getCartForPayment(): CartForPayment {
     const cart: CartForPayment = new CartForPayment()
-    cart.direction_id = this.selectedDirection.direction_id
-    cart.user_id = this.authService.user.user.id
-    cart.products = this.cart.products.map(product => new OrderedProductDTO(product.quantity, product.finalProductId))
+    cart.directionId = this.selectedDirection.directionId
+    cart.userId = this.authService.user.user.id
+    cart.products = this.cart.products.map(product => new OrderedProduct(product.quantity, product.finalProductId))
     return cart
   }
 
@@ -79,8 +79,8 @@ export class PaymentComponent implements OnInit {
     confirmButtonNode?.classList.remove('button--disabled');
     confirmButtonNode?.removeAttribute('disabled');
     this.directionList.forEach(item => {
-      let node = document.getElementById(`${item.direction_id}`);
-      item.direction_id === this.selectedDirection.direction_id ? node?.classList.add('card--selected') : node?.classList.remove('card--selected')
+      let node = document.getElementById(`${item.directionId}`);
+      item.directionId === this.selectedDirection.directionId ? node?.classList.add('card--selected') : node?.classList.remove('card--selected')
     })
   }
 

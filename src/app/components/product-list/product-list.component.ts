@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ProductCardComponent } from '../product-card/product-card.component';
 import { FilterComponent } from '../filter/filter.component';
 import { PaginatorComponent } from '../paginator/paginator.component';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BaseProductService } from '../../services/base-product.service';
-import { Brand } from '../../models/general.model'; 
-import { ProductBasicInfo } from '../../models/general.model';
+import { BasicProductFilter, Brand, Page } from '../../models/general.model';
+import { BasicProductInfo } from '../../models/general.model';
 import { firstValueFrom } from 'rxjs';
+import { SharingDataService } from '../../services/sharing-data.service';
 
 @Component({
   selector: 'product-list',
@@ -15,51 +16,66 @@ import { firstValueFrom } from 'rxjs';
   templateUrl: './product-list.component.html'
 })
 export class ProductListComponent implements OnInit {
-  categoryName: string = 'Categoria A / Categoria B'; //IMPLEMENTAR SI O SI COMO OBTENER EL LISTADO DE LAS CATEGORIAS, LO DEBE ENTREGAR EL NAVBAR
-  baseProductList!: ProductBasicInfo[];
-  paginator!: any;
+  categoryName: string = ''
+  paginator: Page<BasicProductInfo> = new Page
   brandList: Brand[] = [];
-  url: string = '';
-  categoriesIds: number[] = []
+  filter: BasicProductFilter = new BasicProductFilter()
 
   constructor(
     private route: ActivatedRoute,
-    private baseProductService: BaseProductService
-    ) {}
+    private baseProductService: BaseProductService,
+    private sharingDataService: SharingDataService
+  ) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
-      const page: number = +(params.get('page') || '0');
       const category_id: number = +(params.get('category') || '0');
       const subcategory_id: number = +(params.get('subcategory') || '0');
-      this.url = `/product_list/${category_id}/${subcategory_id}`;
-      this.categoriesIds = [category_id, subcategory_id]
-
+      this.filter.categoriesIds = [category_id, subcategory_id]
+      this.filter.brandId = null
       this.getBrandList()
-      this.getProducts(page)
-
+      this.getProductsWithFilters()
     });
+
+    this.subcribeBreadCrumb()
+  }
+
+  subcribeBreadCrumb() {
+    this.sharingDataService.breadcrumbCategoriesEventEmitter.subscribe(data => {
+      this.categoryName = ''
+      data.forEach((item, index) => {
+        this.categoryName = this.categoryName + item
+        if (index != data.length - 1) this.categoryName = this.categoryName + ' / '
+      })
+    })
+  }
+
+  async getProductsWithFilters() {
+    try {
+      const res = await firstValueFrom(this.baseProductService.filter(this.filter))
+      this.paginator = res
+    } catch (error) {
+      console.error('error en filtrar productos', error)
+    }
   }
 
   async getBrandList() {
     try {
-      const res = await firstValueFrom(this.baseProductService.getBrandList(this.categoriesIds))
+      const res = await firstValueFrom(this.baseProductService.getBrandList(this.filter.categoriesIds!))
       this.brandList = res
-
     } catch (err) {
       console.error('error getBrandList', err)
     }
   }
 
-  async getProducts(page: number) {
-    try {
-      const pageable = await firstValueFrom(this.baseProductService.filterByCategoryList(page, this.categoriesIds))
-      this.baseProductList = pageable.content as ProductBasicInfo[];
-      this.paginator = pageable;
-    } catch (err) {
-      console.error('error getProducts', err)
-    }
+  paginatorListener(event: any) {
+    this.filter.page = event
+    this.getProductsWithFilters()
   }
 
+  filterByBrandListener(event: any) {
+    this.filter.brandId = event
+    this.getProductsWithFilters()
+  }
 
 }

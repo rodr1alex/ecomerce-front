@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { ProductBasicInfo } from '../../models/general.model';
+import { BasicProductInfo } from '../../models/general.model';
 
 @Component({
   selector: 'product-card',
@@ -9,7 +9,7 @@ import { ProductBasicInfo } from '../../models/general.model';
   styleUrl: './product-card.component.css'
 })
 export class ProductCardComponent implements OnInit, AfterViewInit{
-  @Input() baseProduct!: ProductBasicInfo
+  @Input() baseProduct!: BasicProductInfo
   @ViewChild('dynamicHeightContainer') dynamicHeightContainer!: ElementRef;
   @ViewChild('imgPortrait') imgPortrait!: ElementRef;
 

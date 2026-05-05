@@ -104,7 +104,7 @@
                 <tbody>
                     @for (sale of salePaginator.content; track $index) {
                         <tr class="table-tr">
-                            <td class="table-td">{{sale.sale_id == undefined? 'Undefined': sale.sale_id}}</td>
+                            <td class="table-td">{{sale.saleId == undefined? 'Undefined': sale.saleId}}</td>
                             <td class="table-td">{{sale.date == undefined? 'Undefined': sale.date}}</td>
                             <td class="table-td">{{sale.total}}</td>
                             <td class="table-td">{{sale.items}}</td>
@@ -124,7 +124,7 @@
                                 </div>
                                 
                             </td>
-                            <td class="table-td"><a class="text-blue-400" [routerLink]="['/admin_panel/2/1/',sale.sale_id]">Ver detalles</a></td>
+                            <td class="table-td"><a class="text-blue-400" [routerLink]="['/admin_panel/2/1/',sale.saleId]">Ver detalles</a></td>
                         </tr>
                     }
                 </tbody>

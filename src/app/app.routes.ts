@@ -53,7 +53,7 @@ export const routes: Routes = [
         component: ProductDetailComponent,
     },
     {
-        path: 'product_list/:category/:subcategory/:page',
+        path: 'product_list/:category/:subcategory',
         component: ProductListComponent,
     },
     {

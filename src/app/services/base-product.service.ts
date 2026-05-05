@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ConfigService } from './config.service';
-import { Page, ProductBasicInfo } from '../models/general.model';
+import { BasicProductInfo, AdminBaseProduct, Page, ProductDetail, Brand, BasicProductFilter } from '../models/general.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,40 +20,33 @@ export class BaseProductService {
     return this.http.post<any>(`${this.url}/create`, baseProduct); 
   }
 
-  findById(base_product_id: number): Observable<any> {
-    return this.http.get<any[]>(`${this.url}/${base_product_id}`);
+  findById(base_product_id: number): Observable<ProductDetail> {
+    return this.http.get<ProductDetail>(`${this.url}/${base_product_id}`);
   }
 
-  findProductAdminById(base_product_id: number): Observable<any> {
-    return this.http.get<any[]>(`${this.url}/admin/${base_product_id}`);
+  getAdminBaseProductById(base_product_id: number): Observable<AdminBaseProduct> {
+    return this.http.get<AdminBaseProduct>(`${this.url}/admin/${base_product_id}`);
   }
 
-  findAllPageable(page: number): Observable<any> {
-    //return this.http.get<any[]>(`${this.url}/featured_products/page/${page}`);
-    return this.http.get<any[]>(`${this.url}`);
+  getFeaturedProducts(): Observable<BasicProductInfo[]> {
+    return this.http.get<BasicProductInfo[]>(`${this.url}/featured_products`);
   }
 
-  filterByBrand(page: number, brand_id: number, categoryList: any): Observable<Page<ProductBasicInfo>> {
-    return this.http.post<Page<ProductBasicInfo>>(`${this.url}/filter/brand/${brand_id}/page/${page}`, categoryList);
-  }
+  // filterByBrand(page: number, brand_id: number, categories: number[]): Observable<Page<BasicProductInfo>> {
+  //   return this.http.post<Page<BasicProductInfo>>(`${this.url}/filter/brand/${brand_id}/page/${page}`, categories);
+  // }
 
-  filterByCategoryList(page: number, categoryList: any): Observable<any> {
-    return this.http.post<any>(`${this.url}/filter/category_list/page/${page}`, categoryList);
+  // filterByCategoryList(page: number, categories: number[]): Observable<Page<BasicProductInfo>> {
+  //   return this.http.post<Page<BasicProductInfo>>(`${this.url}/filter/category_list/page/${page}`, categories);
+  // }
+
+  filter(filter: BasicProductFilter): Observable<Page<BasicProductInfo>> {
+    return this.http.post<Page<BasicProductInfo>>(`${this.url}/filter`, filter);
   }
   
-  getBrandList(categoryList: any): Observable<any> {
-    return this.http.post<any>(`${this.url}/filter/brand/get_list`, categoryList);
+  getBrandList(categories: number[]): Observable<Brand[]> {
+    return this.http.post<Brand[]>(`${this.url}/filter/brand/get_list`, categories);
   }
 
-  // updateBaseProduct(baseProduct: BaseProduct, base_product_id: number): Observable<BaseProduct> {
-  //   return this.http.put<BaseProduct>(`${this.url}/update/${base_product_id}`, baseProduct);
-  // }
-
-  // addBaseProductImage(baseProductImage: BaseProductImage, base_product_id: number): Observable<BaseProduct> {
-  //   return this.http.put<BaseProduct>(`${this.url}/update/add_image/${base_product_id}`, baseProductImage);
-  // }
-  // removeBaseProductImage(baseProductImage: BaseProductImage, base_product_id: number): Observable<BaseProduct> {
-  //   return this.http.put<BaseProduct>(`${this.url}/update/remove_image/${base_product_id}`, baseProductImage);
-  // }
   
 }

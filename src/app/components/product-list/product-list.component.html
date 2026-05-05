@@ -1,11 +1,11 @@
 <div class="px-6 mb-4 md:w-11/12 md:mx-auto my-5 md:my-0 limit-content">
     <div class="md:flex md:w-4/5 md:mx-auto md:justify-between ">
         <p class="font-bold mb-2 text-center">{{categoryName}}</p>
-        <filter [brandList]="brandList" [categoriesIds]="categoriesIds"></filter>  
+        <filter [brandList]="brandList" [categoriesIds]="filter.categoriesIds!" (filterByBrand)="filterByBrandListener($event)" ></filter>  
     </div>
     <div>
         <div class="product-list">
-            @for (baseProduct of baseProductList; track $index) {
+            @for (baseProduct of paginator.content; track $index) {
                 <div class="mb-6 w-full">
                     <a [routerLink]="['/product_detail', baseProduct.baseProductId]">
                         <product-card [baseProduct]="baseProduct"></product-card>
@@ -14,6 +14,7 @@
             } 
         </div>
     </div>
-    <paginator [paginator]="paginator"></paginator>
+    <paginator [paginator]="paginator" (pageChanged)="paginatorListener($event)" ></paginator>
+      
 </div>
 

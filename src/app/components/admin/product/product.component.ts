@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Brand } from '../../../models/general.model'; 
+import { AdminBaseProduct, Brand } from '../../../models/general.model'; 
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BrandService } from '../../../services/brand.service';
 import { CommonModule } from '@angular/common';
@@ -20,7 +20,7 @@ import { BaseProductService } from '../../../services/base-product.service';
   templateUrl: './product.component.html'
 })
 export class ProductComponent implements OnInit {
-  base_product_id!: number
+  baseProductId!: number;
   productForm!: FormGroup
   brandList: Brand[] = []
   colorList: Color[] = []
@@ -44,8 +44,8 @@ export class ProductComponent implements OnInit {
 
 
   async ngOnInit(): Promise<void> {
-    const base_product_id: number = +(this.route.snapshot.paramMap.get('base_product_id') || '0')
-    this.base_product_id = base_product_id
+    const baseProductId: number = +(this.route.snapshot.paramMap.get('base_product_id') || '0')
+    this.baseProductId = baseProductId
     
     this.brandService.getAll().subscribe({ next: response => this.brandList = response })
     this.colorService.getAll().subscribe({ next: response => this.colorList = response })
@@ -54,16 +54,16 @@ export class ProductComponent implements OnInit {
     this.initForm()
     this.listenBasePriceChanges();
 
-    const data = (this.base_product_id > 0) ?  await this.getProductDetail(base_product_id) : null
+    const data = (this.baseProductId > 0) ?  await this.getProductDetail(baseProductId) : null
     if(data) this.patchProductForm(data)
   }
 
-  patchProductForm(data: any) {
+  patchProductForm(data: AdminBaseProduct) {
   this.colorVariants.clear();
   this.baseProductImages.clear();
 
   if (data.baseProductImagesURL) {
-    data.baseProductImagesURL.forEach((url: string) => {
+    data.baseProductImagesURL.forEach(url => {
       this.baseProductImages.push(this.fb.control(url, Validators.required));
     });
   }
@@ -77,13 +77,13 @@ export class ProductComponent implements OnInit {
       const finalProductsArray = this.fb.array(
         variant.finalProductList.map((fp: any) => this.fb.group({
           stock: [fp.stock, [Validators.required, Validators.min(0)]],
-          final_price: [fp.final_price, [Validators.required, Validators.min(1)]],
-          size_id: [fp.size_id, Validators.required]
+          finalPrice: [fp.finalPrice, [Validators.required, Validators.min(1)]],
+          sizeId: [fp.sizeId, Validators.required]
         }))
       );
 
       const variantForm = this.fb.group({
-        color_id: [variant.color_id, Validators.required],
+        colorId: [variant.colorId, Validators.required],
         colorVariantProductImagesURL: imagesArray,
         finalProductList: finalProductsArray
       });
@@ -95,9 +95,9 @@ export class ProductComponent implements OnInit {
   this.productForm.patchValue(data);
 }
 
-  async getProductDetail(base_product_id: number): Promise<any | null>{
+  async getProductDetail(baseProductId: number): Promise<AdminBaseProduct | null>{
     try {
-      const res = await firstValueFrom(this.baseProductService.findProductAdminById(base_product_id))
+      const res = await firstValueFrom(this.baseProductService.getAdminBaseProductById(baseProductId))
       console.log('getProductDetail', res)
       return res
     } catch (error) {
@@ -117,7 +117,7 @@ export class ProductComponent implements OnInit {
 
 
   private listenBasePriceChanges() {
-    this.productForm.get('base_price')?.valueChanges.subscribe(newPrice => {
+    this.productForm.get('basePrice')?.valueChanges.subscribe(newPrice => {
       this.updateAllFinalPrices(newPrice);
     });
   }
@@ -127,7 +127,7 @@ export class ProductComponent implements OnInit {
       const finalProducts = variant.get('finalProductList') as FormArray;
 
       finalProducts.controls.forEach(product => {
-        product.patchValue({ final_price: price }, { emitEvent: false });
+        product.patchValue({ finalPrice: price }, { emitEvent: false });
       });
     });
   }
@@ -135,12 +135,12 @@ export class ProductComponent implements OnInit {
   initForm() {
     this.productForm = this.fb.group({
       name: ['', Validators.required],
-      base_price: ['', [Validators.required, Validators.min(1)]],
+      basePrice: ['', [Validators.required, Validators.min(1)]],
       chars: [''],
       specs: [''],
-      brand_id: [null, Validators.required],
+      brandId: [null, Validators.required],
       baseProductImagesURL: this.fb.array([], Validators.required),
-      categories_id: [[], Validators.required],
+      categoriesId: [[], Validators.required],
       colorVariantProductList: this.fb.array([])
     });
     this.addColorVariant()
@@ -148,7 +148,7 @@ export class ProductComponent implements OnInit {
 
   addColorVariant() {
     const variantForm = this.fb.group({
-      color_id: [null, Validators.required],
+      colorId: [null, Validators.required],
       colorVariantProductImagesURL: this.fb.array([], Validators.required),
       finalProductList: this.fb.array([
         this.createFinalProductGroup()
@@ -160,16 +160,16 @@ export class ProductComponent implements OnInit {
   private createFinalProductGroup(): FormGroup {
     return this.fb.group({
       stock: [0, [Validators.required, Validators.min(0)]],
-      final_price: [0, [Validators.required, Validators.min(1)]],
-      size_id: [null, Validators.required]
+      finalPrice: [0, [Validators.required, Validators.min(1)]],
+      sizeId: [null, Validators.required]
     });
   }
 
   addFinalProduct(variantIndex: number) {
     const finalProductForm = this.fb.group({
       stock: [0, [Validators.required, Validators.min(0)]],
-      final_price: [0, [Validators.required, Validators.min(1)]],
-      size_id: [null, Validators.required]
+      finalPrice: [0, [Validators.required, Validators.min(1)]],
+      sizeId: [null, Validators.required]
     });
     const finalProducts = this.colorVariants.at(variantIndex)!.get('finalProductList') as FormArray;
     if (finalProductForm) finalProducts.push(finalProductForm);
@@ -177,23 +177,23 @@ export class ProductComponent implements OnInit {
 
   addCategory(event: any) {
     const id = Number(event.target.value);
-    const current = this.productForm.get('categories_id')?.value || [];
+    const current = this.productForm.get('categoriesId')?.value || [];
     if (!current.includes(id)) {
-      this.productForm.get('categories_id')?.setValue([...current, id]);
+      this.productForm.get('categoriesId')?.setValue([...current, id]);
     }
   }
 
   removeCategory(id: number) {
-    const current = this.productForm.get('categories_id')?.value || [];
+    const current = this.productForm.get('categoriesId')?.value || [];
     if (current.includes(id)) {
       const currentWithout = current.filter((item: any) => item != id)
-      this.productForm.get('categories_id')?.setValue([...currentWithout]);
+      this.productForm.get('categoriesId')?.setValue([...currentWithout]);
     }
   }
 
   getCategoryName(categoryId: number): string {
     if (!this.categoryList || this.categoryList.length === 0) return '...'
-    const category = this.categoryList.find(c => c.category_id === categoryId);
+    const category = this.categoryList.find(c => c.categoryId === categoryId);
     return category ? category.name : `ID: ${categoryId}`;
   }
 
@@ -223,12 +223,12 @@ export class ProductComponent implements OnInit {
   }
 
   addFinalProductRow(variantIndex: number) {
-    const finalProductGroup = this.fb.group({
-      size_id: [null, Validators.required],
-      final_price: [0, [Validators.required, Validators.min(1)]],
+    const addFinalProductRowGroup = this.fb.group({
+      sizeId: [null, Validators.required],
+      finalPrice: [0, [Validators.required, Validators.min(1)]],
       stock: [0, [Validators.required, Validators.min(0)]]
     });
-    this.getFinalProducts(variantIndex).push(finalProductGroup);
+    this.getFinalProducts(variantIndex).push(addFinalProductRowGroup);
   }
 
 
@@ -249,8 +249,8 @@ export class ProductComponent implements OnInit {
       finalProducts.removeAt(finalProductIndex)
     } else {
       finalProducts.at(0).reset({
-        size_id: null,
-        final_price: 0,
+        sizeId: null,
+        finalPrice: 0,
         stock: 0
       });
     }
@@ -258,13 +258,13 @@ export class ProductComponent implements OnInit {
 
   cleanForm() {
     this.productForm.reset({
-      base_product_id: 0,
+      baseProductId: 0,
       name: '',
-      base_price: 0,
+      basePrice: 0,
       chars: '',
       specs: '',
-      brand_id: null,
-      categories_id: []
+      brandId: null,
+      categoriesId: []
     });
 
     this.baseProductImages.clear()

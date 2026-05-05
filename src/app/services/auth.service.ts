@@ -8,9 +8,6 @@ import { User } from '../models/general.model';
   providedIn: 'root'
 })
 export class AuthService {
-
-  //private url: string = 'http://localhost:8080/login';
-
   private baseUrl!: string;
   private url!: string;
 
@@ -26,9 +23,6 @@ export class AuthService {
     isAdmin: false,
     user: undefined
   }
-
-
-  //constructor(private http: HttpClient) { }
 
   loginUser(user: User): Observable<any>{
     return this.http.post<any>(this.url, user);

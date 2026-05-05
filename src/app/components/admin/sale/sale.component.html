@@ -1,5 +1,5 @@
 <div class="card w-11/12 mx-auto py-4 px-12 flex flex-col items-center mb-10">
-    <p class="mb-4 font-bold text-base">Información venta n: {{saleDetail.sale_id}}</p>
+    <p class="mb-4 font-bold text-base">Información venta n: {{saleDetail.saleId}}</p>
     <div class="flex w-full justify-between">
         <div class="w-1/2">
             <p>Total: <span class="font-bold">{{formatCurrency(saleDetail.total)}}</span></p>
@@ -33,8 +33,8 @@
                                 <p>Color: <span class="font-bold">{{orderedProduct.color}}</span> Talla: <span class="font-bold">{{orderedProduct.size}}</span></p>
                                 <p><span class="font-bold"> {{formatCurrency(orderedProduct.priceAtPurchase)}}</span></p>
                                 <p class="mb-2">
-                                    ID producto: {{orderedProduct.final_product_id}} 
-                                    <a class="text-blue-400 hover:cursor-pointer" [routerLink]="['/admin_panel/0/1',orderedProduct.base_product_id]">
+                                    ID producto: {{orderedProduct.finalProductId}} 
+                                    <a class="text-blue-400 hover:cursor-pointer" [routerLink]="['/admin_panel/0/1',orderedProduct.baseProductId]">
                                         Ver detalles
                                     </a>
                                 </p>

@@ -8,9 +8,6 @@ import { ConfigService } from './config.service';
   providedIn: 'root'
 })
 export class CategoryService {
-
-  //private url: string = 'http://localhost:8080/categories';
-
   private baseUrl!: string;
   private url!: string;
 
@@ -19,9 +16,8 @@ export class CategoryService {
     this.url = `${this.baseUrl}/categories`
   }
 
- 
-
   getAll(): Observable<Category[]>{
     return this.http.get<Category[]>(`${this.url}`);
   }
+  
 }

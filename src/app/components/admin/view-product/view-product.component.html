@@ -8,7 +8,7 @@
                 <div class="flex relative">
                     <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;" [(ngModel)]="filters.categories[0]">
                         <option value="" disabled selected>Categoria</option>
-                        <option *ngFor="let category of categoryList" [value]="category.category_id">
+                        <option *ngFor="let category of categoryList" [value]="category.categoryId">
                             {{category.name}}
                         </option>
                     </select>
@@ -17,35 +17,35 @@
                     }
                 </div>
                 <div class="flex relative">
-                    <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;"  name="brand" id="brand" [(ngModel)]="this.filters.brand_id">
+                    <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;"  name="brand" id="brand" [(ngModel)]="this.filters.brandId">
                         <option value="" disabled selected>Marca</option>
-                        <option *ngFor="let brand of brandList" [value]="brand.brand_id">
+                        <option *ngFor="let brand of brandList" [value]="brand.id">
                             {{brand.name}}
                         </option>
                     </select>
-                    @if(this.filters.brand_id){
+                    @if(this.filters.brandId){
                         <button class="ml-2 absolute -right-4 top-1" (click)="removeBrandFilter()"><i class="fa-solid fa-trash"></i></button>
                     }
                 </div>
                 <div class="flex relative">
-                    <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;"  name="brand" id="brand" [(ngModel)]="filters.color_id">
+                    <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;"  name="brand" id="brand" [(ngModel)]="filters.colorId">
                         <option value="" disabled selected>Color</option>
-                        <option *ngFor="let color of colorList" [value]="color.color_id">
+                        <option *ngFor="let color of colorList" [value]="color.id">
                             {{color.name}}
                         </option>
                     </select>
-                    @if(this.filters.color_id){
+                    @if(this.filters.colorId){
                         <button class="ml-2 absolute -right-4 top-1" (click)="removeColorFilter()"><i class="fa-solid fa-trash"></i></button>
                     }
                 </div>
                 <div class="flex relative">
-                    <select (change)="onChange($event)"  class="button text-slate-600 w-full" style="height: 36px;"  name="brand" id="brand" [(ngModel)]="filters.size_id">
+                    <select (change)="onChange($event)"  class="button text-slate-600 w-full" style="height: 36px;"  name="brand" id="brand" [(ngModel)]="filters.sizeId">
                         <option value="" disabled selected>Talla</option>
-                        <option *ngFor="let size of sizeList" [value]="size.size_id">
+                        <option *ngFor="let size of sizeList" [value]="size.id">
                             {{size.name}}
                         </option>
                     </select>
-                    @if(filters.size_id){
+                    @if(filters.sizeId){
                         <button class="ml-2 absolute -right-4 top-1" (click)="removeSizeFilter()"><i class="fa-solid fa-trash"></i></button>
                     }
                 </div>
@@ -97,24 +97,24 @@
                 <tbody>
                     @for (finalProduct of paginator.content; track $index) {
                         <tr class="table-tr">
-                            <td class="table-td">{{finalProduct.final_product_id}}</td>
+                            <td class="table-td">{{finalProduct.finalProductId}}</td>
                             <td class="table-td">{{finalProduct.brand}}</td>
                             <td class="table-td">{{finalProduct.name}}</td>
                             <td class="table-td">{{finalProduct.color}}</td>
                             <td class="table-td">{{finalProduct.size}}</td>
                             <td class="table-td font-bold">{{finalProduct.stock}}</td>
                             <!--  -->
-                            <td class="table-td"><a class="text-blue-400" [routerLink]="['/admin_panel/0/1/',finalProduct.base_product_id]" >Ver detalles</a></td>
+                            <td class="table-td"><a class="text-blue-400" [routerLink]="['/admin_panel/0/1/',finalProduct.baseProductId]" >Ver detalles</a></td>
 
 
 
-                             <!-- <td class="table-td">{{finalProduct.final_product_id == undefined? 'Undefined': finalProduct.final_product_id}}</td>
+                             <!-- <td class="table-td">{{finalProduct.finalProductId == undefined? 'Undefined': finalProduct.finalProductId}}</td>
                             <td class="table-td">{{finalProduct.brand == undefined? 'Undefined': finalProduct.brand}}</td>
                             <td class="table-td">{{finalProduct.name == undefined ? 'Undefined': finalProduct.name}}</td>
                             <td class="table-td">{{finalProduct.color == undefined ? 'Undefined': finalProduct.color}}</td>
                             <td class="table-td">{{finalProduct.size == undefined ? 'Undefined': finalProduct.size}}</td>
                             <td class="table-td font-bold">{{finalProduct.stock == undefined ? 'Undefined': finalProduct.stock}}</td>
-                            <td class="table-td"><a class="text-blue-400" [routerLink]="['/admin_panel/0/1/',finalProduct.base_product_id]">Ver detalles</a></td> -->
+                            <td class="table-td"><a class="text-blue-400" [routerLink]="['/admin_panel/0/1/',finalProduct.baseProductId]">Ver detalles</a></td> -->
                         </tr>
                     }
                 </tbody>

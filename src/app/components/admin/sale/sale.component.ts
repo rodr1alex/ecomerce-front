@@ -3,7 +3,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { SaleService } from '../../../services/sale.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ProductReturned, SaleDetail } from '../../../models/general.model';
+import { ProductReturned, AdminSaleDetail } from '../../../models/general.model';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -13,7 +13,7 @@ import { firstValueFrom } from 'rxjs';
   templateUrl: './sale.component.html'
 })
 export class SaleComponent implements OnInit{
-  saleDetail: SaleDetail = new SaleDetail();
+  saleDetail: AdminSaleDetail = new AdminSaleDetail();
   mostrar: boolean = false;
   returnProductQuantityList : number [] = [];
   originalReturnProductQuantityList : number [] = [];
@@ -42,7 +42,7 @@ export class SaleComponent implements OnInit{
   
   async cancelSale(){
     try {
-      const res = await firstValueFrom(this.saleService.cancelSale(this.saleDetail.sale_id))
+      const res = await firstValueFrom(this.saleService.cancelSale(this.saleDetail.saleId))
       alert('Anulación de venta exitosa')
     } catch (error) {
       console.error('error en cancelSale', error)    
@@ -52,7 +52,7 @@ export class SaleComponent implements OnInit{
   async updateSale(){
     const orderedProductListToSend: ProductReturned[] = this.getOrderedProductListToSend()
     try {
-      const res = await firstValueFrom(this.saleService.modifySale(this.saleDetail.sale_id, orderedProductListToSend))
+      const res = await firstValueFrom(this.saleService.modifySale(this.saleDetail.saleId, orderedProductListToSend))
       alert('Modificación exitosa')      
     } catch (error) {
       console.error('error en updateSale', error)      
@@ -64,8 +64,8 @@ export class SaleComponent implements OnInit{
     for(let i = 0; i < this.saleDetail.products.length ; i++){
       let orderedProductReturn = new ProductReturned();
       orderedProductReturn.quantityToReturn = this.returnProductQuantityList[i] - this.originalReturnProductQuantityList[i];
-      orderedProductReturn.final_product_id = this.saleDetail.products[i].final_product_id
-      orderedProductReturn.ordered_product_id = this.saleDetail.products[i].ordered_product_id
+      orderedProductReturn.finalProductId = this.saleDetail.products[i].finalProductId
+      //orderedProductReturn.orderedProductId = this.saleDetail.products[i].orderedProductId
       orderedProductListToSend.push(orderedProductReturn);
     }
     return orderedProductListToSend

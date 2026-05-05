@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { BaseProductService } from '../../services/base-product.service';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { Brand } from '../../models/general.model';
-import { Page, ProductBasicInfo } from '../../models/general.model';
+import { Page, BasicProductInfo } from '../../models/general.model';
 
 @Component({
   selector: 'filter',
@@ -17,7 +17,8 @@ import { Page, ProductBasicInfo } from '../../models/general.model';
 export class FilterComponent implements OnInit {
   @Input() brandList!: Brand[];
   @Input() categoriesIds!: number[];
-  paginator!: Page<ProductBasicInfo>;
+  @Output() filterByBrand = new EventEmitter<number>();
+  paginator!: Page<BasicProductInfo>;
   clickInFilter: boolean = false;
   clickInFilterHeader: boolean = false;
 
@@ -31,30 +32,19 @@ export class FilterComponent implements OnInit {
   orderBySelected: String = '';
   brandSelected: String = '';
 
-  constructor(
-    private baseProductStore: Store<{baseProducts: any}>,
-    private baseProductService: BaseProductService,
-    private sharingDataService: SharingDataService) {
-
-  }
+  constructor( private sharingDataService: SharingDataService ) {}
+  
   ngOnInit(): void {
     this.clickHanddler();
   }
-  onChange(event: Event){
-    this.filter();
-  }
   
-  filter(){
-    this.baseProductService.filterByBrand(0,+this.brandSelected,this.categoriesIds).subscribe({
-      next: pageable => {
-        this.paginator = pageable
-      }
-    })
+  onChange(event: Event){
+    this.filterByBrand.emit(+this.brandSelected)
   }
 
   clickHanddler(){
     this.sharingDataService.clickEventEmitter.subscribe(({width, height})=>{
-      console.log('Info: ', width, height);
+      //console.log('Info: ', width, height);
       if(width > 768){
         if(this.clickInFilter){
           this.showFilter();
@@ -81,6 +71,7 @@ export class FilterComponent implements OnInit {
     filterNode?.classList.add('w-full')
     filterNode?.classList.add('z-10');
   }
+
   hiddeFilter(){
     const filterNode = document.getElementById('filterNode');
     const orderByNode = document.getElementById('orderBy');
