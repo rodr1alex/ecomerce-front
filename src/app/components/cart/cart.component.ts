@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { Cart, ProductInCart } from '../../models/general.model';
 import { cleanCart, decreaseProductQuantity, increaseProductQuantity, removeProduct } from '../../store/cart/cart.action';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'cart',
@@ -16,7 +17,8 @@ export class CartComponent implements OnInit{
   
   constructor(private router: Router,
     private sharingDataService: SharingDataService,
-    private cartStore: Store<{carts: any}>)
+    private cartStore: Store<{carts: any}>,
+    private alertService: AlertService)
   {
     this.cartStore.select('carts').subscribe(state =>{                   
       this.cart = state.cart;
@@ -42,7 +44,14 @@ export class CartComponent implements OnInit{
   }
 
   cleanCart(){
-    this.cartStore.dispatch(cleanCart())
+    const config = {
+      title: 'Vaciar carrito',
+      text: '¿Deseas eliminar todos los productos del carrito?',
+      icon: 'warning' as const,
+      confirmButtonText: 'Si, vaciar',
+      confirmButtonColor: '#d33'
+    }
+    this.alertService.confirm(config, () => this.cartStore.dispatch(cleanCart()))
   }
   
   close(){

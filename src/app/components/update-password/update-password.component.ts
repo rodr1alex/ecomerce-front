@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule, NgForm } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'update-password',
@@ -24,7 +25,8 @@ export class UpdatePasswordComponent implements OnInit {
     private userService: UserService,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private alertService: AlertService
   ) { }
 
   ngOnInit(): void {
@@ -41,7 +43,10 @@ export class UpdatePasswordComponent implements OnInit {
 
   async onUpdatePassword() {
     const sussessfullLogin: boolean = await this.login()
-    if (!sussessfullLogin) return alert('Contrasenia ingresada es incorrecta!')
+    if (!sussessfullLogin) {
+      await this.alertService.error('Error', 'Contrasenia ingresada es incorrecta!')
+      return
+    }
     this.updatePassword()
   }
 
@@ -52,7 +57,7 @@ export class UpdatePasswordComponent implements OnInit {
     user.password = this.newPassword
     try {
       const res = await firstValueFrom(this.userService.updatePassword(user))
-      alert('Contrasenia actualizada con exito');
+      await this.alertService.success('Exito', 'Contrasenia actualizada con exito')
       this.router.navigate(['/home'])
     } catch (error) {
       console.error('error en updatePassword', error)

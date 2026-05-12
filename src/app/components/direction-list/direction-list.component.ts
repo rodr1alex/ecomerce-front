@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Direction } from '../../models/general.model'; 
 import { firstValueFrom } from 'rxjs';
 import { DirectionService } from '../../services/direction.service';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'direction-list',
@@ -20,7 +21,8 @@ export class DirectionListComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private directionService: DirectionService) { }
+    private directionService: DirectionService,
+    private alertService: AlertService) { }
 
   async ngOnInit(): Promise<void> {
     const id: number = +(this.route.snapshot.paramMap.get('id') || '0')
@@ -47,9 +49,9 @@ export class DirectionListComponent implements OnInit {
   async createDirection(direction: Direction) {
     try {
       const res = await firstValueFrom(this.directionService.create(direction, this.userId))
-      alert('Direccion creada con exito')
+      await this.alertService.success('Exito', 'Direccion creada con exito')
     } catch (error) {
-      alert('Error agregando la direccion')
+      await this.alertService.error('Error', 'Error agregando la direccion')
       console.error('error en createDirection', error)
     }
   }
@@ -63,9 +65,9 @@ export class DirectionListComponent implements OnInit {
   async updateDirection(direction: Direction) {
     try {
       const res = await firstValueFrom(this.directionService.update(direction))
-      alert('Direccion actualizada con exito')
+      await this.alertService.success('Exito', 'Direccion actualizada con exito')
     } catch (error) {
-      alert('Error actualizando la direccion')
+      await this.alertService.error('Error', 'Error actualizando la direccion')
       console.error('error en updateDirection', error)
     }
   }
@@ -73,10 +75,10 @@ export class DirectionListComponent implements OnInit {
   async onDeleteDirection(directionId: number) {
     try {
       const res = await firstValueFrom(this.directionService.remove(directionId))
-      alert('Direccion eliminada con exito')
+      await this.alertService.success('Exito', 'Direccion eliminada con exito')
       this.getDirectionListByUser(this.userId)
     } catch (error) {
-      alert('Error eliminando la direccion')
+      await this.alertService.error('Error', 'Error eliminando la direccion')
       console.error('error en onDeleteDirection', error)
     }
   }

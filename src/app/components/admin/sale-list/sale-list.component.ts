@@ -8,6 +8,7 @@ import { User } from '../../../models/general.model';
 import { UserService } from '../../../services/user.service';
 import { Page, AdminSaleBasicInfo, SaleFilter } from '../../../models/general.model';
 import { firstValueFrom } from 'rxjs';
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'sale-list',
@@ -33,6 +34,7 @@ export class SaleListComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private saleService: SaleService,
+    private alertService: AlertService,
   ) {}
   
   ngOnInit(): void {
@@ -113,7 +115,7 @@ export class SaleListComponent implements OnInit {
     if (this.startTotal < this.endTotal) {
       this.onFilter();
     } else {
-      alert('La cantidad minima debe ser menor que la maxima!')
+      this.alertService.warning('Atencion', 'La cantidad minima debe ser menor que la maxima!')
     }
   }
 

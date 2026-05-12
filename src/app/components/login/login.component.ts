@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { User } from '../../models/general.model'; 
 import { SharingDataService } from '../../services/sharing-data.service';
 import { Router, RouterModule } from '@angular/router';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'login',
@@ -13,7 +14,11 @@ import { Router, RouterModule } from '@angular/router';
 export class LoginComponent implements OnInit{
   user: User;
 
-  constructor(private sharingDataService: SharingDataService, private router: Router) {
+  constructor(
+    private sharingDataService: SharingDataService,
+    private router: Router,
+    private alertService: AlertService
+  ) {
     this.user = new User();
   }
 
@@ -21,7 +26,10 @@ export class LoginComponent implements OnInit{
   }
 
   onLogon(){
-    if (!this.user.username || !this.user.password) return alert('Credenciales incorrectas!')
+    if (!this.user.username || !this.user.password) {
+      this.alertService.error('Error', 'Credenciales incorrectas!')
+      return
+    }
     this.sharingDataService.handlerLoginEventEmitter.emit(this.user)
   }
 

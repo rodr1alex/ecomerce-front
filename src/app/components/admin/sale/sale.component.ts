@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SaleService } from '../../../services/sale.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ProductReturned, AdminSaleDetail } from '../../../models/general.model';
 import { firstValueFrom } from 'rxjs';
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-sale',
@@ -21,7 +22,9 @@ export class SaleComponent implements OnInit{
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private saleService: SaleService,
+    private alertService: AlertService,
   ){}
 
   ngOnInit(): void {
@@ -35,7 +38,11 @@ export class SaleComponent implements OnInit{
       this.saleDetail = res
       this.returnProductQuantityList = this.saleDetail.products.map(orderedProductDetail => orderedProductDetail.originalQuantity - orderedProductDetail.quantity)
       this.originalReturnProductQuantityList = this.saleDetail.products.map(orderedProductDetail => orderedProductDetail.originalQuantity - orderedProductDetail.quantity)
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.status === 404) {
+        await this.router.navigate(['/not-found'])
+        return
+      }
       console.error('error en getSaleDetailById', error)
     }
   }
@@ -43,7 +50,7 @@ export class SaleComponent implements OnInit{
   async cancelSale(){
     try {
       const res = await firstValueFrom(this.saleService.cancelSale(this.saleDetail.saleId))
-      alert('Anulación de venta exitosa')
+      await this.alertService.success('Exito', 'Anulacion de venta exitosa')
     } catch (error) {
       console.error('error en cancelSale', error)    
     }
@@ -53,7 +60,7 @@ export class SaleComponent implements OnInit{
     const orderedProductListToSend: ProductReturned[] = this.getOrderedProductListToSend()
     try {
       const res = await firstValueFrom(this.saleService.modifySale(this.saleDetail.saleId, orderedProductListToSend))
-      alert('Modificación exitosa')      
+      await this.alertService.success('Exito', 'Modificacion exitosa')
     } catch (error) {
       console.error('error en updateSale', error)      
     }

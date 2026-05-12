@@ -10,6 +10,7 @@ import { DirectionService } from '../../services/direction.service';
 import { firstValueFrom } from 'rxjs';
 import { CartForPayment, Cart, OrderedProduct } from '../../models/general.model';
 import { cleanCart } from '../../store/cart/cart.action';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'payment',
@@ -28,6 +29,7 @@ export class PaymentComponent implements OnInit {
     private saleService: SaleService,
     private sharingDataService: SharingDataService,
     private directionService: DirectionService,
+    private alertService: AlertService,
     private cartStore: Store<{ carts: any }>) 
   {
     this.cartStore.select('carts').subscribe(state => {
@@ -52,12 +54,41 @@ export class PaymentComponent implements OnInit {
   async onPayCart() {
     const cartForPayment = this.getCartForPayment()
     try{
-      const response = await firstValueFrom(this.saleService.createSale(cartForPayment))
-      alert('Pago realizado con exito!')
+      await firstValueFrom(this.saleService.createSale(cartForPayment))
+      await this.alertService.success('Exito', 'Pago realizado con exito!')
       this.cleanCartAndReload()
-    }catch(err){
+    }catch(err: any){
       console.error('error en paycart', err)
+      const errorMessage = this.getPaymentErrorMessage(err)
+      await this.alertService.error('Error', errorMessage)
     }
+  }
+
+  private getPaymentErrorMessage(err: any): string {
+    if (err?.status === 409 && err?.error && typeof err.error === 'object') {
+      const firstKey = Object.keys(err.error)[0]
+      const productIds = firstKey ? err.error[firstKey] : null
+
+      if (Array.isArray(productIds) && productIds.length > 0) {
+        const details = productIds.map((finalProductId: number) => {
+          const product = this.cart.products.find(item => item.finalProductId === finalProductId)
+
+          if (!product) {
+            return `ID ${finalProductId}`
+          }
+
+          return `${product.name} | Talla: ${product.size} | Color: ${product.color}`
+        })
+
+        return `No hay stock para:\n\n${details.join('\n')}`
+      }
+    }
+
+    if (typeof err?.error === 'string' && err.error.trim().length > 0) {
+      return err.error
+    }
+
+    return 'No se pudo procesar el pago. Intentalo nuevamente.'
   }
 
   cleanCartAndReload(){

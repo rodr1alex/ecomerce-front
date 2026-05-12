@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { User } from '../../models/general.model'; 
 import { UserService } from '../../services/user.service';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
@@ -27,6 +27,7 @@ export class UserComponent implements OnInit{
     private userService: UserService, 
     private sharingDataService: SharingDataService, 
     private route: ActivatedRoute,
+    private router: Router,
     private authService: AuthService){}
 
   
@@ -42,7 +43,11 @@ export class UserComponent implements OnInit{
       const res = await firstValueFrom(this.userService.findById(user_id))
       this.user = res
       this.passwordRepeat = res.password
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.status === 404) {
+        await this.router.navigate(['/not-found'])
+        return
+      }
       console.error('erro en getUser', error)
     }
   }

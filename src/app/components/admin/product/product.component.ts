@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AdminBaseProduct, Brand } from '../../../models/general.model'; 
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { BrandService } from '../../../services/brand.service';
 import { CommonModule } from '@angular/common';
 import { Color } from '../../../models/general.model'; 
@@ -33,6 +33,7 @@ export class ProductComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private brandService: BrandService,
     private colorService: ColorService,
     private sizeService: SizeService,
@@ -100,7 +101,11 @@ export class ProductComponent implements OnInit {
       const res = await firstValueFrom(this.baseProductService.getAdminBaseProductById(baseProductId))
       console.log('getProductDetail', res)
       return res
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.status === 404) {
+        await this.router.navigate(['/not-found'])
+        return null
+      }
       return null
     }
   }

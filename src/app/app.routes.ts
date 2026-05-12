@@ -13,6 +13,7 @@ import { ProductComponent } from './components/admin/product/product.component';
 import { SaleListComponent } from './components/admin/sale-list/sale-list.component';
 import { SaleComponent } from './components/admin/sale/sale.component';
 import { UserListComponent } from './components/admin/user-list/user-list.component';
+import { NoContentComponent } from './components/no-content/no-content.component';
 
 export const routes: Routes = [
     {
@@ -80,6 +81,12 @@ export const routes: Routes = [
         path: 'admin_panel/2/1/:sale_id',
         component: SaleComponent,
     },
-  
-    
+    {
+        path: 'not-found',
+        component: NoContentComponent,
+    },
+    {
+        path: '**',
+        component: NoContentComponent,
+    }
 ];

@@ -5,6 +5,8 @@ import { Router, RouterOutlet } from '@angular/router';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { AuthService } from '../../services/auth.service';
 import { Store } from '@ngrx/store';
+import { AlertService } from '../../services/alert.service';
+import { ToastService } from '../../services/toast.service';
 
 
 @Component({
@@ -23,7 +25,9 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
     private cartStore: Store<{carts: any}>,
     private router: Router,
     private sharingDataService: SharingDataService,
-    private authService: AuthService) {}
+    private authService: AuthService,
+    private alertService: AlertService,
+    private toastService: ToastService) {}
 
   ngAfterViewInit(): void {
     //this.adjustHeight();
@@ -78,7 +82,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
           this.authService.token = token;
           this.authService.user = login;
           console.log("Inicio de sesión exitoso!", login);
-         
+          this.toastService.success('Inicio de sesión exitoso!');
           //verificacion de carrito de compras
           this.cartVerify(id);
           this.router.navigate(['/home']);
@@ -88,8 +92,9 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
         },
         error: error => {
           if (error.status == 401) {
-            alert('Error en el Login');
+            
           } else {
+            this.toastService.error('Error en el Login');
             throw error;
           }
         }

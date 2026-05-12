@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { BaseProductService } from '../../services/base-product.service';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { AuthService } from '../../services/auth.service';
@@ -11,6 +11,8 @@ import { firstValueFrom } from 'rxjs';
 import { addProduct } from '../../store/cart/cart.action';
 import { FormsModule } from '@angular/forms';
 import { Cart, ProductDetail, ProductInCart, SizesColors } from '../../models/general.model';
+import { AlertService } from '../../services/alert.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'product-detail',
@@ -39,9 +41,12 @@ export class ProductDetailComponent implements OnInit {
   constructor(
     private cartStore: Store<{ carts: any }>,
     private route: ActivatedRoute,
+    private router: Router,
     private baseProductService: BaseProductService,
     private sharingDataService: SharingDataService,
-    private authService: AuthService) {
+    private authService: AuthService,
+    private alertService: AlertService,
+    private toastService: ToastService) {
     this.cartStore.select('carts').subscribe(state => {
       this.cart = state.cart
     })
@@ -66,7 +71,11 @@ export class ProductDetailComponent implements OnInit {
     try {
       const response = await firstValueFrom(this.baseProductService.findById(base_product_id))
       this.productDetail = response
-    } catch (err) {
+    } catch (err: any) {
+      if (err?.status === 404) {
+        await this.router.navigate(['/not-found'])
+        return
+      }
       console.error(err)
     }
   }
@@ -135,9 +144,18 @@ export class ProductDetailComponent implements OnInit {
   }
 
   onAddProductToCart() {
-    if (!this.selectedSize.id && !this.selectedColor.id) return alert('Debe seleccionar talla y color')
-    if (!this.selectedSize.id) return alert('Debe seleccionar talla')
-    if (!this.selectedColor.id) return alert('Debe seleccionar color')
+    if (!this.selectedSize.id && !this.selectedColor.id) {
+      this.alertService.warning('Atencion', 'Debe seleccionar talla y color')
+      return
+    }
+    if (!this.selectedSize.id) {
+      this.alertService.warning('Atencion', 'Debe seleccionar talla')
+      return
+    }
+    if (!this.selectedColor.id) {
+      this.alertService.warning('Atencion', 'Debe seleccionar color')
+      return
+    }
     this.addProductToCart()
   }
 
@@ -156,6 +174,7 @@ export class ProductDetailComponent implements OnInit {
   
 
     this.cartStore.dispatch(addProduct({ product: productInCart }));
+    this.toastService.success('Producto agregado al carrito', 1800);
 
   }
 
