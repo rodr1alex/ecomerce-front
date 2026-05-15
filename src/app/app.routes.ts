@@ -14,6 +14,7 @@ import { SaleListComponent } from './components/admin/sale-list/sale-list.compon
 import { SaleComponent } from './components/admin/sale/sale.component';
 import { UserListComponent } from './components/admin/user-list/user-list.component';
 import { NoContentComponent } from './components/no-content/no-content.component';
+import { authGuard, authGuardAdmin } from './guards/auth.guard';
 
 export const routes: Routes = [
     {
@@ -40,14 +41,17 @@ export const routes: Routes = [
     {
         path: 'update_user/:id',
         component: UserComponent,
+        canActivate: [authGuard]
     },
     {
         path: 'update_password/:id',
         component: UpdatePasswordComponent,
+        canActivate: [authGuard]
     },
     {
         path: 'direction_list/:id',
         component: DirectionListComponent,
+        canActivate: [authGuard]
     },
     {
         path: 'product_detail/:base_product_id',
@@ -60,26 +64,32 @@ export const routes: Routes = [
     {
         path: 'payment',
         component: PaymentComponent,
+        canActivate: [authGuard]
     },
     {
         path: 'admin_panel/0/:page',
         component: ViewProductComponent,
+        canActivate: [authGuardAdmin]
     },
     {
         path: 'admin_panel/0/1/:base_product_id',
         component: ProductComponent,
+        canActivate: [authGuardAdmin]
     },
     {
         path: 'admin_panel/1/:page',
         component:  SaleListComponent,
+        canActivate: [authGuardAdmin]
     },
     {
         path: 'admin_panel/2/:page',
         component: UserListComponent,
+        canActivate: [authGuardAdmin]
     },
     {
         path: 'admin_panel/2/1/:sale_id',
         component: SaleComponent,
+        canActivate: [authGuardAdmin]
     },
     {
         path: 'not-found',

@@ -1,11 +1,9 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { FooterComponent } from '../footer/footer.component';
 import { Router, RouterOutlet } from '@angular/router';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { AuthService } from '../../services/auth.service';
-import { Store } from '@ngrx/store';
-import { AlertService } from '../../services/alert.service';
 import { ToastService } from '../../services/toast.service';
 
 
@@ -15,23 +13,17 @@ import { ToastService } from '../../services/toast.service';
   imports: [RouterOutlet, NavbarComponent, FooterComponent],
   templateUrl: './ecomerce-app.component.html'
 })
-export class EcomerceAppComponent implements OnInit, AfterViewInit{
+export class EcomerceAppComponent implements OnInit{
   @ViewChild('dynamicHeightContainer') dynamicHeightContainer!: ElementRef;
   contentHeight: number = 0;
   contentWidth: number = 0;
 
   constructor(
-    private baseProductStore: Store<{baseProducts: any}>,
-    private cartStore: Store<{carts: any}>,
     private router: Router,
     private sharingDataService: SharingDataService,
     private authService: AuthService,
-    private alertService: AlertService,
     private toastService: ToastService) {}
 
-  ngAfterViewInit(): void {
-    //this.adjustHeight();
-  }
 
   @HostListener('window:load')
   onLoad(): void {
@@ -51,7 +43,6 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
       const width = container.offsetWidth;
       this.contentHeight = height;
       this.contentWidth = width;
-      //console.log(`Ancho: ${this.contentWidth}, alto ${this.contentHeight}`)
     }
   }
 
@@ -60,10 +51,6 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
     this.adjustHeight();
     this.handlerLogin();
 
-    if(this.authService.authenticated()){
-      console.log('ID: ', this.authService.user.user.id)
-      this.cartVerify(this.authService.user.user.id);
-    }
   }
 
   handlerLogin() {
@@ -83,12 +70,7 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
           this.authService.user = login;
           console.log("Inicio de sesión exitoso!", login);
           this.toastService.success('Inicio de sesión exitoso!');
-          //verificacion de carrito de compras
-          this.cartVerify(id);
           this.router.navigate(['/home']);
-          // this.router.navigate(['/home']).then(()=>{
-          //   window.location.reload();
-          // });
         },
         error: error => {
           if (error.status == 401) {
@@ -102,40 +84,6 @@ export class EcomerceAppComponent implements OnInit, AfterViewInit{
     })
   }
 
-  cartVerify(id: number){
-    // this.userService.findById(id).subscribe({
-    //   next: user => {
-    //     if(user.cartList.length > 0){
-    //       console.log('Carrito list esta definido', user.cartList)
-    //       const cartList: Cart[] = user.cartList;
-    //       const lastCart = cartList.pop() || new Cart();
-    //       if(lastCart?.sale == null){
-    //         console.log('Ya existe un carrito!', lastCart)
-           
-    //         this.cartStore.dispatch(putCart({cart: lastCart}));
-    //       }else{
-    //         this.cartService.create(id).subscribe({
-    //           next: cart => {
-    //             console.log('Carrito creado con exito!', cart);
-    //             this.cartStore.dispatch(putCart({cart}));
-               
-    //           }
-    //         })
-    //       }
-    //     }else{
-    //       console.log('Carrito list NO esta definido')
-    //       this.cartService.create(id).subscribe({
-    //         next: cart => {
-    //           console.log('Carrito creado con exito!', cart);
-    //           this.cartStore.dispatch(putCart({cart}));
-             
-    //         }
-    //       })
-    //     }
-        
-    //   }
-    // })
-  }
 
 
 

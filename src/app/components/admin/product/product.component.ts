@@ -12,6 +12,7 @@ import { CategoryService } from '../../../services/category.service';
 import { Category } from '../../../models/general.model'; 
 import { firstValueFrom } from 'rxjs';
 import { BaseProductService } from '../../../services/base-product.service';
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'product',
@@ -39,7 +40,8 @@ export class ProductComponent implements OnInit {
     private sizeService: SizeService,
     private categoryService: CategoryService,
     private fb: FormBuilder,
-    private baseProductService: BaseProductService
+    private baseProductService: BaseProductService,
+    private alertService: AlertService
   ) { }
 
 
@@ -114,8 +116,9 @@ export class ProductComponent implements OnInit {
     const payload = this.productForm.value;
     try {
       const res = await firstValueFrom(this.baseProductService.create(payload))
-      console.log(res)
+      await this.alertService.success('Exito', 'Producto creado correctamente')
     } catch (error) {
+      await this.alertService.error('Error', 'No se pudo crear el producto. Intenta nuevamente')
       console.error('error en createProduct', error)
     }
   }

@@ -16,7 +16,6 @@ export class LoginComponent implements OnInit{
 
   constructor(
     private sharingDataService: SharingDataService,
-    private router: Router,
     private alertService: AlertService
   ) {
     this.user = new User();

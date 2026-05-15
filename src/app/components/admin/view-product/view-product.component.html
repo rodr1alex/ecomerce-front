@@ -7,7 +7,7 @@
              <div class="px-6  py-6 flex flex-col justify-between h-full">
                 <div class="flex relative">
                     <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;" [(ngModel)]="filters.categories[0]">
-                        <option value="" disabled selected>Categoria</option>
+                        <option [value]="undefined" disabled>Categoria</option>
                         <option *ngFor="let category of categoryList" [value]="category.categoryId">
                             {{category.name}}
                         </option>
@@ -18,7 +18,7 @@
                 </div>
                 <div class="flex relative">
                     <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;"  name="brand" id="brand" [(ngModel)]="this.filters.brandId">
-                        <option value="" disabled selected>Marca</option>
+                        <option [value]="null" disabled>Marca</option>
                         <option *ngFor="let brand of brandList" [value]="brand.id">
                             {{brand.name}}
                         </option>
@@ -29,7 +29,7 @@
                 </div>
                 <div class="flex relative">
                     <select (change)="onChange($event)" class="button text-slate-600 w-full" style="height: 36px;"  name="brand" id="brand" [(ngModel)]="filters.colorId">
-                        <option value="" disabled selected>Color</option>
+                        <option [value]="null" disabled>Color</option>
                         <option *ngFor="let color of colorList" [value]="color.id">
                             {{color.name}}
                         </option>
@@ -40,7 +40,7 @@
                 </div>
                 <div class="flex relative">
                     <select (change)="onChange($event)"  class="button text-slate-600 w-full" style="height: 36px;"  name="brand" id="brand" [(ngModel)]="filters.sizeId">
-                        <option value="" disabled selected>Talla</option>
+                        <option [value]="null" disabled>Talla</option>
                         <option *ngFor="let size of sizeList" [value]="size.id">
                             {{size.name}}
                         </option>
